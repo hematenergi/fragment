@@ -41,6 +41,57 @@ copyButtons.forEach((button) => {
   });
 });
 
+const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Lenis.
+//
+// Dimuat dari `vendor/`, bukan CDN: halaman ini mengklaim "no runtime
+// dependencies", jadi paling tidak ia tidak boleh menambah permintaan ke pihak
+// ketiga hanya demi gulir yang halus.
+//
+// Tiga hal yang membuatnya aman untuk gagal:
+//   1. `prefers-reduced-motion` mematikannya sepenuhnya. Gulir yang diperhalus
+//      adalah gerakan, dan sebagian orang sakit karenanya.
+//   2. Kalau skripnya tidak termuat, `globalThis.Lenis` tidak ada dan halaman
+//      tetap bergulir seperti biasa — `html:not(.lenis)` mengembalikan
+//      `scroll-behavior: smooth` bawaan peramban.
+//   3. Ia memakai posisi gulir asli, jadi `window.scrollY`,
+//      IntersectionObserver, dan tautan jangkar tetap bekerja.
+let lenis = null;
+
+if (!prefersReducedMotion && typeof globalThis.Lenis === "function") {
+  lenis = new globalThis.Lenis({
+    duration: 1.05,
+    // Peluruhan eksponensial: cepat di awal, berhenti tanpa pantulan. Halaman
+    // ini bersifat editorial, bukan showreel — geraknya harus tidak terasa.
+    easing: (t) => 1 - Math.pow(1 - t, 3),
+    smoothWheel: true,
+    // Sentuhan dibiarkan asli. Momentum bawaan iOS sudah benar, dan
+    // menggantinya selalu terasa lebih buruk di perangkat sungguhan.
+    syncTouch: false,
+  });
+
+  const raf = (time) => {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  };
+  requestAnimationFrame(raf);
+
+  // Tautan dalam-halaman harus melewati Lenis, kalau tidak peramban melompat
+  // dan Lenis menariknya kembali.
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const id = link.getAttribute("href");
+      if (id === "#" || event.metaKey || event.ctrlKey || event.shiftKey) return;
+      const target = id === "#top" ? 0 : document.querySelector(id);
+      if (target === null) return;
+      event.preventDefault();
+      lenis.scrollTo(target, { offset: -24 });
+      history.pushState(null, "", id);
+    });
+  });
+}
+
 // Garis bawah header muncul hanya setelah halaman digulir, supaya bagian atas
 // tetap bersih. Dibaca lewat atribut, bukan mengubah gaya inline.
 const header = document.querySelector("[data-header]");
@@ -49,6 +100,9 @@ const syncHeader = () => {
 };
 syncHeader();
 addEventListener("scroll", syncHeader, { passive: true });
+// Lenis memancarkan peristiwanya sendiri; tanpa ini garis header tertinggal
+// satu bingkai di belakang gulir.
+if (lenis) lenis.on("scroll", syncHeader);
 
 // Reveal saat masuk viewport.
 //
@@ -56,7 +110,6 @@ addEventListener("scroll", syncHeader, { passive: true });
 // di sini, jadi kalau JS mati atau IntersectionObserver tidak ada, halaman
 // tetap tampil utuh. Menyembunyikan lebih dulu lewat CSS akan membuat konten
 // hilang permanen pada kegagalan sekecil apa pun.
-const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 if (!prefersReducedMotion && "IntersectionObserver" in window) {
   const targets = document.querySelectorAll(

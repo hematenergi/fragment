@@ -26,10 +26,21 @@
 * { box-sizing: border-box; }
 
 html {
-  scroll-behavior: smooth;
   background: var(--paper);
   -webkit-text-size-adjust: 100%;
 }
+
+/* Native smooth scrolling is kept ONLY for the case where Lenis never starts —
+   no JS, reduced motion, or a load failure. The two fight each other when both
+   are live, and the native one wins in a way that stutters. */
+html:not(.lenis) { scroll-behavior: smooth; }
+
+/* Lenis v1.3.26 base styles, inlined rather than loaded as a second file. */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
 
 body {
   margin: 0;
@@ -149,7 +160,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
   font: 600 16px/1 var(--sans);
   letter-spacing: -.01em;
   text-decoration: none;
+  color: var(--ink);
 }
+
+/* The mark inherits the ink, so it is one colour with the wordmark and never
+   drifts from the palette the way a coloured raster asset does. */
+.brand .mark { display: block; flex: none; }
+.brand:hover .mark { color: var(--accent); }
 
 .site-header nav {
   display: flex;
