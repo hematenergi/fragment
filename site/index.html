@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fragment — Durable Project Memory for AI Coding Agents</title>
+    <meta name="description" content="Stop making every AI coding session start from scratch. Fragment gives builders and AI agents durable project memory across sessions, tools, and teammates.">
+    <meta name="theme-color" content="#07090c">
+    <link rel="canonical" href="https://hematenergi.github.io/fragment/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Fragment — Durable Project Memory for AI Coding Agents">
+    <meta property="og:description" content="Your agent can read the code. Fragment tells it why.">
+    <meta property="og:url" content="https://hematenergi.github.io/fragment/">
+    <meta property="og:image" content="https://hematenergi.github.io/fragment/assets/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fragment — Durable Project Memory for AI Coding Agents">
+    <meta name="twitter:description" content="Your agent can read the code. Fragment tells it why.">
+    <meta name="twitter:image" content="https://hematenergi.github.io/fragment/assets/og.png">
+    <link rel="icon" href="assets/fragment-logo.png">
+    <link rel="stylesheet" href="styles.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "Fragment",
+        "description": "A continuity harness that gives humans and AI coding agents durable project memory across sessions.",
+        "codeRepository": "https://github.com/hematenergi/fragment",
+        "license": "https://opensource.org/license/mit",
+        "programmingLanguage": "Bash",
+        "runtimePlatform": "Linux, macOS, Windows with Git Bash",
+        "version": "0.1.0"
+      }
+    </script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Fragment home">
+        <img src="assets/fragment-logo.png" alt="" width="48" height="48">
+        <span>Fragment</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#how-it-works">How it works</a>
+        <a href="#evidence">Evidence</a>
+        <a href="https://github.com/hematenergi/fragment">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <h1>Your agent can read the code.<br>Fragment tells it <em>why</em>.</h1>
+          <p>Pick up the right work without replaying old chats or re-litigating old decisions. Fragment gives humans and AI agents one durable project story across sessions, tools, and teammates.</p>
+          <div class="hero-actions">
+            <button class="button button-primary" type="button" data-copy-install>Copy install prompt</button>
+            <a class="button button-secondary" href="https://github.com/hematenergi/fragment">View on GitHub</a>
+          </div>
+          <p class="proof-line"><span>bash + git</span><span>no runtime dependencies</span><span>Linux, macOS, Windows</span></p>
+        </div>
+
+        <div class="memory-map" aria-label="Fragment carries project context from session 12 to session 40">
+          <div class="session-line" aria-hidden="true">
+            <span>SESSION 12</span>
+            <i></i>
+            <span>SESSION 40</span>
+          </div>
+          <div class="memory-stack">
+            <article class="memory-item">
+              <span class="memory-index">01</span>
+              <div>
+                <h2>STATE</h2>
+                <p>Focus: make feedback ingestion safe to retry</p>
+              </div>
+            </article>
+            <article class="memory-item">
+              <span class="memory-index">02</span>
+              <div>
+                <h2>ACTIVE FRAGMENT</h2>
+                <p>Auto-triage rules · in progress</p>
+              </div>
+            </article>
+            <article class="memory-item memory-decision">
+              <span class="memory-index">03</span>
+              <div>
+                <h2>DECISION</h2>
+                <p>Mark duplicates; never silently delete them.</p>
+                <p class="rejected">Rejected: silent de-duplication hides data loss.</p>
+              </div>
+            </article>
+            <article class="memory-item">
+              <span class="memory-index">04</span>
+              <div>
+                <h2>RELEVANT CODE</h2>
+                <p>Only the files needed for the next move</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="handoff" id="how-it-works">
+        <div class="section-inner">
+          <header class="section-heading">
+            <h2>The session ends.<br>The context doesn't.</h2>
+            <div>
+              <p>Code shows what exists. Fragment carries why it exists, what was ruled out, and what happens next.</p>
+              <p class="ownership-line">Vibe coding made everyone a builder. Fragment helps them remain the owner.</p>
+            </div>
+          </header>
+
+          <div class="comparison">
+            <article class="comparison-before">
+              <p class="comparison-label">WITHOUT FRAGMENT</p>
+              <pre><code>$ git log --oneline -3
+
+a41f0c2  fix ledger rounding
+9d7e1b8  wip
+2c30ff5  try the other approach</code></pre>
+              <p>The next agent reconstructs the story—and repeats Thursday's rejected plan.</p>
+            </article>
+
+            <div class="comparison-bridge" aria-hidden="true"><span>F</span></div>
+
+            <article class="comparison-after">
+              <p class="comparison-label">WITH FRAGMENT</p>
+              <dl>
+                <div><dt>Active fragment</dt><dd>04 — Duplicate import records · BLOCKED</dd></div>
+                <div><dt>Waiting on</dt><dd>Which source id is canonical after retry?</dd></div>
+                <div><dt>Decision</dt><dd>Never delete duplicates; mark and preserve.</dd></div>
+                <div><dt>Next</dt><dd>API owner chooses the canonical id.</dd></div>
+              </dl>
+            </article>
+          </div>
+
+          <ol class="reading-path" aria-label="How an agent reads Fragment project context">
+            <li><span>01</span>Front door</li>
+            <li><span>02</span>Protocol</li>
+            <li><span>03</span>State</li>
+            <li><span>04</span>Active fragment</li>
+            <li><span>05</span>Decisions</li>
+            <li><span>06</span>Relevant code</li>
+          </ol>
+
+          <div class="harness-note">
+            <h3>The continuity layer of your AI coding harness.</h3>
+            <p>Harness engineering chooses the context an agent sees, the rules it follows, and the feedback that closes the loop. Fragment handles the part that usually disappears between sessions. It does not run the model; it gives whoever arrives next the same durable story.</p>
+          </div>
+
+          <p class="handoff-close">The last five minutes of work become the first five minutes of the <em>next session</em>.</p>
+        </div>
+      </section>
+
+      <section class="evidence" id="evidence">
+        <div class="section-inner">
+          <header class="evidence-heading">
+            <h2>Receipts, not promises.</h2>
+            <p>Extracted from a private repo: two people, two operating systems, two different AI agents, 25 commits in 18 hours.</p>
+          </header>
+
+          <div class="evidence-layout">
+            <div class="evidence-table" role="table" aria-label="Fragment evidence">
+              <div class="evidence-row evidence-header" role="row">
+                <span role="columnheader">Receipt</span>
+                <span role="columnheader">What happened</span>
+              </div>
+              <div class="evidence-row" role="row">
+                <strong role="cell">74 minutes</strong>
+                <span role="cell">from CI install to its first real catch</span>
+              </div>
+              <div class="evidence-row" role="row">
+                <strong role="cell">3 violations</strong>
+                <span role="cell">from one ordinary file rename, all caught</span>
+              </div>
+              <div class="evidence-row" role="row">
+                <strong role="cell">7 of 7</strong>
+                <span role="cell">new-contributor commits carried the same handoff shape</span>
+              </div>
+              <div class="evidence-row" role="row">
+                <strong role="cell">both directions</strong>
+                <span role="cell">the verification rule corrected a colleague and its own author</span>
+              </div>
+            </div>
+
+            <aside class="honesty-note">
+              <h3>What this does not prove</h3>
+              <p>Concurrency above two people is untested. Fragment verifies continuity, not code correctness.</p>
+              <a href="https://github.com/hematenergi/fragment/blob/main/CASE-STUDY.md">Read the full case study</a>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="install" id="install">
+        <div class="section-inner">
+          <h2>Give the next session<br>the whole story.</h2>
+          <p class="install-intro">Paste one prompt into the coding agent already working on your project. Existing files stay untouched; missing decisions become blockers instead of guesses.</p>
+          <pre class="install-prompt" id="install-prompt" tabindex="0"><code>Install Fragment v0.1.0 from https://github.com/hematenergi/fragment into this repository. Do not overwrite existing files. Fill its project state from decisions visible in the repository and this conversation, then run bash scripts/docs-check.sh. Do not invent missing decisions; record them as blockers for me.</code></pre>
+          <div class="install-actions">
+            <button class="button button-primary" type="button" data-copy-install>Copy install prompt</button>
+            <a class="case-link" href="https://github.com/hematenergi/fragment/blob/main/CASE-STUDY.md">Read the case study</a>
+            <span class="copy-status" aria-live="polite"></span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#top" aria-label="Back to top">
+        <img src="assets/fragment-logo.png" alt="" width="44" height="44">
+        <span>Fragment</span>
+      </a>
+      <p><a href="https://github.com/hematenergi/fragment/blob/main/LICENSE">MIT</a><a href="https://github.com/hematenergi/fragment">GitHub</a><span>v0.1.0</span></p>
+    </footer>
+  </body>
+</html>
