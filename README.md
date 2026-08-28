@@ -76,7 +76,7 @@ Without:
 
 ```console
 $ git log --oneline -3
-a41f0c2  fix ledger rounding
+a41f0c2  fix images again
 9d7e1b8  wip
 2c30ff5  try the other approach
 ```
@@ -86,16 +86,21 @@ With:
 ```console
 $ head -20 docs/STATE.md
 ## Active fragment
-04 — Duplicate import records · BLOCKED
+04 — Deploy to GitHub Pages · BLOCKED
 
 ## Blocked / waiting on a human
-| What                                      | Waiting on | Since      |
-| Which source id is canonical after retry | API owner  | 2026-08-26 |
+| What                                     | Waiting on | Since      |
+| A custom domain, or keep the /repo URL   | you        | 2026-08-26 |
+
+## Decisions
+- Image paths stay relative.
+  Rejected: absolute URLs, because they break once the site lives in a
+  subfolder. Cost two hours to find the first time.
 
 ## Session log
-- 2026-08-26 · codex · 04 · replayed the import against raw events; retries
-  created duplicate records under two ids · next: API owner picks the canonical
-  id, then the fix can ship
+- 2026-08-26 · codex · 04 · images loaded locally but broke on the deployed
+  site; the cause was absolute paths, now reverted · next: you pick the domain,
+  then this closes
 ```
 
 The second one is not documentation. It is what the work leaves behind whether
