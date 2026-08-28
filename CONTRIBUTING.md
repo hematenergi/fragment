@@ -40,6 +40,22 @@ Any new file under `template/docs/` needs a line in `template/docs/README.md`,
 or the guard will reject the very template it ships. Run the tests — they
 install the template into a scratch repo and check exactly this.
 
+## Reporting that it did not work
+
+There are three issue templates, and the third one matters most.
+
+**Fragment didn't prevent this** is for the case where the harness was installed,
+the guard was green, and a session still started blind or re-opened something
+already settled. That report is hard to write and easy to skip, because it does
+not feel like a bug — it feels like an ordinary bad day. It is the only evidence
+that separates a check which works from a check which merely passes.
+
+You are not expected to diagnose it. What happened, who was picking the work up,
+and whether the guard was green at the time is enough.
+
+Anything you would rather talk through than file goes in
+[Discussions](https://github.com/hematenergi/fragment/discussions).
+
 ## What this project will not accept
 
 - A check that cannot fail. If you cannot write the test that trips it, it is
