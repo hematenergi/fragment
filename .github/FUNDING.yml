@@ -1,0 +1,6 @@
+# Renders as GitHub's own Sponsor button on the repo header.
+#
+# Deliberately not a badge in the README or a button on the site: this project's
+# whole visual argument is restraint, and an orange gradient in the middle of it
+# would be the same category of mistake as the neon logo it started with.
+buy_me_a_coffee: hematenergi
