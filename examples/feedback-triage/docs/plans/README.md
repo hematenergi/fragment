@@ -3,7 +3,7 @@ id: plans-index
 title: Fragments — how they work
 status: active
 owner: priya
-last-verified: 2026-08-24
+last-verified: 2026-08-28
 ---
 
 # Fragments
@@ -13,6 +13,13 @@ session: leavable at any moment, resumable by another person or model **without
 the conversation that produced it.**
 
 If a fragment can only be continued by whoever wrote it, it is written wrong.
+
+## Current fragments
+
+| # | Fragment | Status | Owner |
+|---|---|---|---|
+| 01 | [`Ingest and de-duplicate`](01-ingest-and-dedupe.md) | `done` | priya |
+| 02 | [`Auto-triage rules`](02-auto-triage-rules.md) | `in-progress` | priya |
 
 ## Rules
 

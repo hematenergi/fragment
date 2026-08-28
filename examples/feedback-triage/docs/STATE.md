@@ -3,7 +3,7 @@ id: state
 title: STATE — where the work stands
 status: active
 owner: priya
-last-verified: 2026-08-24
+last-verified: 2026-08-28
 ---
 
 # STATE
@@ -52,6 +52,9 @@ Closed by writing a file in `decisions/`, not by answering in chat.
 - Do we route an item that matches two rules to both teams, or to the higher
   priority one? Routing to both doubles the notification volume; routing to one
   means the other team never learns the overlap exists.
+
+The duplicate-handling policy is recorded in
+[`decisions/0001-mark-duplicates-never-delete.md`](decisions/0001-mark-duplicates-never-delete.md).
 
 ---
 

@@ -3,7 +3,7 @@ id: how-we-work
 title: How this team works
 status: active
 owner: priya
-last-verified: 2026-08-24
+last-verified: 2026-08-28
 ---
 
 # How this team works

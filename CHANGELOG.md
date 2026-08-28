@@ -32,6 +32,11 @@ against its own claims. Both found problems.
   it skipped, and the workflow falls back to `HEAD~1`.
 - **`install.sh` with a non-existent target** resolved the destination to the
   empty string and attempted to copy the template into `/`.
+- **Windows checkouts converted Markdown fixtures to CRLF**, so the guard's
+  cross-platform suite failed before exercising the intended cases. Root
+  attributes now keep shell and Markdown files on LF without dropping Windows CI.
+- **The public example linked to documents that were not shipped.** Its complete
+  documentation snapshot now runs through the guard as a regression case.
 
 ### Fixed — regressions introduced when the guard was extracted
 
@@ -45,7 +50,7 @@ version that earned the credibility:
 
 ### Added
 
-- `tests/run.sh` — 39 cases. The guard had none.
+- `tests/run.sh` — 41 cases. The guard had none.
 - `status: done` now means done: unticked checkboxes and a fragment that records
   no commands both fail. Language-independent by construction.
 - Fragment `status:` is cross-checked against its row on the board. Two places

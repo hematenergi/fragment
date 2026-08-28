@@ -263,6 +263,11 @@ expect_green "$d" "a stale board warns, using git dates not file mtime" "unchang
 c="$TMP/clone"; rm -rf "$c"; git clone -q "$d" "$c" 2>/dev/null
 expect_green "$c" "  ... and survives a fresh clone (i.e. it works in CI)" "unchanged for"
 
+# ---------------------------------------------------------------------------
+echo; echo "published example"
+# ---------------------------------------------------------------------------
+expect_green "$ROOT/examples/feedback-triage" "the filled-in example is green"
+
 echo
 if [ "$failed" -gt 0 ]; then printf 'FAILED — %s passed, %s failed\n' "$pass" "$failed"; exit 1; fi
 printf 'GREEN — %s tests passed\n' "$pass"

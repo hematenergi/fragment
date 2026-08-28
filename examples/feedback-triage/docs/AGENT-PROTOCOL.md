@@ -3,7 +3,7 @@ id: agent-protocol
 title: Agent Protocol — the working contract
 status: active
 owner: priya
-last-verified: 2026-08-24
+last-verified: 2026-08-28
 ---
 
 # Agent Protocol

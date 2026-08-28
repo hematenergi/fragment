@@ -3,7 +3,7 @@ id: glossary
 title: Glossary — technical terms in plain language
 status: active
 owner: sam
-last-verified: 2026-08-24
+last-verified: 2026-08-28
 ---
 
 # Glossary

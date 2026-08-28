@@ -16,10 +16,10 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: shellcheck
         if: matrix.os == 'ubuntu-latest'
-        run: shellcheck -S warning install.sh template/scripts/docs-check.sh tests/run.sh || true
+        run: shellcheck -S warning install.sh template/scripts/docs-check.sh tests/run.sh
       - name: tests
         run: bash tests/run.sh
 
@@ -31,5 +31,5 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: bash tests/run.sh

@@ -3,7 +3,7 @@ id: plan-00
 title: "TEMPLATE — do not work on this"
 status: parked
 owner: unassigned
-last-verified: 2026-08-24
+last-verified: 2026-08-28
 depends-on: []
 ---
 

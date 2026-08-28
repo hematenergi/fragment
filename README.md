@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/hematenergi/fragment/actions/workflows/tests.yml"><img src="https://github.com/hematenergi/fragment/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
+</p>
+
+<p align="center">
   <sub><strong>74 minutes</strong> from install to catching its first real incident &middot;
   <strong>7 of 7</strong> commits from a second contributor who was never in the room &middot;
   <strong>bash + git</strong>, nothing else<br>
@@ -35,6 +39,9 @@ neither of you will read the other's transcript — nobody reads transcripts.
 memory, and makes CI go red when it doesn't.** That file is the only thing both
 of you can see.
 
+Fragment preserves context and decisions; tests, code review, and security
+tooling still decide whether the code is correct and safe.
+
 ## Before / after
 
 You finish a session. Good work happened. Here is what the next person — or the
@@ -54,16 +61,16 @@ With:
 ```console
 $ head -20 docs/STATE.md
 ## Active fragment
-04 — Honest fill model · BLOCKED
+04 — Duplicate import records · BLOCKED
 
 ## Blocked / waiting on a human
-| What                          | Waiting on | Since      |
-| Which price feed is canonical | two owners | 2026-08-26 |
+| What                                      | Waiting on | Since      |
+| Which source id is canonical after retry | API owner  | 2026-08-26 |
 
 ## Session log
-- 2026-08-26 · codex · 04 · rebuilt the fill model against raw fills; the old
-  one summed across two currencies and read 10x high · next: owner picks the
-  price feed, then the sim can be trusted
+- 2026-08-26 · codex · 04 · replayed the import against raw events; retries
+  created duplicate records under two ids · next: API owner picks the canonical
+  id, then the fix can ship
 ```
 
 The second one is not documentation. It is what the work leaves behind whether
@@ -147,9 +154,11 @@ Work down the list until it is green. There is no other setup.
 
 ## See a filled-in example
 
-[`examples/feedback-triage/`](examples/feedback-triage/) is a complete, fictional
-customer-feedback routing project: a populated board, finished fragment, active
-fragment, decisions, lesson, and a non-engineer starting point. Start with its
+[`examples/feedback-triage/`](examples/feedback-triage/) is a complete documentation
+snapshot of a fictional customer-feedback routing project: a populated board,
+finished fragment, active fragment, decision, lesson, runbook, and a non-engineer
+starting point. The application source is deliberately omitted; the complete
+artifact is the workflow and its documentation. Start with its
 [`START-HERE.md`](examples/feedback-triage/START-HERE.md).
 
 *Claude Code users: `skill/SKILL.md` does the adoption for you. Copy it to
@@ -303,7 +312,7 @@ it.
 bash tests/run.sh
 ```
 
-39 cases across Linux, macOS and Windows/Git Bash. The guard is the load-bearing
+41 cases across Linux, macOS and Windows/Git Bash. The guard is the load-bearing
 part of this project and it does not change without a test —
 see [`CONTRIBUTING.md`](CONTRIBUTING.md). It shipped without one once, and an
 untouched install came out green while the README called it a checklist.
