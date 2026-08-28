@@ -254,7 +254,11 @@ nav a:focus-visible { color: var(--cyan); }
   font-size: 12px;
 }
 
-.memory-item h2 {
+/* `.memory-item .memory-label`, bukan `.memory-label` saja: aturan
+   `.memory-item p` di bawah lebih spesifik (0,1,1) dan akan menimpa warna serta
+   fontnya. Label ini dulu <h2>, tapi sebagai heading ia menyusup ke outline
+   dokumen — pembaca layar menabrak empat judul palsu sebelum bagian pertama. */
+.memory-item .memory-label {
   margin: 0 0 9px;
   color: var(--cyan);
   font: 500 15px/1 var(--mono);
