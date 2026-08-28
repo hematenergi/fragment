@@ -8,7 +8,7 @@ last-verified: 2026-08-28
 
 # 0001 — Sign-up is by phone number, not email
 
-**Decided** Monday 2026-08-24, by Dina.
+**Decided** 2026-08-24, by Dina.
 
 ## Context
 
@@ -43,5 +43,5 @@ technical decision, and not one an agent can make on its own.
 
 > **Note for whoever reads this next.** This decision has been re-opened twice by
 > agents starting a fresh session, on 2026-08-26 and 2026-08-27, because a new
-> session has no memory of Monday. That is exactly why it is written here and
-> listed on the board.
+> session has no memory of the week it was settled in. That is exactly why it is
+> written here and listed on the board.

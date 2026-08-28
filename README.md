@@ -38,10 +38,10 @@
 
 ---
 
-It is Monday. You ask the agent to pick up where you left off. It reads the
-code, infers a plan, and confidently proposes the approach you rejected on
-Thursday — for exactly the reasons you rejected it, which it cannot see,
-because they were in a chat window that no longer exists.
+You open a fresh session and ask the agent to pick up where you left off. It
+reads the code, infers a plan, and confidently proposes the approach you
+rejected last week — for exactly the reasons you rejected it, which it cannot
+see, because they were in a chat window that no longer exists.
 
 Nobody did anything wrong. The reasoning happened. It just never landed
 anywhere a machine or a colleague could find it.
@@ -69,8 +69,8 @@ tooling still decide whether the code is correct and safe.
 
 ## Before / after
 
-It is Thursday. You open a fresh session with your agent. Here is what you have
-to type before any work can begin.
+Every new session starts the same way, and this is the part nobody counts: what
+you have to type before any work can begin.
 
 **Without Fragment**
 
@@ -101,13 +101,13 @@ $ head -18 docs/STATE.md
 | What a customer sees when a payment fails     | Dina       | 2026-08-27 |
 
 ## Decisions already made — do not ask again
-- Sign-up is by phone number, not email. Settled Monday 2026-08-24, because
-  most of our customers do not have an email address.
+- Sign-up is by phone number, not email. Settled 2026-08-24, because most of
+  our customers do not have an email address.
 
 ## Session log
 - 2026-08-27 · codex · 02 · checkout reaches the payment step; the session
-  opened by asking whether sign-up should use email, which Monday had already
-  settled · next: Dina decides what a failed payment shows
+  opened by asking whether sign-up should use email, which decision 0001 had
+  already settled · next: Dina decides what a failed payment shows
 ```
 
 Note the last line. The agent asked anyway — and the fix was not to scold the

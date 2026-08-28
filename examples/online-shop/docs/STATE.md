@@ -51,7 +51,7 @@ fails.
 Full reasoning in [`decisions/`](decisions/). Listed here because these are the
 ones an agent keeps re-opening at the start of a session.
 
-- **Sign-up is by phone number, not email.** Settled Monday 2026-08-24. Most of
+- **Sign-up is by phone number, not email.** Settled 2026-08-24. Most of
   our customers do not have an email address. See
   [`decisions/0001-phone-numbers-not-email.md`](decisions/0001-phone-numbers-not-email.md).
 
@@ -64,7 +64,7 @@ One line per session, newest first. Format:
 
 - `2026-08-27` · codex · 02 · Checkout now collects a phone number and reaches
   the payment step; the agent opened the session by asking whether sign-up
-  should use email, which `decisions/0001` had already settled on Monday — the
+  should use email, which `decisions/0001` had already settled — the
   decision is now listed on this board so it is seen before the question is
   asked · **Next:** Dina decides what a failed payment shows.
 - `2026-08-26` · claude · 01 · Fragment 01 closed. The price is now read from

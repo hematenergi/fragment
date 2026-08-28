@@ -40,7 +40,7 @@ money shows up."*
 
 This is the rule we keep learning. A decision that lives only in a conversation
 gets re-opened — by the other one of us, or by an agent starting a fresh
-session, which has no memory of Monday at all. Writing it in
+session, which has no memory of last week at all. Writing it in
 [`decisions/`](decisions/) takes two minutes. Explaining it for the fourth
 time takes longer than that, every time.
 

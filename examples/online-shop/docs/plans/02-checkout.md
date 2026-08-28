@@ -60,5 +60,5 @@ Refunds. Delivery outside the city — Dina has not decided that yet.
 
 - `2026-08-27` · codex · phone number captured, payment step reached. The
   session opened by asking whether sign-up should use email or phone, which was
-  settled on Monday; `decisions/0001` is now linked from "Read first" above and
+  already settled; `decisions/0001` is now linked from "Read first" above and
   listed on the board · next: Dina decides what a failed payment shows.
