@@ -145,6 +145,13 @@ FAILED — 10 problem(s), 0 warning(s)
 
 Work down the list until it is green. There is no other setup.
 
+## See a filled-in example
+
+[`examples/feedback-triage/`](examples/feedback-triage/) is a complete, fictional
+customer-feedback routing project: a populated board, finished fragment, active
+fragment, decisions, lesson, and a non-engineer starting point. Start with its
+[`START-HERE.md`](examples/feedback-triage/START-HERE.md).
+
 *Claude Code users: `skill/SKILL.md` does the adoption for you. Copy it to
 `.claude/skills/fragment/SKILL.md` and ask for it by name.*
 

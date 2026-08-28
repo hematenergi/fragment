@@ -33,7 +33,7 @@ All fragments are in [`plans/`](plans/). The board is [`STATE.md`](STATE.md).
 > sets `merge=union` on `STATE.md`, which keeps both sides of a concurrent
 > append instead of raising a conflict. If two people edit the *same queue row*
 > you get a visibly duplicated row — fix it by hand. A duplicate you can see is
-> a better trade than a conflict on every push.
+> a better outcome than a conflict on every push.
 
 ## Asking for something to be built
 
