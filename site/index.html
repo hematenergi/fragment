@@ -78,19 +78,19 @@
 
           <div class="transcript" aria-label="The same question, forty sessions apart">
             <article class="turn">
-              <p class="turn-meta">Session 12 · you</p>
-              <p class="turn-body">Finally working. The image paths have to stay relative — that took two hours to find.</p>
+              <p class="turn-meta">Session 1 · Monday · you</p>
+              <p class="turn-body">No email sign-up. Most of my users don't have one — use phone numbers.</p>
             </article>
 
             <article class="turn turn-bad">
-              <p class="turn-meta">Session 40 · your agent, without Fragment</p>
-              <p class="turn-body">I've tidied the image paths into absolute URLs so they're consistent.</p>
-              <p class="turn-note">The images break again. You no longer remember why they were like that.</p>
+              <p class="turn-meta">Session 12 · Thursday · your agent, without Fragment</p>
+              <p class="turn-body">Before I start — should sign-up use email, or a phone number?</p>
+              <p class="turn-note">You explained this on Monday. It is as if the conversation never happened.</p>
             </article>
 
             <article class="turn turn-good">
-              <p class="turn-meta">Session 40 · your agent, with Fragment</p>
-              <p class="turn-body">Absolute paths were ruled out in session 12 — they break once the site is deployed under a subfolder. Leaving these relative.</p>
+              <p class="turn-meta">Session 12 · Thursday · your agent, with Fragment</p>
+              <p class="turn-body">Email sign-up was ruled out on Monday — most of your users don't have one. Phone numbers it is. Picking up where you stopped, on the checkout screen.</p>
             </article>
           </div>
         </div>
@@ -111,24 +111,25 @@
               <p class="file-name">docs/STATE.md</p>
               <pre><code># State
 
-**Focus** — get the site deploying without broken images
+**Focus** — get checkout working end to end
 
-**Active fragment** — 04 · deploy to GitHub Pages · BLOCKED
-**Waiting on** — you: a custom domain, or keep the /project-name URL
+**Active fragment** — 04 · checkout · BLOCKED
+**Waiting on** — you: what should happen when a payment fails?
 
 ## Decisions
-- Image paths stay relative.
-  Rejected: absolute URLs, because they break once the site
-  lives in a subfolder. Cost two hours to find the first time.
+- Sign-up is by phone number.
+  Rejected: email, because most of our users don't have one.
+  Asked and answered on Monday. Do not ask again.
 
 ## Next
-- Settle the domain; the paths question closes with it.</code></pre>
+- Answer the failed-payment question, then checkout can finish.</code></pre>
             </div>
 
             <div class="what-copy">
               <p>No database, no daemon, no account. Markdown your agent reads at the start of a session, and updates at the end of one.</p>
               <p>Because it lives in the repo, it travels the way code travels: through branches, pull requests, and whoever clones it next.</p>
-              <p class="aside">It does not run the model. It hands whoever arrives next the same story you had.</p>
+              <p>Every agent already runs inside a harness — the one built into the tool. It sits behind the product, you cannot read it, and it changes when they ship.</p>
+              <p class="aside">This one is yours. It does not run the model; it hands whoever arrives next the same story you had, in files you can read and take to the next tool.</p>
             </div>
           </div>
         </div>
@@ -146,7 +147,7 @@
           <div class="why-grid">
             <figure class="terminal">
               <figcaption>$ git log --oneline -3</figcaption>
-              <pre><code>a41f0c2  fix images again
+              <pre><code>a41f0c2  fix sign-up again
 9d7e1b8  wip
 2c30ff5  try the other approach</code></pre>
             </figure>

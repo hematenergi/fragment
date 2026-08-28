@@ -76,7 +76,7 @@ Without:
 
 ```console
 $ git log --oneline -3
-a41f0c2  fix images again
+a41f0c2  fix sign-up again
 9d7e1b8  wip
 2c30ff5  try the other approach
 ```
@@ -86,21 +86,21 @@ With:
 ```console
 $ head -20 docs/STATE.md
 ## Active fragment
-04 — Deploy to GitHub Pages · BLOCKED
+04 — Checkout · BLOCKED
 
 ## Blocked / waiting on a human
-| What                                     | Waiting on | Since      |
-| A custom domain, or keep the /repo URL   | you        | 2026-08-26 |
+| What                                  | Waiting on | Since      |
+| What happens when a payment fails     | you        | 2026-08-26 |
 
 ## Decisions
-- Image paths stay relative.
-  Rejected: absolute URLs, because they break once the site lives in a
-  subfolder. Cost two hours to find the first time.
+- Sign-up is by phone number.
+  Rejected: email, because most of our users don't have one.
+  Asked and answered on Monday. Do not ask again.
 
 ## Session log
-- 2026-08-26 · codex · 04 · images loaded locally but broke on the deployed
-  site; the cause was absolute paths, now reverted · next: you pick the domain,
-  then this closes
+- 2026-08-26 · codex · 04 · checkout takes a phone number and reaches the
+  payment step · next: you say what a failed payment should show, then this
+  finishes
 ```
 
 The second one is not documentation. It is what the work leaves behind whether
@@ -113,6 +113,17 @@ sees, the rules it follows, and the feedback that tells it the work is done.
 Fragment handles the part that usually disappears at the session boundary.
 It does not run or replace your coding agent; it gives whichever agent arrives
 next the same durable story.
+
+**Every agent already runs inside a harness. It just isn't yours.** It belongs
+to whoever built the tool, it sits behind the product where you cannot read it,
+and it changes when they ship. You cannot version it, review it, argue with it,
+or carry it to the next tool when you switch.
+
+Fragment puts a harness in your repository instead: plain files you can open,
+edit, review in a pull request, and take with you. Harness engineering stops
+being something that happens behind the tool and becomes something you do
+beside it — which is most of the distance between using an agent and owning the
+project it works on.
 
 An agent does not start by reading everything. It follows the story toward the
 code that matters:
