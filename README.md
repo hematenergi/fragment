@@ -1,17 +1,21 @@
 <p align="center">
-  <img src="assets/fragment-logo-transparent.png" alt="Fragment logo" width="180">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/fragment-logo-dark.png">
+    <img src="assets/fragment-logo.png" alt="Fragment logo" width="132">
+  </picture>
 </p>
 
 <h1 align="center">Fragment</h1>
 
 <p align="center">
-  <strong>Vibe coding made everyone a builder.<br>Fragment helps them remain the owner.</strong><br>
+  <strong>Your agent forgot why you said no.</strong><br>
   <em>The session ends. The context doesn't.</em>
 </p>
 
 <p align="center">
-  A continuity harness for vibe-coded projects:<br>
-  shared memory that keeps humans and AI agents aligned across sessions.
+  A continuity harness for vibe-coded projects: the decisions, the paths you<br>
+  ruled out, and the next move live in the repo — where the next session,<br>
+  the next teammate, and the next agent can read them.
 </p>
 
 <p align="center">
