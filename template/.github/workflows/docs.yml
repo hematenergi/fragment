@@ -1,0 +1,35 @@
+name: docs
+
+# The rule guard. Runs for ANYONE who pushes -- human, Claude, Codex, any tool.
+# Local hooks only apply to the tool that installed them; this is the one layer
+# that cannot be bypassed by switching tools.
+#
+# The rules themselves live in docs/AGENT-PROTOCOL.md. If a rule matters but
+# cannot be checked here, that rule depends on goodwill.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  docs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve comparison commit
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ref=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: docs-check
+        env:
+          BASE_REF: ${{ steps.base.outputs.ref }}
+        run: bash scripts/docs-check.sh
