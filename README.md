@@ -144,7 +144,7 @@ occasions the author of the guard was caught by his own guard.
 Extracted from a private repo: two people, two operating systems, two different
 AI agents, 25 commits in 18 hours.
 
-| | |
+| Receipt | What happened |
 |---|---|
 | **74 minutes** | between wiring the guard into CI and it catching a real incident |
 | **3 violations** | that one file rename through the GitHub web UI caused, all three caught |
