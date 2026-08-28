@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0 — 2026-08-28
+
 The guard was audited against the private repo it was extracted from, and
 against its own claims. Both found problems.
 

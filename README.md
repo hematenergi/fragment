@@ -169,7 +169,7 @@ Full working: [`CASE-STUDY.md`](CASE-STUDY.md).
 Paste this into the agent already working on your project:
 
 ```text
-Install Fragment from https://github.com/hematenergi/fragment into this repository.
+Install Fragment v0.1.0 from https://github.com/hematenergi/fragment into this repository.
 Do not overwrite existing files. Fill its project state from decisions visible
 in the repository and this conversation, then run bash scripts/docs-check.sh.
 Do not invent missing decisions; record them as blockers for me.
@@ -178,7 +178,7 @@ Do not invent missing decisions; record them as blockers for me.
 ### Or install it yourself
 
 ```bash
-git clone https://github.com/hematenergi/fragment
+git clone --depth 1 --branch v0.1.0 https://github.com/hematenergi/fragment
 bash fragment/install.sh /path/to/your/repo
 cd /path/to/your/repo && bash scripts/docs-check.sh
 ```
