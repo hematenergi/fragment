@@ -10,12 +10,23 @@
 </p>
 
 <p align="center">
+  A continuity harness for vibe-coded projects:<br>
+  shared memory that keeps humans and AI agents aligned across sessions.
+</p>
+
+<p align="center">
+  <a href="#try-it-on-a-project"><strong>Try it with your coding agent</strong></a> &middot;
+  <a href="#before--after">See the before / after</a> &middot;
+  <a href="CASE-STUDY.md">Read the evidence</a>
+</p>
+
+<p align="center">
   <a href="https://github.com/hematenergi/fragment/actions/workflows/tests.yml"><img src="https://github.com/hematenergi/fragment/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
 </p>
 
 <p align="center">
-  <sub><strong>74 minutes</strong> from install to catching its first real incident &middot;
-  <strong>7 of 7</strong> commits from a second contributor who was never in the room &middot;
+  <sub><strong>74 minutes</strong> to its first real catch &middot;
+  <strong>7 of 7</strong> new-contributor commits carried the handoff &middot;
   <strong>bash + git</strong>, nothing else<br>
   <a href="CASE-STUDY.md">The git history behind those numbers</a> &middot;
   <a href="docs/why.md">every rule, and the failure that produced it</a></sub>
@@ -86,7 +97,13 @@ $ head -20 docs/STATE.md
 The second one is not documentation. It is what the work leaves behind whether
 anyone feels like writing it or not, because the build fails until it does.
 
-## How it works
+## The continuity harness
+
+Harness engineering is the work around the model: choosing the context it
+sees, the rules it follows, and the feedback that tells it the work is done.
+Fragment handles the part that usually disappears at the session boundary.
+It does not run or replace your coding agent; it gives whichever agent arrives
+next the same durable story.
 
 An agent does not start by reading everything. It follows the story toward the
 code that matters:
@@ -117,10 +134,10 @@ board that hasn't moved in a week, a fragment claiming `done` with an unticked
 box and no command recorded, a front door that quietly stopped pointing at the
 protocol, and a session that changed documents and left no trace.
 
-**The guard is the whole product.** The folder layout is the cheap part; anyone
-can copy a folder layout. Structure that depends on everyone remembering decays
-inside a week — this repo has receipts for that, including the two occasions the
-author of the guard was caught by his own guard.
+**The guard is what turns the files into a harness.** The folder layout is the
+cheap part; anyone can copy one. Structure that depends on everyone remembering
+decays inside a week — this repo has receipts for that, including the two
+occasions the author of the guard was caught by his own guard.
 
 ## The receipts
 
@@ -145,7 +162,7 @@ project is nominally about, applied recursively.
 
 Full working: [`CASE-STUDY.md`](CASE-STUDY.md).
 
-## Install
+## Try it on a project
 
 ### Ask your coding agent
 
@@ -305,6 +322,12 @@ writes `## Validasi`.
 A glossary in a second language is a glossary nobody opens.
 
 ## FAQ
+
+**Why call it a harness?**
+A harness is the system around a model that supplies context, constraints and
+feedback. Fragment is deliberately only the continuity slice: it does not run
+the model; it keeps state, decisions and handoffs discoverable and enforced for
+whichever human or agent works next.
 
 **Isn't this just documentation?**
 Documentation is what you write after the work, if there is time. This is what
