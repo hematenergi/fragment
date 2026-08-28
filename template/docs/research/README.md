@@ -24,7 +24,7 @@ This is the part teams get wrong, so it is worth being explicit.
 
 When someone brings a finding, the instinct is to accept the numbers and argue about the interpretation. That gets it backwards: the interpretation is usually fine and **the numbers usually contain a selection effect nobody noticed.**
 
-The convention that catches it: pull the raw data yourself, recompute, and write your result as its own document. It costs an hour. In the repo this template came from, it caught a survivorship bias that made a losing strategy look like an 8× winner — and, a week later, caught the reviewer's *own* earlier number being wrong in the other direction.
+The convention that catches it: pull the raw data yourself, recompute, and write your result as its own document. It costs an hour. In the repo this template came from, it caught a survivorship bias that made a net loss look like an 8× win — the figure had been computed only over the cases that produced a measurable outcome, and a case only produced one when it succeeded. A week later the same rule caught the reviewer's *own* earlier number being wrong in the other direction.
 
 Both were found by the same rule, applied without exception, including to oneself.
 

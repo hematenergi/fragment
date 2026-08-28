@@ -1,0 +1,35 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        if: matrix.os == 'ubuntu-latest'
+        run: shellcheck -S warning install.sh template/scripts/docs-check.sh tests/run.sh || true
+      - name: tests
+        run: bash tests/run.sh
+
+  # The guard is bash, and half the point is that it survives a Windows
+  # teammate. Git Bash is the environment they actually have.
+  guard-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash tests/run.sh

@@ -28,6 +28,13 @@ All fragments are in [`plans/`](plans/). The board is [`STATE.md`](STATE.md).
 
 **If you only ever open one file: open `STATE.md`.**
 
+> **Two people appending on the same day.** Every session adds a line at the top
+> of the session log, so that is the hottest line in the repo. `.gitattributes`
+> sets `merge=union` on `STATE.md`, which keeps both sides of a concurrent
+> append instead of raising a conflict. If two people edit the *same queue row*
+> you get a visibly duplicated row — fix it by hand. A duplicate you can see is
+> a better trade than a conflict on every push.
+
 ## Asking for something to be built
 
 Do not ask in chat and hope someone remembers. Chat disappears; fragments do not.
@@ -63,7 +70,7 @@ The section people skip and shouldn't: **Carry-over** — what was unfinished ye
 | Decision | Who |
 |---|---|
 | **Stopping the system** | **anyone, any time, no permission needed** |
-| Starting it / raising limits | <fill in — should require more than one person> |
+| Starting it / raising limits | <FILL IN — should require more than one person> |
 | Order of work | anyone proposes, owner decides |
 | How to build something | whoever builds it |
 | Whether a claim passed or failed | the number written down beforehand, not a person |

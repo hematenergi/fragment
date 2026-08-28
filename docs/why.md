@@ -1,6 +1,6 @@
 # Why each rule exists
 
-Every rule in Fragment Architecture exists because something broke without it. This page is the receipts.
+Every rule in Fragment exists because something broke without it. This page is the receipts.
 
 All of these happened in one repo, over four days, with two people and two different AI agents working in turns.
 
@@ -48,9 +48,11 @@ But a session that produced results and left no trace **forces the next session 
 
 ## "Verification recomputes, it does not cite"
 
-**What happened.** A colleague brought research showing a trading strategy returning **8×**. The document was careful and its caveats were honest.
+**What happened.** A colleague brought an analysis reporting an **8×** result. The document was careful and its caveats were honest.
 
-Recomputing from the raw data found the return was measured only over the events that had a payout — and events only have a payout when they win. **95% of the cost was invisible.** The real result was a loss.
+Recomputing from the raw data found the figure had been computed over only the cases that produced a measurable outcome — and a case only produced one when it succeeded. **95% of the cost was invisible.** The real result was a loss.
+
+This is survivorship bias, and it is not a niche mistake. It is the same error as measuring conversion only over users who completed signup, or model accuracy only over the inputs the pipeline did not drop. It survives review because the *interpretation* is usually fine; the selection happened one layer below, where nobody looked.
 
 Then, a week later, applying the same rule to the reviewer's *own* earlier numbers found those were wrong too — in the opposite direction. A four-day window had been mistaken for a full history, and a conclusion had been stated far more confidently than the data supported.
 
@@ -65,3 +67,41 @@ Every rule above is enforced by `scripts/docs-check.sh`, and the script runs in 
 That matters more than the folder layout. In this repo, within days, the guard caught: an unindexed file, a rename that broke the index, a skipped session ritual, and — twice — the person who wrote the guard forgetting to register his own document.
 
 **A convention that depends on everyone remembering is a convention that decays.** The layout is the cheap part. The check is the part that makes it survive contact with a real week of work.
+
+---
+
+## "The guard does not change without a test"
+
+**What happened.** The guard shipped with no tests. Audited against its own
+README, it turned out an untouched install came out **green** — every
+placeholder intact, every owner unassigned, no fragments — while the README
+described the guard as "your to-do list". The session-ritual rule, the one
+presented as the load-bearing CI check, could be satisfied by adding a line
+reading `- x ·`. The staleness check read filesystem mtime, which every clone
+resets, so it had never once run in CI.
+
+**Why that survived.** The guard was written to catch document drift, and the
+guard itself is a document that drifted. Nobody had ever watched it fail on
+purpose, so nobody noticed the failures it had stopped producing.
+
+**The rule.** `tests/run.sh`. Nothing in the guard changes without a case that
+fails before and passes after. A check nobody has seen trip is decoration.
+
+---
+
+## "Extraction is a drift event"
+
+**What happened.** Publishing the harness meant copying the guard out of the
+repo it was born in and translating it. Diffing the two afterwards found the
+published copy had quietly demoted a missing front door from failure to
+warning, and had dropped a check outright — one that was still firing on five
+files in the origin repo at the time of the diff.
+
+**Why that failed.** A hand-port is a rewrite with no diff review. The origin
+repo kept earning credibility; the published copy inherited the credibility
+without the checks.
+
+**The rule.** One canonical guard. Downstream repos vendor it rather than fork
+it, and the diff between them is reviewed like any other change — because
+"two copies of the rules that nobody diffs" is the exact failure this project
+was built to prevent, and it turned out to be recursive.

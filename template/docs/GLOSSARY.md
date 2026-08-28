@@ -1,6 +1,6 @@
 ---
 id: glossary
-title: Glossary — jargon in plain language
+title: Glossary — technical terms in plain language
 status: active
 owner: unassigned
 last-verified: <YYYY-MM-DD>

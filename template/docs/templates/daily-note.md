@@ -49,7 +49,7 @@ Fill in if something is running. Copy numbers **from the system's own report; do
 
 ## Findings
 
-Anything that made you frown, even if it is not a problem yet. This is the section that most often saves money.
+Anything that made you frown, even if it is not a problem yet. This is the section that most often turns out to have been the early warning.
 
 -
 

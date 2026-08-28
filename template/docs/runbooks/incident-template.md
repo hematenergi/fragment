@@ -28,7 +28,7 @@ Times, what was seen, who did what. Local time, and say which zone.
 
 ## Impact
 
-- Money: _how much, or "none"_
+- Cost: _money, data, or user-facing time — or "none"_
 - Time: _how long the system was not working_
 - Data: _lost or not_
 

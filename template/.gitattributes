@@ -1,0 +1,13 @@
+# The guard is bash. On Windows, core.autocrlf would hand it CRLF line endings
+# and bash would fail with `$'\r': command not found`. This is the one-line fix.
+*.sh        text eol=lf
+*.md        text
+
+# STATE.md is append-at-the-top by every session, from every machine. Union
+# merge keeps BOTH sides of a concurrent append instead of raising a conflict.
+#
+# Caveat, and it is a real one: union merge also keeps both sides when two
+# people edit the SAME queue row. You get a visibly duplicated row, not a
+# silently wrong one — fix it by hand and move on. That trade is deliberate:
+# a duplicate line you can see beats a merge conflict on every single push.
+docs/STATE.md merge=union

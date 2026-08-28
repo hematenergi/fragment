@@ -8,7 +8,9 @@ last-verified: <YYYY-MM-DD>
 
 # Document index
 
-**Every file under `docs/` must be listed on this page.** Anything unlisted is treated as junk — `scripts/docs-check.sh` will find it.
+**Every file under `docs/` must be listed on this page.** Anything unlisted is treated as junk — `scripts/docs-check.sh` will find it. Registration means a markdown link whose target is the file's path relative to `docs/` — exactly like the rows below.
+
+The one exception is `docs/_attic/`, which the guard ignores entirely. Put a document there when it is dead but you are not ready to delete it — inherited files, superseded drafts, anything you want out of the index without losing the trail. Nothing in `_attic/` is checked, indexed, or trusted.
 
 > Rules for this repo are guarded by machine, not goodwill. `scripts/docs-check.sh` runs in CI on every push and pull request, whoever pushes and whatever tool they used. Local hooks only apply to the tool that installed them; CI cannot be bypassed by switching tools.
 
@@ -19,7 +21,7 @@ New here? Start at [`../START-HERE.md`](../START-HERE.md).
 When two documents disagree, the higher one wins. If the higher one is wrong, **fix the higher one**.
 
 1. Running code and its records
-2. `<agreement / charter, if any>`
+2. `<AGREEMENT or charter, if any>`
 3. [`AGENT-PROTOCOL.md`](AGENT-PROTOCOL.md)
 4. [`decisions/`](decisions/) → [`architecture/`](architecture/) → [`plans/`](plans/) → everything else
 

@@ -12,6 +12,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   docs-check:
     runs-on: ubuntu-latest
@@ -20,16 +23,36 @@ jobs:
         with:
           fetch-depth: 0
 
+      # github.event.before is the all-zero SHA on the first push to a branch,
+      # and a force-push can leave it pointing at a commit that no longer
+      # exists. Resolve to something real, or to nothing at all.
       - name: Resolve comparison commit
         id: base
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "ref=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+            ref="${{ github.event.pull_request.base.sha }}"
           else
-            echo "ref=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+            ref="${{ github.event.before }}"
           fi
+          if ! git rev-parse --verify -q "${ref}^{commit}" >/dev/null 2>&1; then
+            ref="$(git rev-parse --verify -q HEAD~1 || true)"
+          fi
+          echo "ref=${ref}" >> "$GITHUB_OUTPUT"
 
       - name: docs-check
         env:
           BASE_REF: ${{ steps.base.outputs.ref }}
         run: bash scripts/docs-check.sh
+
+  # The guard carries a tripwire for a handful of high-confidence secret shapes.
+  # This is the real scanner. Keep both: the tripwire fails fast on a laptop,
+  # this one knows about the other four hundred formats.
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

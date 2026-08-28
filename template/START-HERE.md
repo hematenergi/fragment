@@ -4,7 +4,7 @@
 
 ## What this is
 
-<TWO OR THREE SENTENCES, in plain language. No jargon. If a new teammate cannot repeat it back after reading once, rewrite it.>
+<TWO OR THREE SENTENCES, in plain language. No technical terms a newcomer would have to look up. If a new teammate cannot repeat it back after reading once, rewrite it.>
 
 ## Three things that matter most for you
 
