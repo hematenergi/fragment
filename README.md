@@ -5,6 +5,7 @@
 <h1 align="center">Fragment</h1>
 
 <p align="center">
+  <strong>Vibe coding made everyone a builder.<br>Fragment helps them remain the owner.</strong><br>
   <em>The session ends. The context doesn't.</em>
 </p>
 
@@ -38,6 +39,10 @@ neither of you will read the other's transcript — nobody reads transcripts.
 **Fragment makes the last five minutes of a session produce a file instead of a
 memory, and makes CI go red when it doesn't.** That file is the only thing both
 of you can see.
+
+For a non-technical builder, that continuity is ownership: what was decided,
+why it was decided, who owns the next call, and what the agent must not quietly
+decide again.
 
 Fragment preserves context and decisions; tests, code review, and security
 tooling still decide whether the code is correct and safe.
@@ -128,6 +133,19 @@ project is nominally about, applied recursively.
 Full working: [`CASE-STUDY.md`](CASE-STUDY.md).
 
 ## Install
+
+### Ask your coding agent
+
+Paste this into the agent already working on your project:
+
+```text
+Install Fragment from https://github.com/hematenergi/fragment into this repository.
+Do not overwrite existing files. Fill its project state from decisions visible
+in the repository and this conversation, then run bash scripts/docs-check.sh.
+Do not invent missing decisions; record them as blockers for me.
+```
+
+### Or install it yourself
 
 ```bash
 git clone https://github.com/hematenergi/fragment
