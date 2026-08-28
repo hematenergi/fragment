@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/fragment-logo.jpg" alt="Fragment logo" width="180">
+  <img src="assets/fragment-logo-square.jpg" alt="Fragment logo" width="180">
 </p>
 
 <h1 align="center">Fragment</h1>
