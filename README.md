@@ -44,6 +44,11 @@ For a non-technical builder, that continuity is ownership: what was decided,
 why it was decided, who owns the next call, and what the agent must not quietly
 decide again.
 
+For the next agent, it is a map through the project: current state, active work,
+relevant decisions and lessons, then the exact code worth reading. **Code tells
+the agent what exists. Fragment tells it why, what matters, and what happens
+next.**
+
 Fragment preserves context and decisions; tests, code review, and security
 tooling still decide whether the code is correct and safe.
 
@@ -83,7 +88,15 @@ anyone feels like writing it or not, because the build fails until it does.
 
 ## How it works
 
-Three files hold it up, and one script keeps them honest:
+An agent does not start by reading everything. It follows the story toward the
+code that matters:
+
+```text
+CLAUDE.md / AGENTS.md → protocol → state → active fragment
+                      → linked decisions and lessons → relevant code
+```
+
+Three files hold that path up, and one script keeps them honest:
 
 ```text
 docs/AGENT-PROTOCOL.md   the rules. one file. every agent and human reads this one
