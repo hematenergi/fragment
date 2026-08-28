@@ -268,6 +268,18 @@ echo; echo "published example"
 # ---------------------------------------------------------------------------
 expect_green "$ROOT/examples/feedback-triage" "the filled-in example is green"
 
+# The example vendors the guard rather than forking it. That is the rule this
+# project preaches, and it broke here once already during extraction.
+if cmp -s "$ROOT/examples/feedback-triage/scripts/docs-check.sh" "$ROOT/template/scripts/docs-check.sh"; then
+  ok "  ... and its guard is a verbatim copy of the canonical one"
+else
+  bad "  ... example guard has drifted from template/scripts/docs-check.sh"
+fi
+
+d="$TMP/exlocal"; rm -rf "$d"; cp -R "$ROOT/examples/feedback-triage" "$d"
+perl -pi -e "s/^Tested by:.*\$/(removed)/" "$d/docs/runbooks/stop-ingestion.md"
+expect_fail "$d" "  ... and its local rules actually bite" "no 'Tested by:' line"
+
 echo
 if [ "$failed" -gt 0 ]; then printf 'FAILED — %s passed, %s failed\n' "$pass" "$failed"; exit 1; fi
 printf 'GREEN — %s tests passed\n' "$pass"

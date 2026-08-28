@@ -14,7 +14,7 @@ standing between that claim and hypocrisy.
 bash tests/run.sh
 ```
 
-41 cases, no dependencies beyond `bash`, `git` and `perl`.
+43 cases, no dependencies beyond `bash`, `git` and `perl`.
 
 ## Rules for the guard itself
 

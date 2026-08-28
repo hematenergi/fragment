@@ -27,6 +27,15 @@ that refer to it are historical records from the example project.
 - [`plans/01-ingest-and-dedupe.md`](plans/01-ingest-and-dedupe.md) — completed ingest work
 - [`plans/02-auto-triage-rules.md`](plans/02-auto-triage-rules.md) — active routing work
 
+## The guard
+
+`scripts/docs-check.sh` is a **verbatim copy** of the shared guard — vendored,
+never edited. Everything specific to this project lives beside it in
+`scripts/docs-check.local.sh`, which the guard sources if present: no customer
+email addresses in documents, every runbook carrying a `Tested by:` line, no
+internal hostnames. That split is what lets us pull a newer shared guard without
+losing our own rules.
+
 ## Decisions, lessons, and runbooks
 
 - [`decisions/0001-mark-duplicates-never-delete.md`](decisions/0001-mark-duplicates-never-delete.md)

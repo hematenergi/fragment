@@ -26,3 +26,7 @@ npm run ingestion:pause
 4. Do not resume until the owner named in `STATE.md` confirms the raw counts.
 
 Never delete queued or raw items while investigating.
+
+Tested by: sam (support lead), 2026-08-22, from a laptop, without asking anyone.
+That is the test that matters — a runbook only its author can follow is not a
+runbook.

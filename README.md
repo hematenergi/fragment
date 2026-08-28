@@ -195,22 +195,31 @@ $ bash scripts/docs-check.sh
 ✗ docs/STATE.md — owner: unassigned. A load-bearing document needs a named owner
 ✗ docs/plans/ has no fragment yet — the install is not finished
 
-FAILED — 10 problem(s), 0 warning(s)
+FAILED — 11 problem(s), 0 warning(s)
 ```
 
 Work down the list until it is green. There is no other setup.
 
-## See a filled-in example
-
-[`examples/feedback-triage/`](examples/feedback-triage/) is a complete documentation
-snapshot of a fictional customer-feedback routing project: a populated board,
-finished fragment, active fragment, decision, lesson, runbook, and a non-engineer
-starting point. The application source is deliberately omitted; the complete
-artifact is the workflow and its documentation. Start with its
-[`START-HERE.md`](examples/feedback-triage/START-HERE.md).
-
 *Claude Code users: `skill/SKILL.md` does the adoption for you. Copy it to
 `.claude/skills/fragment/SKILL.md` and ask for it by name.*
+
+## See a filled-in example
+
+Not sure what green is supposed to look like?
+[`examples/feedback-triage/`](examples/feedback-triage/) is a complete workflow
+snapshot for a fictional customer-feedback routing project: real invariants, a
+board mid-phase, one fragment `done` and one `in-progress`, a decision, a lesson
+that cost nine days, a runbook with a concrete operator test record, and its own
+`scripts/docs-check.local.sh`.
+
+The application source is deliberately omitted — the artifact here is the
+workflow and its documentation. Start at its
+[`START-HERE.md`](examples/feedback-triage/START-HERE.md), the way a new
+teammate would.
+
+It is checked by this project's CI on every push, and a test fails if its
+vendored copy of the guard ever drifts from the canonical one. It cannot rot
+without turning the build red.
 
 ## What to install, in tiers
 
@@ -366,7 +375,7 @@ it.
 bash tests/run.sh
 ```
 
-41 cases across Linux, macOS and Windows/Git Bash. The guard is the load-bearing
+43 cases across Linux, macOS and Windows/Git Bash. The guard is the load-bearing
 part of this project and it does not change without a test —
 see [`CONTRIBUTING.md`](CONTRIBUTING.md). It shipped without one once, and an
 untouched install came out green while the README called it a checklist.

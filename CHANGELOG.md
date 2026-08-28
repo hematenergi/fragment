@@ -52,7 +52,7 @@ version that earned the credibility:
 
 ### Added
 
-- `tests/run.sh` — 41 cases. The guard had none.
+- `tests/run.sh` — 43 cases. The guard had none.
 - `status: done` now means done: unticked checkboxes and a fragment that records
   no commands both fail. Language-independent by construction.
 - Fragment `status:` is cross-checked against its row on the board. Two places
@@ -72,5 +72,8 @@ version that earned the credibility:
   half-built scanner that people trust is worse than none.
 - `.gitattributes` — `eol=lf` for the shell script, and `merge=union` on
   `STATE.md` so two people appending on the same day do not conflict.
-- `CASE-STUDY.md`, `CONTRIBUTING.md`, and CI for this repo on Linux, macOS and
-  Windows/Git Bash.
+- `examples/feedback-triage/` — a complete filled-in repo, green, checked by CI,
+  with a test that fails if its vendored copy of the guard ever drifts from the
+  canonical one.
+- `CASE-STUDY.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue
+  and PR templates, and CI for this repo on Linux, macOS and Windows/Git Bash.
