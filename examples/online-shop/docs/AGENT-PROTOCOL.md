@@ -2,7 +2,7 @@
 id: agent-protocol
 title: Agent Protocol — the working contract
 status: active
-owner: priya
+owner: rafi
 last-verified: 2026-08-28
 ---
 
@@ -15,17 +15,17 @@ file's contents into them; point instead.
 
 ## Invariants
 
-1. **No customer email address, name, or message body ever enters this
-   repository.** Not in a test fixture, not in a bug report, not in a comment.
-   Reference an item by its id.
-2. **Nothing is deleted from the raw ingest log.** De-duplication marks; it never
-   removes. We learned this the expensive way — see `lessons/`.
-3. **A model never decides routing.** Routing is rules a human can read and a
-   support lead can overrule. See `decisions/0001`.
-4. **Every filter logs what it rejected, and why.** A filter that drops silently
-   is indistinguishable from a filter that is broken.
-5. **The dashboard is the only trusted count.** Numbers computed by hand across
-   three channels are not evidence.
+1. **No customer's name, phone number or address ever enters this repository.**
+   Not in a screenshot, not in a bug report, not in a test fixture. Refer to an
+   order by its number.
+2. **Test keys and live keys never sit in the same file.** We have already sent
+   real money to a real card while testing — see `lessons/`.
+3. **A price is read from one place only.** If you find a second place holding a
+   price, that is the bug, whatever the symptom looked like.
+4. **Anyone can take the shop offline, at any time, without asking.** Bringing it
+   back needs both of us.
+5. **Numbers used for decisions come from the orders dashboard**, never from
+   counting by hand.
 
 Breaking one of these means: revert first, discuss after.
 
@@ -38,13 +38,15 @@ produced it.
 ### Open
 1. Read **`STATE.md`** — it says which fragment is active.
 2. Read that fragment in `plans/NN-*.md` **in full**, including its `Session log`.
-3. Read whatever its **"Read first"** section points at.
+3. **Before asking any question, search `decisions/`.** If it was settled, it is
+   in there, and asking again wastes the session it is meant to save.
 
 ### Work
 - **One fragment at a time.** Found other work? Write a new fragment in the
   queue; do not do it now.
-- Small diffs a human can review.
-- **Never claim something is done without running the fragment's validation
+- Small changes a person can review. No tidying that nobody asked for: if you
+  want to restructure something, say so first and wait.
+- **Never say something is done without running the fragment's validation
   commands** and pasting the result. `status: done` is machine-checked: every
   checkbox ticked, and the commands recorded in the file.
 
@@ -54,13 +56,14 @@ produced it.
 3. Update `STATE.md`. Its status for the fragment must match the fragment's own
    `status:`. The session log line is a handoff, not a tick:
    `date · agent · fragment · what changed · what is next`.
-4. Fixed a non-obvious, recurrence-prone bug? Write one file in `lessons/`
-   (**Symptom → Root cause → Rule**) and list it in `README.md`.
-5. `bash scripts/docs-check.sh` must be green.
+4. Settled something in conversation? Write it in `decisions/` before you close.
+5. Fixed a non-obvious bug that could come back? One file in `lessons/`
+   (**Symptom → Root cause → Rule**), listed in `README.md`.
+6. `bash scripts/docs-check.sh` must be green.
 
 ## Source-of-truth hierarchy
 
-1. The running service and its dashboard — reality beats documents
+1. The running shop and its orders dashboard — reality beats documents
 2. This document — invariants and ritual
 3. `decisions/` → `plans/` → everything else
 
@@ -68,14 +71,14 @@ produced it.
 
 | If you want to… | Read |
 |---|---|
-| know where the work stands | `STATE.md` |
+| know where things stand | `STATE.md` |
 | pick up or continue work | `plans/README.md`, then the fragment |
-| see every document | `README.md` |
+| see every document | `README.md` (the index) |
 | know why something is the way it is | `decisions/` |
-| operate the service | `runbooks/` |
-| know the team rhythm | `HOW-WE-WORK.md` |
-| look up a term | `GLOSSARY.md` |
-| onboard from zero | `../START-HERE.md` |
+| take the shop offline | `runbooks/` |
+| know how the two of us work | `HOW-WE-WORK.md` |
+| look up a word | `GLOSSARY.md` |
+| start from zero | `../START-HERE.md` |
 
 ## Writing rules
 
@@ -83,14 +86,15 @@ produced it.
   `status`, `owner`, `last-verified`. Values, not just keys.
 - **One file, one topic.** New topic = new file + one line in the index.
 - **Point at code with `file.ext:123`**, never a vague description.
-- Superseded documents get `status: superseded` and a pointer. Do not delete them.
+- **Write so Dina can read it.** Anything about money, or about stopping the
+  shop, has to be readable by someone who does not read code.
 
 ## Commands
 
 ```bash
 bash scripts/docs-check.sh
 npm test
-npm run triage:dry -- --since 24h
+npm run dev
 ```
 
 Rules that are true only for this repo go in `scripts/docs-check.local.sh`,

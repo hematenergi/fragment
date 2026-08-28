@@ -1,7 +1,8 @@
-# Feedback Triage — front door for Codex and other agents
+# Kedai — front door for Codex and other agents
 
-Ingests customer feedback from three channels, de-duplicates it, and routes each
-item to the team that owns it.
+A small online shop. People browse a short catalogue, add things to a cart, and
+pay. Two of us run it: Dina owns the shop and does not read code, Rafi does the
+technical work with an agent.
 
 ## First step, before anything else
 
@@ -19,5 +20,6 @@ This file deliberately does not copy the protocol. To change a rule, change
 ## Handoff convention
 
 - Start a handoff with an identity header: which repo, which model, which fragment.
-- If you are unsure whether a decision has already been made, search
-  `docs/decisions/` before deciding it again.
+- **If you are about to ask a question, search `docs/decisions/` first.** Most of
+  what an agent asks at the start of a session was already settled weeks ago, and
+  asking again is the failure this repo exists to prevent.

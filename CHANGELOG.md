@@ -72,7 +72,7 @@ version that earned the credibility:
   half-built scanner that people trust is worse than none.
 - `.gitattributes` — `eol=lf` for the shell script, and `merge=union` on
   `STATE.md` so two people appending on the same day do not conflict.
-- `examples/feedback-triage/` — a complete filled-in repo, green, checked by CI,
+- `examples/online-shop/` — a complete filled-in repo, green, checked by CI,
   with a test that fails if its vendored copy of the guard ever drifts from the
   canonical one.
 - `CASE-STUDY.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue

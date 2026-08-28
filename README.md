@@ -69,42 +69,50 @@ tooling still decide whether the code is correct and safe.
 
 ## Before / after
 
-You finish a session. Good work happened. Here is what the next person — or the
-next agent, or you in three weeks — gets to start from.
+It is Thursday. You open a fresh session with your agent. Here is what you have
+to type before any work can begin.
 
-Without:
+**Without Fragment**
+
+> Ok so — it's a small online shop. Sign-up is by phone number, not email, we
+> settled that on Monday because most of my customers don't have email. The cart
+> is finished. Don't touch the price code, we already fixed a bug in there twice.
+> We're in the middle of checkout and it's stuck because I still haven't decided
+> what a customer should see when a payment fails. Also please don't reorganise
+> anything I didn't ask you to.
+
+You type some version of that at the start of every session. You forget a piece
+of it every time — and the piece you forget is the one that breaks.
+
+**With Fragment**
+
+> Read `docs/STATE.md`.
+
+That file already says all of it, and it is current for one boring reason: the
+build goes red when a session ends without updating it.
 
 ```console
-$ git log --oneline -3
-a41f0c2  fix sign-up again
-9d7e1b8  wip
-2c30ff5  try the other approach
-```
-
-With:
-
-```console
-$ head -20 docs/STATE.md
+$ head -18 docs/STATE.md
 ## Active fragment
-04 — Checkout · BLOCKED
+02 — Checkout · in-progress
 
 ## Blocked / waiting on a human
-| What                                  | Waiting on | Since      |
-| What happens when a payment fails     | you        | 2026-08-26 |
+| What                                          | Waiting on | Since      |
+| What a customer sees when a payment fails     | Dina       | 2026-08-27 |
 
-## Decisions
-- Sign-up is by phone number.
-  Rejected: email, because most of our users don't have one.
-  Asked and answered on Monday. Do not ask again.
+## Decisions already made — do not ask again
+- Sign-up is by phone number, not email. Settled Monday 2026-08-24, because
+  most of our customers do not have an email address.
 
 ## Session log
-- 2026-08-26 · codex · 04 · checkout takes a phone number and reaches the
-  payment step · next: you say what a failed payment should show, then this
-  finishes
+- 2026-08-27 · codex · 02 · checkout reaches the payment step; the session
+  opened by asking whether sign-up should use email, which Monday had already
+  settled · next: Dina decides what a failed payment shows
 ```
 
-The second one is not documentation. It is what the work leaves behind whether
-anyone feels like writing it or not, because the build fails until it does.
+Note the last line. The agent asked anyway — and the fix was not to scold the
+agent, it was to move that decision somewhere a fresh session reads before it
+speaks. That is the entire job.
 
 ## The continuity harness
 
@@ -226,15 +234,19 @@ Work down the list until it is green. There is no other setup.
 ## See a filled-in example
 
 Not sure what green is supposed to look like?
-[`examples/feedback-triage/`](examples/feedback-triage/) is a complete workflow
-snapshot for a fictional customer-feedback routing project: real invariants, a
-board mid-phase, one fragment `done` and one `in-progress`, a decision, a lesson
-that cost nine days, a runbook with a concrete operator test record, and its own
-`scripts/docs-check.local.sh`.
+[`examples/online-shop/`](examples/online-shop/) is a complete workflow snapshot
+for a small fictional shop built by two people — one who owns it and does not
+read code, one who does the technical work with an agent.
+
+It has real invariants written from things that already hurt, a board mid-phase
+with a human blocking it, one fragment `done` and one `in-progress`, a decision
+that agents re-opened twice, two lessons that cost real money, a runbook a
+non-engineer has actually followed, and its own `scripts/docs-check.local.sh`
+enforcing that no customer phone number ever lands in the repo.
 
 The application source is deliberately omitted — the artifact here is the
 workflow and its documentation. Start at its
-[`START-HERE.md`](examples/feedback-triage/START-HERE.md), the way a new
+[`START-HERE.md`](examples/online-shop/START-HERE.md), the way a new
 teammate would.
 
 It is checked by this project's CI on every push, and a test fails if its

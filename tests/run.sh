@@ -266,19 +266,27 @@ expect_green "$c" "  ... and survives a fresh clone (i.e. it works in CI)" "unch
 # ---------------------------------------------------------------------------
 echo; echo "published example"
 # ---------------------------------------------------------------------------
-expect_green "$ROOT/examples/feedback-triage" "the filled-in example is green"
+expect_green "$ROOT/examples/online-shop" "the filled-in example is green"
 
 # The example vendors the guard rather than forking it. That is the rule this
 # project preaches, and it broke here once already during extraction.
-if cmp -s "$ROOT/examples/feedback-triage/scripts/docs-check.sh" "$ROOT/template/scripts/docs-check.sh"; then
+if cmp -s "$ROOT/examples/online-shop/scripts/docs-check.sh" "$ROOT/template/scripts/docs-check.sh"; then
   ok "  ... and its guard is a verbatim copy of the canonical one"
 else
   bad "  ... example guard has drifted from template/scripts/docs-check.sh"
 fi
 
-d="$TMP/exlocal"; rm -rf "$d"; cp -R "$ROOT/examples/feedback-triage" "$d"
-perl -pi -e "s/^Tested by:.*\$/(removed)/" "$d/docs/runbooks/stop-ingestion.md"
+d="$TMP/exlocal"; rm -rf "$d"; cp -R "$ROOT/examples/online-shop" "$d"
+perl -pi -e "s/^Tested by:.*\$/(removed)/" "$d/docs/runbooks/take-the-shop-offline.md"
 expect_fail "$d" "  ... and its local rules actually bite" "no 'Tested by:' line"
+
+d="$TMP/exphone"; rm -rf "$d"; cp -R "$ROOT/examples/online-shop" "$d"
+printf '\n- she called from +6281234567890\n' >> "$d/docs/STATE.md"
+expect_fail "$d" "  ... including the one that keeps customer details out" "shaped like a phone number"
+
+d="$TMP/exdate"; rm -rf "$d"; cp -R "$ROOT/examples/online-shop" "$d"
+printf '\n- settled on 2026-08-24, revisited 2026-08-26\n' >> "$d/docs/STATE.md"
+expect_green "$d" "  ... and a date is not mistaken for one"
 
 echo
 if [ "$failed" -gt 0 ]; then printf 'FAILED — %s passed, %s failed\n' "$pass" "$failed"; exit 1; fi

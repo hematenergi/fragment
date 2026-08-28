@@ -1,7 +1,8 @@
-# Feedback Triage — front door for Claude Code
+# Kedai — front door for Claude Code
 
-Ingests customer feedback from three channels, de-duplicates it, and routes each
-item to the team that owns it.
+A small online shop. People browse a short catalogue, add things to a cart, and
+pay. Two of us run it: Dina owns the shop and does not read code, Rafi does the
+technical work with an agent.
 
 **The rules for working here live in one file, not this one:**
 
