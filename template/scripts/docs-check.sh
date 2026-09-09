@@ -7,9 +7,44 @@
 #   Local:  bash scripts/docs-check.sh
 #   CI:     BASE_REF=<sha> bash scripts/docs-check.sh    (adds the session-ritual check)
 #
-# Exit 0 = green. Exit 1 = at least one failure. Warnings never fail the build.
+#   --version            print the Fragment version this copy came from
+#   --max-warnings N     fail if more than N warnings survive
+#   DOCS_ROOT=<dir>      documents live somewhere other than docs/
+#
+# Exit 0 = green. Exit 1 = at least one failure. Warnings never fail the build
+# unless --max-warnings says they do.
 set -uo pipefail
+
+# Stamped so an installed copy can say where it came from. Without this a repo
+# that adopted Fragment has no way to answer "which version is this?", and
+# neither does anyone helping them.
+FRAGMENT_VERSION="0.1.0"
+
+for arg in "$@"; do
+  case "$arg" in
+    --version) printf 'fragment %s\n' "$FRAGMENT_VERSION"; exit 0 ;;
+  esac
+done
+
+MAX_WARNINGS=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --max-warnings) MAX_WARNINGS="${2:-}"; shift 2 ;;
+    --max-warnings=*) MAX_WARNINGS="${1#*=}"; shift ;;
+    *) shift ;;
+  esac
+done
+case "$MAX_WARNINGS" in
+  ''|[0-9]*) ;;
+  *) printf '--max-warnings expects a number, got: %s\n' "$MAX_WARNINGS" >&2; exit 2 ;;
+esac
+
 cd "$(dirname "$0")/.." || exit 1
+
+# Where documents live. Hardcoding `docs/` kept this guard out of every repo
+# that had settled on another name, and out of monorepos entirely.
+DOCS="${DOCS_ROOT:-docs}"
+DOCS="${DOCS%/}"
 
 if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
   RED=$'\033[31m'; YEL=$'\033[33m'; GRN=$'\033[32m'; DIM=$'\033[2m'; OFF=$'\033[0m'
@@ -21,8 +56,8 @@ err()   { printf '%s✗%s %s\n' "$RED" "$OFF" "$1"; fail=$((fail+1)); }
 warnf() { printf '%s!%s %s\n' "$YEL" "$OFF" "$1"; warn=$((warn+1)); }
 note()  { printf '%s·%s %s\n' "$DIM" "$OFF" "$1"; }
 
-INDEX="docs/README.md"
-[ -f "$INDEX" ] || { err "docs/README.md (the index) is missing"; exit 1; }
+INDEX="$DOCS/README.md"
+[ -f "$INDEX" ] || { err "$DOCS/README.md (the index) is missing"; exit 1; }
 
 HAVE_GIT=0
 unstamped=""
@@ -33,6 +68,23 @@ to_epoch() {
   date -j -f '%Y-%m-%d' "$1" '+%s' 2>/dev/null || date -d "$1" '+%s' 2>/dev/null || echo ''
 }
 NOW=$(date '+%s')
+
+# What counts as a fragment, defined once. Section 3 finds the same set with
+# `find`; keeping the rule in one predicate is what stops the two from drifting
+# apart — a fragment the vocabulary check treats as a document, or the reverse,
+# is exactly how a file ends up impossible to satisfy.
+# Fragments may sit in subdirectories (docs/plans/epic/03-b.md), so the test is
+# on the prefix and the basename, not on a single glob.
+is_fragment() {
+  case "$1" in
+    "$DOCS"/plans/*) ;;
+    *) return 1 ;;
+  esac
+  case "${1##*/}" in
+    [0-9]*.md) return 0 ;;
+    *) return 1 ;;
+  esac
+}
 
 # ---------------------------------------------------------------------------
 # 1. every doc: real frontmatter, real values, known status, listed in the index
@@ -60,17 +112,40 @@ while IFS= read -r f; do
     esac
   fi
 
+  # Two vocabularies, deliberately, because two kinds of document are being
+  # described. A reference document is either current or it is not; a fragment
+  # moves through a lifecycle and is mirrored on the board.
+  #
+  #   documents  active | draft | superseded
+  #   fragments  todo | in-progress | done | parked
+  #
+  # Enforcing the split HERE is what makes the board check downstream
+  # meaningful. Accepting `active` on a fragment used to be legal at this line
+  # while being impossible to mirror on the board — so the fragment was refused
+  # further down with "one of them is lying", blaming two files that were both
+  # telling the truth. The only escape was to guess a different status.
   st=$(grep -m1 '^status:' "$f" | sed 's/^status:[[:space:]]*//; s/[[:space:]]*$//')
-  case "$st" in
-    active|draft|superseded|todo|in-progress|done|parked) ;;
-    *) err "$rel — unknown status: '$st'" ;;
-  esac
+  if is_fragment "$rel"; then
+    case "$st" in
+      todo|in-progress|done|parked) ;;
+      active|draft|superseded)
+        err "$rel — status: $st is a document status, not a fragment one. Fragments move todo → in-progress → done | parked; the one being worked on right now is 'in-progress'" ;;
+      *) err "$rel — unknown status: '$st'" ;;
+    esac
+  else
+    case "$st" in
+      active|draft|superseded) ;;
+      todo|in-progress|done|parked)
+        err "$rel — status: $st is a fragment status, but this file is not a fragment. Documents are active, draft or superseded" ;;
+      *) err "$rel — unknown status: '$st'" ;;
+    esac
+  fi
 
   # Registered in the index, as an actual link. Fixed-string, so dots are dots.
-  base="${rel#docs/}"
+  base="${rel#$DOCS/}"
   if [ "$rel" != "$INDEX" ]; then
     grep -qF -- "]($base)" "$INDEX" \
-      || err "$rel — not listed in docs/README.md (add a link: [\`$base\`]($base))"
+      || err "$rel — not listed in $DOCS/README.md (add a link: [\`$base\`]($base))"
   fi
 
   # last-verified vs reality: content newer than its last review.
@@ -84,7 +159,7 @@ while IFS= read -r f; do
         fi ;;
     esac
   fi
-done < <(find docs -name '*.md' -not -path 'docs/_attic/*' | sort)
+done < <(find "$DOCS" -name '*.md' -not -path "$DOCS/_attic/*" | sort)
 
 if [ -n "$unstamped" ]; then
   n=$(printf '%s' "$unstamped" | wc -w | tr -d ' ')
@@ -96,7 +171,7 @@ fi
 # ---------------------------------------------------------------------------
 # 2. setup completeness — an unfilled install is not a finished install
 # ---------------------------------------------------------------------------
-for f in CLAUDE.md AGENTS.md START-HERE.md docs/AGENT-PROTOCOL.md docs/STATE.md docs/README.md; do
+for f in CLAUDE.md AGENTS.md START-HERE.md $DOCS/AGENT-PROTOCOL.md $DOCS/STATE.md $DOCS/README.md; do
   [ -f "$f" ] || continue
   hits=$(awk 'NR==1&&/^---$/{fm=1;next} fm&&/^---$/{fm=0;next} !fm{print NR": "$0}' "$f" \
     | grep -E '<[A-Z][^>]*>' | head -2 || true)
@@ -105,7 +180,7 @@ for f in CLAUDE.md AGENTS.md START-HERE.md docs/AGENT-PROTOCOL.md docs/STATE.md 
     printf '%s\n' "$hits" | sed 's/^/    /'
   fi
 done
-for f in docs/AGENT-PROTOCOL.md docs/STATE.md docs/README.md; do
+for f in $DOCS/AGENT-PROTOCOL.md $DOCS/STATE.md $DOCS/README.md; do
   [ -f "$f" ] || continue
   grep -q '^owner:[[:space:]]*unassigned[[:space:]]*$' "$f" \
     && err "$f — owner: unassigned. A load-bearing document needs a named owner"
@@ -114,17 +189,20 @@ done
 # ---------------------------------------------------------------------------
 # 3. fragments
 # ---------------------------------------------------------------------------
-if [ -d docs/plans ]; then
-  frags=$(find docs/plans -name '[0-9]*.md' -not -name '00-template.md' | sort)
+if [ -d "$DOCS/plans" ]; then
+  # `is_fragment` decides membership; the template is the one fragment-shaped
+  # file that is not work, so it is the only exclusion.
+  frags=$(find "$DOCS/plans" -name '*.md' -not -name '00-template.md' \
+    | while IFS= read -r c; do is_fragment "${c#./}" && printf '%s\n' "$c"; done | sort)
 
-  [ -z "$frags" ] && err "docs/plans/ has no fragment yet — the install is not finished (see docs/plans/README.md)"
+  [ -z "$frags" ] && err "$DOCS/plans/ has no fragment yet — the install is not finished (see $DOCS/plans/README.md)"
 
   inprog=0
   while IFS= read -r f; do
     [ -z "$f" ] && continue
     grep -q '^status:[[:space:]]*in-progress' "$f" && inprog=$((inprog+1))
   done < <(printf '%s\n' "$frags")
-  [ "$inprog" -gt 1 ] && err "$inprog fragments in-progress — only one allowed (docs/plans/)"
+  [ "$inprog" -gt 1 ] && err "$inprog fragments in-progress — only one allowed ($DOCS/plans/)"
 
   while IFS= read -r f; do
     [ -z "$f" ] && continue
@@ -132,18 +210,18 @@ if [ -d docs/plans ]; then
     st=$(grep -m1 '^status:' "$f" | sed 's/^status:[[:space:]]*//; s/[[:space:]]*$//')
 
     # 3a. every fragment is on the board
-    rows=$(grep -F -- "$b" docs/STATE.md || true)
+    rows=$(grep -F -- "$b" $DOCS/STATE.md || true)
     if [ -z "$rows" ]; then
-      err "$f — missing from the queue in docs/STATE.md"
+      err "$f — missing from the queue in $DOCS/STATE.md"
     else
       # 3b. and the board agrees with the fragment about its status.
       #     A fragment can be named in prose too; only rows carrying a status
       #     token count as the queue row.
       statusrows=$(printf '%s\n' "$rows" | grep -E '`(todo|in-progress|done|parked)`' || true)
       if [ -z "$statusrows" ]; then
-        warnf "$f — no row in docs/STATE.md carries a \`status\` token for it"
+        warnf "$f — no row in $DOCS/STATE.md carries a \`status\` token for it"
       elif ! printf '%s\n' "$statusrows" | grep -qF -- "\`$st\`"; then
-        err "$f — status: $st, but its row in docs/STATE.md says otherwise. One of them is lying"
+        err "$f — status: $st, but its row in $DOCS/STATE.md says otherwise. One of them is lying"
       fi
     fi
 
@@ -166,22 +244,22 @@ for door in CLAUDE.md AGENTS.md; do
   if [ ! -f "$door" ]; then
     err "$door is missing — that agent has no entry point into this repo"; continue
   fi
-  grep -q 'AGENT-PROTOCOL.md' "$door" || err "$door — does not point at docs/AGENT-PROTOCOL.md"
+  grep -q 'AGENT-PROTOCOL.md' "$door" || err "$door — does not point at $DOCS/AGENT-PROTOCOL.md"
   lines=$(wc -l < "$door" | tr -d ' ')
   [ "$lines" -gt 40 ] && warnf "$door — $lines lines. Front doors stay thin; rules live in AGENT-PROTOCOL.md"
 done
-proto=$(wc -l < docs/AGENT-PROTOCOL.md 2>/dev/null | tr -d ' ')
-[ "${proto:-0}" -gt 150 ] && warnf "docs/AGENT-PROTOCOL.md — $proto lines (>150). Move content into its own document"
+proto=$(wc -l < $DOCS/AGENT-PROTOCOL.md 2>/dev/null | tr -d ' ')
+[ "${proto:-0}" -gt 150 ] && warnf "$DOCS/AGENT-PROTOCOL.md — $proto lines (>150). Move content into its own document"
 
 # ---------------------------------------------------------------------------
 # 5. the board should not go stale (git commit date; file mtime is meaningless
 #    in CI, where every clone is brand new)
 # ---------------------------------------------------------------------------
 if [ "$HAVE_GIT" = 1 ]; then
-  last=$(git log -1 --format=%ct -- docs/STATE.md 2>/dev/null || true)
+  last=$(git log -1 --format=%ct -- $DOCS/STATE.md 2>/dev/null || true)
   if [ -n "$last" ]; then
     age=$(( (NOW - last) / 86400 ))
-    [ "$age" -gt 7 ] && warnf "docs/STATE.md unchanged for $age days — does it still reflect reality?"
+    [ "$age" -gt 7 ] && warnf "$DOCS/STATE.md unchanged for $age days — does it still reflect reality?"
   fi
 fi
 
@@ -200,7 +278,7 @@ while IFS= read -r f; do
     [ -e "$d/$path" ] || err "${f#./} → dangling link: $target"
   done < <(awk '/^[[:space:]]*```/{fence=!fence;next} !fence' "$f" \
              | grep -oE '\]\([^) ]+\)' 2>/dev/null | sed 's/^](//; s/)$//')
-done < <(find docs -name '*.md' -not -path 'docs/_attic/*')
+done < <(find "$DOCS" -name '*.md' -not -path "$DOCS/_attic/*")
 
 # ---------------------------------------------------------------------------
 # 7. secrets. High-confidence patterns only.
@@ -208,10 +286,10 @@ done < <(find docs -name '*.md' -not -path 'docs/_attic/*')
 #    A private key and a hash are both 64 hex; the difference is context. Hashes
 #    are always named on the same line, private keys never are.
 # ---------------------------------------------------------------------------
-# Scan docs/ plus any markdown at the repo root. No eval: a security check is a
+# Scan $DOCS/ plus any markdown at the repo root. No eval: a security check is a
 # bad place to build a command out of a string.
 scan() {
-  grep -rnE "$1" docs 2>/dev/null
+  grep -rnE "$1" "$DOCS" 2>/dev/null
   for m in ./*.md; do
     [ -e "$m" ] || continue
     grep -nE "$1" "$m" 2>/dev/null | sed "s|^|${m#./}:|"
@@ -269,14 +347,14 @@ if [ -n "${BASE_REF:-}" ]; then
   if ! git rev-parse --verify -q "${BASE_REF}^{commit}" >/dev/null 2>&1; then
     note "session-ritual check SKIPPED — BASE_REF '${BASE_REF}' is not a commit in this repo"
   else
-    changed=$(git diff --name-only "$BASE_REF" HEAD -- docs/ | grep -v '^docs/_attic/' || true)
+    changed=$(git diff --name-only "$BASE_REF" HEAD -- $DOCS/ | grep -v "^$DOCS/_attic/" || true)
     if [ -n "$changed" ]; then
-      if ! printf '%s\n' "$changed" | grep -q '^docs/STATE.md$'; then
-        err "docs/ changed but docs/STATE.md did not. The Close ritual in docs/AGENT-PROTOCOL.md was skipped."
+      if ! printf '%s\n' "$changed" | grep -q "^$DOCS/STATE\.md$"; then
+        err "$DOCS/ changed but $DOCS/STATE.md did not. The Close ritual in $DOCS/AGENT-PROTOCOL.md was skipped."
       else
-        added=$(git diff "$BASE_REF" HEAD -- docs/STATE.md | grep '^+[^+]' | grep '·' || true)
+        added=$(git diff "$BASE_REF" HEAD -- $DOCS/STATE.md | grep '^+[^+]' | grep '·' || true)
         if [ -z "$added" ]; then
-          err "docs/STATE.md changed but gained no Session log line — this session left no trace."
+          err "$DOCS/STATE.md changed but gained no Session log line — this session left no trace."
         else
           best=0
           while IFS= read -r l; do
@@ -287,13 +365,13 @@ if [ -n "${BASE_REF:-}" ]; then
             [ "$seps" -ge 3 ] && [ "$len" -ge 40 ] && best=1
           done < <(printf '%s\n' "$added")
           if [ "$best" -eq 0 ]; then
-            err "docs/STATE.md's new Session log line is too thin to be a handoff."
+            err "$DOCS/STATE.md's new Session log line is too thin to be a handoff."
             printf '    expected: %s\n' 'date · agent · fragment · what changed · what is next'
             printf '%s\n' "$added" | head -2 | cut -c1-120 | sed 's/^/    got: /'
           fi
         fi
       fi
-      for f in $(printf '%s\n' "$changed" | grep '^docs/plans/.*[0-9].*\.md$' || true); do
+      for f in $(printf '%s\n' "$changed" | grep "^$DOCS/plans/.*[0-9].*\.md$" || true); do
         [ "$(basename "$f")" = "00-template.md" ] && continue
         git diff "$BASE_REF" HEAD -- "$f" | grep '^+[^+]' | grep -q '·' \
           || warnf "$f changed without a new Session log line."
@@ -308,5 +386,15 @@ echo
 if [ "$fail" -gt 0 ]; then
   printf '%sFAILED%s — %s problem(s), %s warning(s)\n' "$RED" "$OFF" "$fail" "$warn"; exit 1
 fi
+
+
+# A warning nobody is required to clear stops being read. Set a budget once the
+# backlog is down and the count becomes a ratchet instead of scenery.
+if [ -n "$MAX_WARNINGS" ] && [ "$warn" -gt "$MAX_WARNINGS" ]; then
+  printf '%sFAILED%s — %s warning(s), budget is %s\n' "$RED" "$OFF" "$warn" "$MAX_WARNINGS"
+  printf '%sClear some, or raise the budget deliberately.%s\n' "$DIM" "$OFF"
+  exit 1
+fi
+
 printf '%sGREEN%s — documents are consistent%s\n' "$GRN" "$OFF" "$([ "$warn" -gt 0 ] && echo " ($warn warning(s))")"
-printf '%sOne last thing: does docs/STATE.md reflect this session?%s\n' "$DIM" "$OFF"
+printf '%sOne last thing: does %s/STATE.md reflect this session?%s\n' "$DIM" "$DOCS" "$OFF"

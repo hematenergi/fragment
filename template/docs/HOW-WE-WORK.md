@@ -59,6 +59,18 @@ You do not need to write code to write a fragment. "Done when" is often **better
 
 `READY TEST` is only allowed when the check results are written out. **Nobody says "done" without evidence someone else can read.**
 
+These labels say how a handoff stands. They are **not** the `status:` field, which
+is a different axis and has two vocabularies — one per kind of document:
+
+| Kind | `status:` may be | Meaning |
+|---|---|---|
+| A fragment in [`plans/`](plans/) | `todo` → `in-progress` → `done` \| `parked` | where the work has got to |
+| Every other document | `active`, `draft`, `superseded` | whether it still describes reality |
+
+A fragment being worked on right now is `in-progress`, not `active` — `active`
+belongs to documents. The guard enforces the split, and mirrors the fragment's
+value on the board in [`STATE.md`](STATE.md).
+
 ## Daily note
 
 Template: [`templates/daily-note.md`](templates/daily-note.md). One per day.
@@ -81,7 +93,7 @@ Decisions already made are written in [`decisions/`](decisions/) so they are not
 
 ## The rules that keep this tidy
 
-- **One active fragment at a time.** Found other work? Write a fragment; do not do it now.
+- **One `in-progress` fragment at a time.** Found other work? Write a fragment; do not do it now.
 - **A session that ends without updating `STATE.md` is unfinished**, whatever it produced.
 - **Bugs outside the current scope: note them, do not fix them.**
 - **If something is ambiguous, stop and ask.** Do not guess.

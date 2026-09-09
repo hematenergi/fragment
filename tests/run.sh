@@ -192,6 +192,112 @@ d="$(fixture fr6)"; rm "$d/docs/plans/01-example.md"
 perl -ni -e 'print unless /01-example/' "$d/docs/README.md"
 expect_fail "$d" "a fragment on the board but missing from disk is caught" "dangling link"
 
+# The gap that let the status split ship broken: every fixture happened to use
+# `todo`, so the one combination that could not be satisfied — a document status
+# on a fragment — was never exercised. Walk the whole vocabulary instead of
+# trusting one representative value.
+for st in active draft superseded; do
+  d="$(fixture "fv-$st")"
+  perl -pi -e "s/^status: todo\$/status: $st/" "$d/docs/plans/01-example.md"
+  perl -pi -e "s/\`todo\`/\`$st\`/" "$d/docs/STATE.md"
+  expect_fail "$d" "a fragment marked '$st' is refused at the fragment, not blamed on the board" \
+    "is a document status, not a fragment one"
+done
+
+for st in todo in-progress done parked; do
+  d="$(fixture "dv-$st")"
+  perl -pi -e "s/^status: active\$/status: $st/" "$d/docs/GLOSSARY.md"
+  expect_fail "$d" "a document marked '$st' is told it is not a fragment" \
+    "is a fragment status, but this file is not a fragment"
+done
+
+# Every lifecycle status a fragment may legally carry must be able to reach
+# green. If one cannot, the vocabulary is lying about itself — which is exactly
+# what happened to `active`.
+for st in todo in-progress parked; do
+  d="$(fixture "reach-$st")"
+  perl -pi -e "s/^status: todo\$/status: $st/" "$d/docs/plans/01-example.md"
+  perl -pi -e "s/\`todo\`/\`$st\`/" "$d/docs/STATE.md"
+  expect_green "$d" "a fragment can reach green as '$st'"
+done
+
+# ---------------------------------------------------------------------------
+echo; echo "installer"
+# ---------------------------------------------------------------------------
+d="$TMP/dry"; mkdir -p "$d"; git -C "$d" init -q .
+out=$( bash "$ROOT/install.sh" --dry-run "$d" 2>&1 ); c=$?
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'Nothing was changed' \
+  && ok "--dry-run reports what it would write" || bad "--dry-run exited $c"
+# The whole point of a dry run is that it is inert. Assert the directory is
+# still empty rather than trusting the message.
+left=$(find "$d" -mindepth 1 -not -path "$d/.git*" | head -1)
+[ -z "$left" ] && ok "  ... and writes nothing at all" || bad "  ... but it created $left"
+
+bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
+out=$( bash "$ROOT/install.sh" "$d" 2>&1 )
+printf '%s\n' "$out" | grep -q 'already installed here' \
+  && ok "a second install recognises the existing one instead of looking like a failure" \
+  || bad "re-install did not detect the existing copy"
+
+# A copy from before versions existed must still be recognised as an install,
+# not mistaken for a fresh target.
+perl -ni -e 'print unless /^FRAGMENT_VERSION=/' "$d/scripts/docs-check.sh"
+out=$( bash "$ROOT/install.sh" "$d" 2>&1 )
+printf '%s\n' "$out" | grep -q 'too old to carry a version' \
+  && ok "  ... and an unversioned older copy is named as such" \
+  || bad "  ... unversioned copy was not recognised"
+
+# ---------------------------------------------------------------------------
+echo; echo "portability and reporting"
+# ---------------------------------------------------------------------------
+d="$(fixture ver)"
+v=$( cd "$d" && bash scripts/docs-check.sh --version 2>&1 ); vc=$?
+case "$v" in
+  "fragment "[0-9]*.[0-9]*.[0-9]*) [ "$vc" -eq 0 ] && ok "--version reports the version it was installed from" \
+      || bad "--version exited $vc" ;;
+  *) bad "--version printed: $v" ;;
+esac
+
+# An installed copy must be able to name its own version. Without this a repo
+# that adopted Fragment months ago cannot be told what it is running.
+grep -q "^FRAGMENT_VERSION=" "$d/scripts/docs-check.sh" \
+  && ok "the installed guard carries its version, not just the source repo" \
+  || bad "installed guard has no FRAGMENT_VERSION"
+
+# Documents do not always live in docs/. A repo that named the folder something
+# else, or a monorepo, could not use the guard at all before this.
+d="$(fixture root)"
+mv "$d/docs" "$d/documentation"
+out=$( cd "$d" && DOCS_ROOT=documentation bash scripts/docs-check.sh 2>&1 ); c=$?
+[ "$c" -eq 0 ] && ok "DOCS_ROOT relocates the whole guard" || { bad "DOCS_ROOT run exited $c"; printf '%s\n' "$out" | head -6 | sed 's/^/        /'; }
+printf '%s\n' "$out" | grep -q 'documentation/STATE.md' \
+  && ok "  ... and its messages name the real folder, not a hardcoded one" \
+  || bad "  ... messages still say docs/"
+
+# Excluding the attic must survive relocation — it is a quoting trap, and
+# getting it wrong silently starts scanning archived documents.
+mkdir -p "$d/documentation/_attic"
+printf 'no frontmatter here at all\n' > "$d/documentation/_attic/old.md"
+out=$( cd "$d" && DOCS_ROOT=documentation bash scripts/docs-check.sh 2>&1 ); c=$?
+[ "$c" -eq 0 ] && ok "  ... and _attic stays excluded under a relocated root" \
+  || { bad "  ... _attic leaked into the scan"; printf '%s\n' "$out" | head -4 | sed 's/^/        /'; }
+
+# A warning nobody must ever clear stops being read. The budget turns the count
+# into a ratchet.
+d="$(fixture budget)"
+perl -pi -e 's/^last-verified: .*$/last-verified: 2020-01-01/' "$d/docs/GLOSSARY.md"
+git -C "$d" add -A >/dev/null 2>&1; git -C "$d" commit -qm t >/dev/null 2>&1
+out=$( cd "$d" && bash scripts/docs-check.sh 2>&1 ); c=$?
+[ "$c" -eq 0 ] && ok "warnings alone still do not fail the build" || bad "a warning failed the build (exit $c)"
+out=$( cd "$d" && bash scripts/docs-check.sh --max-warnings 0 2>&1 ); c=$?
+[ "$c" -eq 1 ] && printf '%s\n' "$out" | grep -q 'budget is 0' \
+  && ok "--max-warnings turns a surviving warning into a failure" \
+  || { bad "--max-warnings did not bite (exit $c)"; printf '%s\n' "$out" | tail -3 | sed 's/^/        /'; }
+out=$( cd "$d" && bash scripts/docs-check.sh --max-warnings 99 2>&1 ); c=$?
+[ "$c" -eq 0 ] && ok "  ... and a budget with room to spare stays green" || bad "  ... generous budget failed (exit $c)"
+out=$( cd "$d" && bash scripts/docs-check.sh --max-warnings later 2>&1 ); c=$?
+[ "$c" -eq 2 ] && ok "  ... and a non-numeric budget is rejected, not ignored" || bad "  ... bad budget exited $c"
+
 # ---------------------------------------------------------------------------
 echo; echo "secrets"
 # ---------------------------------------------------------------------------
