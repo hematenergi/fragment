@@ -2,6 +2,43 @@
 
 ## Unreleased
 
+## 0.3.0 — 2026-09-09
+
+### Upgrading from 0.2.0 — every parked fragment needs a reason
+
+`status: parked` now requires a `reason:` in the frontmatter, and the new
+`status: superseded` requires a `superseded-by:`. Existing parked fragments will
+fail until you add one line each. That is the whole migration.
+
+### Added — somewhere to put a fragment the world overtook
+
+Most fragments do not end by being finished. They get overtaken by work that
+happened elsewhere, or they stop mattering. Until now the vocabulary had nowhere
+to say so: `done` demands ticked boxes and pasted commands, which work done
+outside the fragment cannot supply, and `parked` demanded nothing at all.
+
+- **`superseded` joins the fragment lifecycle**, and must name what replaced it
+  in `superseded-by:` — another fragment, a ticket, a commit. A superseded file
+  with no pointer is a dead end, which is the thing this repo exists to prevent.
+  It applies to documents too, where the same promise was already being made in
+  the glossary and never enforced.
+- **`parked` now costs a `reason:`.** It used to demand nothing, which made it
+  the cheapest way for anyone — an agent most of all — to turn a red board
+  green: park everything, explain nothing. The guard's own error message
+  suggested it ("or park the fragment and say why") while never checking that a
+  why was written.
+- **A `todo` untouched for 30 days now warns**, with `STALE_TODO_DAYS` to change
+  the threshold. A queue nobody revisits is not a queue; this is what surfaces
+  the fragments that were quietly overtaken, instead of leaving them to look
+  like work that is still coming.
+
+### Changed
+
+- The two status vocabularies are now written once and everything derives from
+  them, including the board's accepted tokens. Adding `superseded` to the
+  lifecycle without teaching the board about it would have recreated the 0.1.0
+  defect exactly; a test now asserts the board can mirror every fragment status.
+
 ## 0.2.0 — 2026-09-09
 
 ### Upgrading from 0.1.0 — this one can turn an existing repo red

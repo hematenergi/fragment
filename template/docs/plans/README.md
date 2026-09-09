@@ -15,11 +15,15 @@ If a fragment can only be continued by whoever wrote it, it is written wrong.
 ## Rules
 
 - Numbered, never reused. New fragment = next number, even if worked on first.
-- `status`: `todo` → `in-progress` → `done` | `parked`. **Only one** `in-progress` in the whole repo.
+- `status`: `todo` → `in-progress` → `done` | `parked` | `superseded`. **Only one**
+  `in-progress` in the whole repo.
+- `parked` needs a `reason:`; `superseded` needs a `superseded-by:` naming what
+  replaced it. A fragment closed without either is indistinguishable from one
+  quietly abandoned.
 - `depends-on` filled in honestly. Do not take a fragment whose dependencies are not `done`.
 - Checkboxes are ticked when work is **finished and validated**, not when the code is written.
 - `Session log` is append-only. Do not rewrite history.
-- Cancelled fragments are not deleted: `status: parked` plus the reason. Six months from now that is the most useful file in the folder.
+- Cancelled fragments are not deleted: `status: parked` plus the `reason:`. Six months from now that is the most useful file in the folder.
 
 ## Creating one
 

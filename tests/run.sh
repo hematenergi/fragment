@@ -196,7 +196,7 @@ expect_fail "$d" "a fragment on the board but missing from disk is caught" "dang
 # `todo`, so the one combination that could not be satisfied — a document status
 # on a fragment — was never exercised. Walk the whole vocabulary instead of
 # trusting one representative value.
-for st in active draft superseded; do
+for st in active draft; do
   d="$(fixture "fv-$st")"
   perl -pi -e "s/^status: todo\$/status: $st/" "$d/docs/plans/01-example.md"
   perl -pi -e "s/\`todo\`/\`$st\`/" "$d/docs/STATE.md"
@@ -214,12 +214,69 @@ done
 # Every lifecycle status a fragment may legally carry must be able to reach
 # green. If one cannot, the vocabulary is lying about itself — which is exactly
 # what happened to `active`.
-for st in todo in-progress parked; do
+for st in todo in-progress; do
   d="$(fixture "reach-$st")"
   perl -pi -e "s/^status: todo\$/status: $st/" "$d/docs/plans/01-example.md"
   perl -pi -e "s/\`todo\`/\`$st\`/" "$d/docs/STATE.md"
   expect_green "$d" "a fragment can reach green as '$st'"
 done
+
+# ---------------------------------------------------------------------------
+echo; echo "closing a fragment without finishing it"
+# ---------------------------------------------------------------------------
+# `parked` demanded nothing before, which made it the cheapest way for anyone —
+# an agent most of all — to turn a red board green: park everything, explain
+# nothing.
+d="$(fixture park-bare)"
+perl -pi -e 's/^status: todo$/status: parked/' "$d/docs/plans/01-example.md"
+perl -pi -e 's/`todo`/`parked`/' "$d/docs/STATE.md"
+expect_fail "$d" "parked without a reason is refused" "needs a 'reason:'"
+
+d="$(fixture park-reason)"
+perl -pi -e 's/^status: todo$/status: parked\nreason: "backend contract never arrived"/' "$d/docs/plans/01-example.md"
+perl -pi -e 's/`todo`/`parked`/' "$d/docs/STATE.md"
+expect_green "$d" "  ... and green once the reason is written"
+
+d="$(fixture sup-bare)"
+perl -pi -e 's/^status: todo$/status: superseded/' "$d/docs/plans/01-example.md"
+perl -pi -e 's/`todo`/`superseded`/' "$d/docs/STATE.md"
+expect_fail "$d" "superseded without a pointer is refused" "needs a 'superseded-by:'"
+
+d="$(fixture sup-by)"
+perl -pi -e 's/^status: todo$/status: superseded\nsuperseded-by: "shipped as task 41"/' "$d/docs/plans/01-example.md"
+perl -pi -e 's/`todo`/`superseded`/' "$d/docs/STATE.md"
+expect_green "$d" "  ... and green once it names what replaced it"
+
+# This is the assertion that proves the two vocabularies still come from one
+# list. Adding `superseded` to the fragment lifecycle without teaching the board
+# about it would recreate the 0.1.0 defect exactly.
+has 'no row in' && bad "  ... the board could not mirror 'superseded'" \
+  || ok "  ... and the board can mirror it, so the two lists have not drifted"
+
+# A superseded document is as much a dead end as a superseded fragment.
+d="$(fixture sup-doc)"
+perl -pi -e 's/^status: active$/status: superseded/' "$d/docs/GLOSSARY.md"
+expect_fail "$d" "a superseded document also has to say what replaced it" "needs a 'superseded-by:'"
+
+# ---------------------------------------------------------------------------
+echo; echo "a queue nobody revisits"
+# ---------------------------------------------------------------------------
+# The fixture commits everything as it builds, so the fragment must actually
+# change for the backdated commit to touch its path — `git log -- <file>` only
+# lists commits that modified it, and an empty commit would leave the fragment
+# dated today.
+d="$(fixture stale)"
+printf '\n<!-- aged -->\n' >> "$d/docs/plans/01-example.md"
+git -C "$d" add -A >/dev/null 2>&1
+GIT_COMMITTER_DATE="2024-01-01T00:00:00" GIT_AUTHOR_DATE="2024-01-01T00:00:00" \
+  git -C "$d" commit -qm old >/dev/null 2>&1
+expect_green "$d" "an old todo warns instead of failing" "untouched for"
+
+# The threshold is a knob, so a team that works in longer cycles is not nagged.
+out=$( cd "$d" && STALE_TODO_DAYS=99999 bash scripts/docs-check.sh 2>&1 )
+printf '%s\n' "$out" | grep -q 'untouched for' \
+  && bad "  ... but STALE_TODO_DAYS did not raise the threshold" \
+  || ok "  ... and STALE_TODO_DAYS raises the threshold"
 
 # ---------------------------------------------------------------------------
 echo; echo "installer"

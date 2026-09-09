@@ -64,12 +64,28 @@ is a different axis and has two vocabularies — one per kind of document:
 
 | Kind | `status:` may be | Meaning |
 |---|---|---|
-| A fragment in [`plans/`](plans/) | `todo` → `in-progress` → `done` \| `parked` | where the work has got to |
+| A fragment in [`plans/`](plans/) | `todo` → `in-progress` → `done` \| `parked` \| `superseded` | where the work has got to |
 | Every other document | `active`, `draft`, `superseded` | whether it still describes reality |
 
 A fragment being worked on right now is `in-progress`, not `active` — `active`
 belongs to documents. The guard enforces the split, and mirrors the fragment's
 value on the board in [`STATE.md`](STATE.md).
+
+### Closing a fragment you did not finish
+
+Most fragments do not end by being finished. They get overtaken, or stop
+mattering. Both have somewhere to go, and both cost one sentence:
+
+| Situation | Status | What the guard requires |
+|---|---|---|
+| The work happened, but elsewhere — another fragment, a ticket, a commit | `superseded` | `superseded-by:` naming it |
+| Stopped on purpose, might resume, might not | `parked` | `reason:` saying why |
+| Finished here | `done` | every box ticked, and the commands you ran pasted in |
+
+**`parked` used to require nothing**, which made it the cheapest way to turn a
+red board green: park everything, explain nothing. It now costs a `reason:`.
+That is the point — closing a fragment should be easy, and lying about why it
+closed should not be.
 
 ## Daily note
 

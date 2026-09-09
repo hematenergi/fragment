@@ -2,6 +2,7 @@
 id: plan-00
 title: "TEMPLATE — do not work on this"
 status: parked
+reason: "This is the template, not work. Copy it; never tick it."
 owner: unassigned
 last-verified: 2026-08-28
 depends-on: []

@@ -197,7 +197,7 @@ Full working: [`CASE-STUDY.md`](CASE-STUDY.md).
 Paste this into the agent already working on your project:
 
 ```text
-Install Fragment v0.2.0 from https://github.com/hematenergi/fragment into this repository.
+Install Fragment v0.3.0 from https://github.com/hematenergi/fragment into this repository.
 Do not overwrite existing files. Fill its project state from decisions visible
 in the repository and this conversation, then run bash scripts/docs-check.sh.
 Do not invent missing decisions; record them as blockers for me.
@@ -206,7 +206,7 @@ Do not invent missing decisions; record them as blockers for me.
 ### Or install it yourself
 
 ```bash
-git clone --depth 1 --branch v0.2.0 https://github.com/hematenergi/fragment
+git clone --depth 1 --branch v0.3.0 https://github.com/hematenergi/fragment
 bash fragment/install.sh /path/to/your/repo
 cd /path/to/your/repo && bash scripts/docs-check.sh
 ```
@@ -259,6 +259,21 @@ A fragment being worked on right now is **`in-progress`**, not `active`. The
 guard refuses the wrong vocabulary at the file itself and says which one it
 wanted — it does not send you to the board to fix something the board cannot
 express.
+
+### Closing a fragment you did not finish
+
+Most fragments do not end by being finished. Both ways out cost one sentence:
+
+| Situation | Status | Required |
+|---|---|---|
+| Overtaken — the work happened elsewhere | `superseded` | `superseded-by:` naming it |
+| Stopped on purpose | `parked` | `reason:` saying why |
+| Finished here | `done` | every box ticked, commands pasted |
+
+`parked` used to require nothing, which made it the cheapest way to turn a red
+board green: park everything, explain nothing. A `todo` left untouched for 30
+days now warns, so the ones that were quietly overtaken surface instead of
+sitting in the queue looking like work that is still coming.
 
 ## See a filled-in example
 

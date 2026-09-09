@@ -18,7 +18,7 @@ set -uo pipefail
 # Stamped so an installed copy can say where it came from. Without this a repo
 # that adopted Fragment has no way to answer "which version is this?", and
 # neither does anyone helping them.
-FRAGMENT_VERSION="0.2.0"
+FRAGMENT_VERSION="0.3.0"
 
 for arg in "$@"; do
   case "$arg" in
@@ -45,6 +45,9 @@ cd "$(dirname "$0")/.." || exit 1
 # that had settled on another name, and out of monorepos entirely.
 DOCS="${DOCS_ROOT:-docs}"
 DOCS="${DOCS%/}"
+
+# How long a `todo` may sit before the guard asks about it.
+STALE_TODO_DAYS="${STALE_TODO_DAYS:-30}"
 
 if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
   RED=$'\033[31m'; YEL=$'\033[33m'; GRN=$'\033[32m'; DIM=$'\033[2m'; OFF=$'\033[0m'
@@ -73,6 +76,22 @@ NOW=$(date '+%s')
 # `find`; keeping the rule in one predicate is what stops the two from drifting
 # apart — a fragment the vocabulary check treats as a document, or the reverse,
 # is exactly how a file ends up impossible to satisfy.
+# The two vocabularies, written once.
+#
+#   documents  active | draft | superseded
+#   fragments  todo | in-progress | done | parked | superseded
+#
+# `superseded` belongs to both: a document it replaced, and a fragment the world
+# overtook. Everything downstream derives from these two lists — the board check
+# included — so neither can accept a value the other refuses. That divergence is
+# exactly what made `active` unsatisfiable in 0.1.0, and it was invisible because
+# the two lists were written out separately.
+FRAGMENT_STATUSES="todo in-progress done parked superseded"
+DOCUMENT_STATUSES="active draft superseded"
+FRAGMENT_STATUS_RE=$(printf '%s' "$FRAGMENT_STATUSES" | tr ' ' '|')
+
+in_list() { case " $2 " in *" $1 "*) return 0 ;; *) return 1 ;; esac; }
+
 # Fragments may sit in subdirectories (docs/plans/epic/03-b.md), so the test is
 # on the prefix and the basename, not on a single glob.
 is_fragment() {
@@ -112,33 +131,44 @@ while IFS= read -r f; do
     esac
   fi
 
-  # Two vocabularies, deliberately, because two kinds of document are being
-  # described. A reference document is either current or it is not; a fragment
-  # moves through a lifecycle and is mirrored on the board.
-  #
-  #   documents  active | draft | superseded
-  #   fragments  todo | in-progress | done | parked
-  #
-  # Enforcing the split HERE is what makes the board check downstream
-  # meaningful. Accepting `active` on a fragment used to be legal at this line
-  # while being impossible to mirror on the board — so the fragment was refused
-  # further down with "one of them is lying", blaming two files that were both
-  # telling the truth. The only escape was to guess a different status.
+  # A status is checked against the vocabulary its own kind of file uses. The
+  # message names the vocabulary that was expected, so nobody is sent to the
+  # board to fix something the board cannot express.
   st=$(grep -m1 '^status:' "$f" | sed 's/^status:[[:space:]]*//; s/[[:space:]]*$//')
   if is_fragment "$rel"; then
-    case "$st" in
-      todo|in-progress|done|parked) ;;
-      active|draft|superseded)
-        err "$rel — status: $st is a document status, not a fragment one. Fragments move todo → in-progress → done | parked; the one being worked on right now is 'in-progress'" ;;
-      *) err "$rel — unknown status: '$st'" ;;
-    esac
+    if ! in_list "$st" "$FRAGMENT_STATUSES"; then
+      if in_list "$st" "$DOCUMENT_STATUSES"; then
+        err "$rel — status: $st is a document status, not a fragment one. Fragments are: $FRAGMENT_STATUSES (the one being worked on right now is 'in-progress')"
+      else
+        err "$rel — unknown status: '$st'"
+      fi
+    fi
   else
-    case "$st" in
-      active|draft|superseded) ;;
-      todo|in-progress|done|parked)
-        err "$rel — status: $st is a fragment status, but this file is not a fragment. Documents are active, draft or superseded" ;;
-      *) err "$rel — unknown status: '$st'" ;;
-    esac
+    if ! in_list "$st" "$DOCUMENT_STATUSES"; then
+      if in_list "$st" "$FRAGMENT_STATUSES"; then
+        err "$rel — status: $st is a fragment status, but this file is not a fragment. Documents are: $DOCUMENT_STATUSES"
+      else
+        err "$rel — unknown status: '$st'"
+      fi
+    fi
+  fi
+
+  # Closing a fragment without finishing it must still cost a sentence of truth.
+  #
+  # `parked` used to demand nothing at all — which made it the cheapest way for
+  # anyone, agent included, to turn a red board green: park everything, explain
+  # nothing. The error message even suggested it ("park the fragment and say
+  # why") while never checking that a why was written.
+  #
+  # These are frontmatter keys rather than headings on purpose: the guard must
+  # not depend on the language a team writes its documents in.
+  if [ "$st" = "parked" ]; then
+    r=$(grep -m1 '^reason:' "$f" | sed 's/^reason:[[:space:]]*//; s/[[:space:]]*$//; s/^["'"'"']//; s/["'"'"']$//')
+    [ -n "$r" ] || err "$rel — status: parked needs a 'reason:' in the frontmatter. A fragment stopped without a recorded why is indistinguishable from one that was quietly abandoned"
+  fi
+  if [ "$st" = "superseded" ]; then
+    sb=$(grep -m1 '^superseded-by:' "$f" | sed 's/^superseded-by:[[:space:]]*//; s/[[:space:]]*$//; s/^["'"'"']//; s/["'"'"']$//')
+    [ -n "$sb" ] || err "$rel — status: superseded needs a 'superseded-by:' in the frontmatter, naming what replaced it (a fragment, a task, a commit). Superseded without a pointer is a dead end, which is the thing this repo exists to prevent"
   fi
 
   # Registered in the index, as an actual link. Fixed-string, so dots are dots.
@@ -217,7 +247,7 @@ if [ -d "$DOCS/plans" ]; then
       # 3b. and the board agrees with the fragment about its status.
       #     A fragment can be named in prose too; only rows carrying a status
       #     token count as the queue row.
-      statusrows=$(printf '%s\n' "$rows" | grep -E '`(todo|in-progress|done|parked)`' || true)
+      statusrows=$(printf '%s\n' "$rows" | grep -E "\`($FRAGMENT_STATUS_RE)\`" || true)
       if [ -z "$statusrows" ]; then
         warnf "$f — no row in $DOCS/STATE.md carries a \`status\` token for it"
       elif ! printf '%s\n' "$statusrows" | grep -qF -- "\`$st\`"; then
@@ -233,6 +263,21 @@ if [ -d "$DOCS/plans" ]; then
       [ "${open:-0}" -gt 0 ] && err "$f — status: done but $open checkbox(es) still unticked. Tick them, or park the fragment and say why"
       fences=$(grep -c '^```' "$f" | tr -d ' ')
       [ "${fences:-0}" -lt 2 ] && err "$f — status: done but it records no commands that were run. Paste the validation output"
+    fi
+
+    # 3d. a queue nobody revisits is not a queue. A `todo` sitting untouched for
+    #     a season is usually one of two things — overtaken by work that
+    #     happened elsewhere, or no longer wanted — and both have somewhere to
+    #     go now (`superseded`, `parked`). Warning, not error: this should
+    #     prompt a decision, not block a release over a document.
+    #
+    #     Git commit date, not file mtime: in CI every clone is brand new.
+    if [ "$st" = "todo" ] && [ "$HAVE_GIT" = 1 ]; then
+      fd=$(git log -1 --format=%ct -- "$f" 2>/dev/null || true)
+      if [ -n "$fd" ]; then
+        fage=$(( (NOW - fd) / 86400 ))
+        [ "$fage" -gt "$STALE_TODO_DAYS" ] && warnf "$f — todo, untouched for $fage days. Still wanted, or overtaken? (superseded-by / parked)"
+      fi
     fi
   done < <(printf '%s\n' "$frags")
 fi
