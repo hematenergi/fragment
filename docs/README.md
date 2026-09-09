@@ -34,7 +34,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 |---|---|
 | [`plans/README.md`](plans/README.md) | How fragments work |
 | [`plans/00-template.md`](plans/00-template.md) | Template for a new one |
-| [`plans/01-installer-cannot-upgrade.md`](plans/01-installer-cannot-upgrade.md) | `todo` — an old install has no route to the current guard |
+| [`plans/01-installer-cannot-upgrade.md`](plans/01-installer-cannot-upgrade.md) | `done` — an old install can upgrade its unmodified guard safely |
 | [`plans/02-no-way-down-from-a-warning-pile.md`](plans/02-no-way-down-from-a-warning-pile.md) | `todo` — 122 warnings with no per-rule grouping |
 | [`plans/03-last-verified-is-the-loudest-rule.md`](plans/03-last-verified-is-the-loudest-rule.md) | `todo` — correct, drowned, and now load-bearing |
 | [`plans/04-version-written-by-hand.md`](plans/04-version-written-by-hand.md) | `todo` — seven places, one command |

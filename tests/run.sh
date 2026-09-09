@@ -344,6 +344,49 @@ printf '%s\n' "$out" | grep -q 'too old to carry a version' \
   && ok "  ... and an unversioned older copy is named as such" \
   || bad "  ... unversioned copy was not recognised"
 
+# Upgrade from a clean, recognised guard. Give a disposable copy of the
+# installer the next version number: the target remains a real 0.4.0 install,
+# so this proves the same checksum gate an actual later release will use.
+upgrader="$TMP/upgrader"; mkdir -p "$upgrader"
+cp "$ROOT/install.sh" "$upgrader/install.sh"
+cp -R "$ROOT/template" "$upgrader/template"
+perl -pi -e 's/^FRAGMENT_VERSION="0\.4\.0"$/FRAGMENT_VERSION="0.5.0"/' \
+  "$upgrader/template/scripts/docs-check.sh"
+
+d="$TMP/upgrade-dry"; mkdir -p "$d"; git -C "$d" init -q .
+bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
+before=$(cksum "$d/scripts/docs-check.sh")
+out=$( bash "$upgrader/install.sh" --dry-run --upgrade "$d" 2>&1 ); c=$?
+after=$(cksum "$d/scripts/docs-check.sh")
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'would upgrade scripts/docs-check.sh' \
+  && [ "$before" = "$after" ] \
+  && ok "--dry-run --upgrade reports the guard and writes nothing" \
+  || bad "--dry-run --upgrade did not stay inert"
+
+out=$( bash "$upgrader/install.sh" --upgrade "$d" 2>&1 ); c=$?
+installed=$(sed -n 's/^FRAGMENT_VERSION="\(.*\)"$/\1/p' "$d/scripts/docs-check.sh" | head -1)
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'upgraded scripts/docs-check.sh' \
+  && [ "$installed" = "0.5.0" ] \
+  && cmp -s "$d/scripts/docs-check.sh" "$upgrader/template/scripts/docs-check.sh" \
+  && ok "--upgrade replaces an unmodified known guard" \
+  || bad "--upgrade did not replace the known guard"
+printf '%s\n' "$out" | grep -q 'keep    AGENTS.md' \
+  && ok "  ... and reports each existing non-guard file it retains" \
+  || bad "  ... retained files were not named"
+
+# A single team change makes the fingerprint unknown. The upgrade must leave
+# the file byte-for-byte alone and explain that a manual merge is needed.
+d="$TMP/upgrade-custom"; mkdir -p "$d"; git -C "$d" init -q .
+bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
+printf '\n# team-specific guard rule\n' >> "$d/scripts/docs-check.sh"
+before=$(cksum "$d/scripts/docs-check.sh")
+out=$( bash "$upgrader/install.sh" --upgrade "$d" 2>&1 ); c=$?
+after=$(cksum "$d/scripts/docs-check.sh")
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.4.0' \
+  && [ "$before" = "$after" ] \
+  && ok "--upgrade never overwrites a customised guard" \
+  || bad "--upgrade overwrote or failed to name a customised guard"
+
 # ---------------------------------------------------------------------------
 echo; echo "release consistency"
 # ---------------------------------------------------------------------------

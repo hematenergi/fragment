@@ -14,16 +14,16 @@ last-verified: 2026-09-09
 
 ## Phase
 
-**0.3.0 released.** Everything local is pushed and tagged, and it went out on a
+**0.4.0 released.** Everything local is pushed and tagged, and it went out on a
 green build — which 0.2.0 did not. The next phase is the queue below, taken in
-order, starting with the one adopter who is stuck.
+order, starting with warning triage.
 
 The gate that ends it: an existing install can reach a newer guard with one
 documented command.
 
 ## Active fragment
 
-_(none — 01 is next, not yet started)_
+_(none — 02 is next, pending the owner's design decision)_
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -32,7 +32,7 @@ _(none — 01 is next, not yet started)_
 
 | # | Fragment | Status | Blocked by |
 |---|---|---|---|
-| 01 | [install.sh cannot upgrade](plans/01-installer-cannot-upgrade.md) | `todo` | — |
+| 01 | [install.sh cannot upgrade](plans/01-installer-cannot-upgrade.md) | `done` | — |
 | 02 | [no way down from a warning pile](plans/02-no-way-down-from-a-warning-pile.md) | `todo` | — |
 | 03 | [last-verified is the loudest rule](plans/03-last-verified-is-the-loudest-rule.md) | `todo` | 02 |
 | 04 | [version written by hand](plans/04-version-written-by-hand.md) | `todo` | — |
@@ -61,6 +61,13 @@ _(none — 01 is next, not yet started)_
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- `2026-09-09` · codex · 01 · released 0.4.0 with `install.sh --upgrade`; an
+  unmodified guard from a known earlier Fragment release upgrades in one
+  command, while customisations are retained and named · **Next:** owner
+  decides the warning-triage design in fragment 02.
+- `2026-09-09` · codex · 01 · started the installer-upgrade fragment; chose an
+  explicit, non-destructive `--upgrade` path · **Next:** implement its guarded
+  file replacement and regression tests.
 - `2026-09-09` · claude-opus-5 · — · 0.3.0 tagged and released on a green build.
   `Unreleased` was folded into it rather than cut as 0.3.1: 0.3.0 had never been
   tagged, so nothing in it had ever reached anyone, and describing the staleness

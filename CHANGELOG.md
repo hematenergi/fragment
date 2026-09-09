@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.0 — 2026-09-09
+
+### Added — an upgrade path that does not erase the team
+
+`bash install.sh --upgrade /path/to/repo` now updates
+`scripts/docs-check.sh` when, and only when, it is byte-for-byte a recognised
+Fragment guard from 0.1.0 through 0.3.0. The installer reports every other
+existing file as retained for manual merge. A customised or unrecognised guard
+is never overwritten; the output names it and explains why it stayed put.
+
+`--dry-run --upgrade` previews the exact result without touching the target.
+This is deliberately a guard-only upgrade: templates are designed to be
+customised, while the guard is the shared component that needs a safe route
+forward.
+
 ## 0.3.0 — 2026-09-09
 
 ### Upgrading from 0.2.0 — every parked fragment needs a reason

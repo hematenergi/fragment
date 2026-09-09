@@ -197,7 +197,7 @@ Full working: [`CASE-STUDY.md`](CASE-STUDY.md).
 Paste this into the agent already working on your project:
 
 ```text
-Install Fragment v0.3.0 from https://github.com/hematenergi/fragment into this repository.
+Install Fragment v0.4.0 from https://github.com/hematenergi/fragment into this repository.
 Do not overwrite existing files. Fill its project state from decisions visible
 in the repository and this conversation, then run bash scripts/docs-check.sh.
 Do not invent missing decisions; record them as blockers for me.
@@ -206,12 +206,20 @@ Do not invent missing decisions; record them as blockers for me.
 ### Or install it yourself
 
 ```bash
-git clone --depth 1 --branch v0.3.0 https://github.com/hematenergi/fragment
+git clone --depth 1 --branch v0.4.0 https://github.com/hematenergi/fragment
 bash fragment/install.sh /path/to/your/repo
 cd /path/to/your/repo && bash scripts/docs-check.sh
 ```
 
 The installer never overwrites; anything that exists is skipped for you to merge.
+To update only an unmodified guard from a recognised earlier release, use:
+
+```bash
+bash fragment/install.sh --upgrade /path/to/your/repo
+```
+
+It reports every retained file and refuses to replace a customised or unknown
+guard. Start with `--dry-run --upgrade` to preview it.
 
 Then the guard fails. **That is the feature** — it is the adoption checklist:
 
