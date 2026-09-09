@@ -1,7 +1,8 @@
 ---
 id: plan-03
 title: "03 — last-verified is the noisiest rule and the most valuable"
-status: todo
+status: superseded
+superseded-by: plan-05
 owner: hematenergi
 last-verified: 2026-09-09
 depends-on: [plan-02]
@@ -30,6 +31,11 @@ worse than none, because it lends false confidence to a green-ish run.
 - `02-no-way-down-from-a-warning-pile.md` — grouping may be enough on its own
 
 ## Work
+
+The unchecked work below is deliberately superseded by fragment 05. Review dates
+remain useful clues, but neither age nor a commit/date discrepancy proves an
+incorrect claim. Agents verify relevant claims when using documents; inventory
+preserves the clues without demanding a retrospective audit.
 
 - [ ] Decide: error for fragments only, or one summary line for all documents
 - [ ] Check the interaction with staleness, which now reads the same field
@@ -60,4 +66,5 @@ Changing what `last-verified` means, or auto-bumping it. An auto-bumped
 
 ## Session log
 
+- 2026-09-09 · GPT-6 / Codex · 03 · superseded by claim-specific review and optional inventory in fragment 05, not by mass date updates · next: validate the mature-adopter scenario there.
 - `2026-09-09` · claude · queued while installing Fragment into Fragment · next: depends on 02 — grouping may solve this without a new rule

@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+- Historical review-date and size clues move to `--inventory`, outside warning
+  budgets. Daily checks focus on core, open work, changed docs and contracts
+  selected with `--check-doc`; adopting a mature repo needs no historical bulk
+  migration or dummy fragment.
+- Local session checks cover staged, unstaged and new non-ignored work; CI uses
+  the explicit `BASE_REF` range and fails invalid bases. Git pathspecs select
+  scope; `--worktree` includes pending changes against a chosen base.
+- Repeatable `--handoff` selects affected checkout evidence destinations. Body
+  changes replace the English-heading/middle-dot log heuristic. GREEN reports
+  structural evidence and its limits, with no unconditional closing question.
+- Source-role guidance covers existing daily formats, authority, permissions,
+  rollover, partial updates, retries and portable decisions. Review these
+  changes in user-owned protocols/workflows during upgrade; see
+  [migration guidance](docs/continuity.md#migrating-an-existing-install).
+- The installer no longer treats a matching version string as proof that a
+  guard's bytes match upstream. `--upgrade` also leaves absent optional templates
+  absent, so a guard upgrade cannot reinstall documentation a team omitted.
+
 ## 0.4.0 — 2026-09-09
 
 ### Added — an upgrade path that does not erase the team

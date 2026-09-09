@@ -1,7 +1,8 @@
 ---
 id: plan-02
 title: "02 — no way down from a pile of warnings"
-status: todo
+status: superseded
+superseded-by: plan-05
 owner: hematenergi
 last-verified: 2026-09-09
 depends-on: []
@@ -28,6 +29,10 @@ emitting it.
 - `04-version-written-by-hand.md` — unrelated, but touches the same summary block
 
 ## Work
+
+The unchecked work below is deliberately superseded by fragment 05. The owner's
+adopter evidence showed that the pile was inventory, not an actionable warning
+backlog; grouping those clues as warnings would preserve the wrong obligation.
 
 - [ ] Group the summary by rule: "N warnings from X"
 - [ ] Keep the individual lines; the summary is in addition, not instead
@@ -57,4 +62,5 @@ Suppressing warnings, baselines, per-rule thresholds.
 
 ## Session log
 
+- 2026-09-09 · GPT-6 / Codex · 02 · superseded by the owner's continuity proposal in fragment 05 and decision 0002 · next: validate the inventory/continuity split there.
 - `2026-09-09` · claude · queued while installing Fragment into Fragment · next: decide how a rule gets a stable identity

@@ -14,7 +14,8 @@ standing between that claim and hypocrisy.
 bash tests/run.sh
 ```
 
-83 cases, no dependencies beyond `bash`, `git` and `perl`. It also runs
+Regression cases in `tests/run.sh` and `tests/continuity.sh`, with no dependencies
+beyond `bash`, `git` and `perl`. The suite also runs
 shellcheck when you have it, with the same arguments CI uses, and prints a
 visible `SKIP` when you do not — a rule enforced only in CI is a rule nobody
 runs, which is how a lint warning once rode into a tagged release.
@@ -29,8 +30,9 @@ why they are copies rather than symlinks.
 
 This repository installs its own harness: `docs/STATE.md` is the board,
 `docs/plans/` is the real backlog, and `scripts/docs-check.sh` runs against it in
-CI. That means the session ritual applies here too — **a change that touches
-`docs/` and leaves `docs/STATE.md` alone fails the build.**
+CI. Meaningful work needs body evidence at its selected checkout handoff
+destinations (STATE by default), including code-only work. Dates and separator
+characters alone cannot establish a handoff. The agent verifies its meaning.
 
 It is not decoration. Until it was installed, every defect Fragment shipped was
 found in somebody else's repository.

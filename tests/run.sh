@@ -74,7 +74,13 @@ EOF
 # design. Never pipe its output straight into grep -- the pipeline would
 # inherit the guard's exit code. Capture first, then match.
 OUT=''; CODE=0
-capture() { OUT=$( cd "$1" && BASE_REF="${2:-}" bash scripts/docs-check.sh 2>&1 ); CODE=$?; }
+# The pre-existing cases isolate structural rules. Explicit HEAD compares an
+# empty committed range; continuity.sh tests the real local default separately.
+capture() {
+  local comparison="${2:-}"
+  if [ -z "$comparison" ] && git -C "$1" rev-parse --verify -q HEAD >/dev/null 2>&1; then comparison=HEAD; fi
+  OUT=$( cd "$1" && BASE_REF="$comparison" bash scripts/docs-check.sh 2>&1 ); CODE=$?
+}
 has()     { printf '%s\n' "$OUT" | grep -qF -- "$1"; }
 dump()    { printf '%s\n' "$OUT" | head -"${1:-6}" | sed 's/^/        /'; }
 
@@ -126,7 +132,7 @@ echo "adoption"
 raw="$TMP/raw"; mkdir -p "$raw"; git -C "$raw" init -q .
 bash "$ROOT/install.sh" "$raw" >/dev/null 2>&1
 expect_fail "$raw" "an untouched install is NOT green — the guard is the to-do list" "template placeholders"
-has 'no fragment yet'   && ok "  ... and it asks for a first fragment" || bad "  ... first-fragment check"
+has 'no fragment yet'   && bad "  ... it demands dummy work" || ok "  ... it does not demand a dummy fragment"
 has 'owner: unassigned' && ok "  ... and for a named owner"            || bad "  ... owner check"
 has 'last-verified'     && ok "  ... and for real dates"               || bad "  ... date check"
 
@@ -158,7 +164,9 @@ expect_fail "$d" "an unknown status fails" "unknown status"
 d="$(fixture fm4)"
 perl -pi -e 's/^last-verified: .*/last-verified: 2020-01-01/' "$d/docs/GLOSSARY.md"
 git -C "$d" commit -aqm touch
-expect_warn "$d" "content newer than last-verified warns" "last-verified says 2020-01-01"
+out=$(cd "$d" && bash scripts/docs-check.sh --inventory)
+printf '%s\n' "$out" | grep -q 'last-verified says 2020-01-01' \
+  && ok "commit/review discrepancy is visible in inventory" || bad "inventory lost date discrepancy"
 
 # ---------------------------------------------------------------------------
 echo; echo "links"
@@ -290,7 +298,8 @@ echo; echo "a queue nobody revisits"
 # looked — and not from the file's commit date.
 d="$(fixture stale)"
 perl -pi -e 's/^last-verified: .*/last-verified: 2024-01-01/' "$d/docs/plans/01-example.md"
-expect_green "$d" "a todo nobody has verified in a season warns instead of failing" "unverified for"
+out=$(cd "$d" && BASE_REF=HEAD bash scripts/docs-check.sh --inventory)
+printf '%s\n' "$out" | grep -q 'unverified for' && ok "old todo review date is an inventory clue" || bad "todo inventory missing"
 
 # The regression that forced the measurement to change. The old check read the
 # file's commit date, so one mechanical commit — a rename, a formatting sweep —
@@ -302,10 +311,11 @@ perl -pi -e 's/^last-verified: .*/last-verified: 2024-01-01/' "$d/docs/plans/01-
 printf '\n<!-- reflowed by a formatting sweep -->\n' >> "$d/docs/plans/01-example.md"
 git -C "$d" add -A >/dev/null 2>&1
 git -C "$d" commit -qm "chore: formatting sweep" >/dev/null 2>&1
-expect_green "$d" "  ... and a bulk commit touching every fragment does not reset the clock" "unverified for"
+out=$(cd "$d" && bash scripts/docs-check.sh --inventory)
+printf '%s\n' "$out" | grep -q 'unverified for' && ok "bulk touches do not reset inventory review age" || bad "bulk touch reset review age"
 
 # The threshold is a knob, so a team that works in longer cycles is not nagged.
-out=$( cd "$d" && STALE_TODO_DAYS=99999 bash scripts/docs-check.sh 2>&1 )
+out=$( cd "$d" && STALE_TODO_DAYS=99999 bash scripts/docs-check.sh --inventory 2>&1 )
 printf '%s\n' "$out" | grep -q 'unverified for' \
   && bad "  ... but STALE_TODO_DAYS did not raise the threshold" \
   || ok "  ... and STALE_TODO_DAYS raises the threshold"
@@ -352,6 +362,11 @@ cp "$ROOT/install.sh" "$upgrader/install.sh"
 cp -R "$ROOT/template" "$upgrader/template"
 perl -pi -e 's/^FRAGMENT_VERSION="0\.4\.0"$/FRAGMENT_VERSION="0.5.0"/' \
   "$upgrader/template/scripts/docs-check.sh"
+# This simulation recognises the source guard as its preceding version. Real
+# release fingerprints in install.sh remain immutable; never update a released
+# checksum merely because the development worktree changes.
+read -r test_sum test_bytes _ < <(cksum "$ROOT/template/scripts/docs-check.sh")
+perl -pi -e 's/0\.4\.0:3777372876:21571/0.4.0:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.4\.0:/' "$upgrader/install.sh"
 
 d="$TMP/upgrade-dry"; mkdir -p "$d"; git -C "$d" init -q .
 bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
@@ -435,24 +450,24 @@ grep -q "^FRAGMENT_VERSION=" "$d/scripts/docs-check.sh" \
 # else, or a monorepo, could not use the guard at all before this.
 d="$(fixture root)"
 mv "$d/docs" "$d/documentation"
-out=$( cd "$d" && DOCS_ROOT=documentation bash scripts/docs-check.sh 2>&1 ); c=$?
+out=$( cd "$d" && BASE_REF=HEAD DOCS_ROOT=documentation bash scripts/docs-check.sh 2>&1 ); c=$?
 [ "$c" -eq 0 ] && ok "DOCS_ROOT relocates the whole guard" || { bad "DOCS_ROOT run exited $c"; printf '%s\n' "$out" | head -6 | sed 's/^/        /'; }
-printf '%s\n' "$out" | grep -q 'documentation/STATE.md' \
-  && ok "  ... and its messages name the real folder, not a hardcoded one" \
-  || bad "  ... messages still say docs/"
+printf '%s\n' "$out" | grep -q 'docs/STATE.md' \
+  && bad "  ... messages still say docs/" \
+  || ok "  ... no hardcoded docs/STATE.md message"
 
 # Excluding the attic must survive relocation — it is a quoting trap, and
 # getting it wrong silently starts scanning archived documents.
 mkdir -p "$d/documentation/_attic"
 printf 'no frontmatter here at all\n' > "$d/documentation/_attic/old.md"
-out=$( cd "$d" && DOCS_ROOT=documentation bash scripts/docs-check.sh 2>&1 ); c=$?
+out=$( cd "$d" && BASE_REF=HEAD DOCS_ROOT=documentation bash scripts/docs-check.sh 2>&1 ); c=$?
 [ "$c" -eq 0 ] && ok "  ... and _attic stays excluded under a relocated root" \
   || { bad "  ... _attic leaked into the scan"; printf '%s\n' "$out" | head -4 | sed 's/^/        /'; }
 
 # A warning nobody must ever clear stops being read. The budget turns the count
 # into a ratchet.
 d="$(fixture budget)"
-perl -pi -e 's/^last-verified: .*$/last-verified: 2020-01-01/' "$d/docs/GLOSSARY.md"
+printf 'warnf "actionable project warning"\n' > "$d/scripts/docs-check.local.sh"
 git -C "$d" add -A >/dev/null 2>&1; git -C "$d" commit -qm t >/dev/null 2>&1
 out=$( cd "$d" && bash scripts/docs-check.sh 2>&1 ); c=$?
 [ "$c" -eq 0 ] && ok "warnings alone still do not fail the build" || bad "a warning failed the build (exit $c)"
@@ -508,14 +523,14 @@ echo; echo "session ritual (CI)"
 # ---------------------------------------------------------------------------
 d="$(fixture ci1)"; b=$(git -C "$d" rev-parse HEAD)
 printf '\n## note\n' >> "$d/docs/GLOSSARY.md"; git -C "$d" commit -aqm edit
-expect_fail "$d" "docs changed without STATE.md fails" "STATE.md did not" "$b"
+expect_fail "$d" "docs changed without STATE.md fails" "no substantive handoff" "$b"
 has 'gained no Session log' && bad "  ... and says only that (no contradictory second line)" \
                             || ok "  ... and says only that (no contradictory second line)"
 
 d="$(fixture ci2)"; b=$(git -C "$d" rev-parse HEAD)
 printf '\n## note\n' >> "$d/docs/GLOSSARY.md"; printf '\n- x · x\n' >> "$d/docs/STATE.md"
 git -C "$d" commit -aqm cheat
-expect_fail "$d" "a two-character session line is rejected as too thin" "too thin to be a handoff" "$b"
+expect_fail "$d" "a two-character session line is rejected as too thin" "no substantive handoff" "$b"
 
 d="$(fixture ci3)"; b=$(git -C "$d" rev-parse HEAD)
 printf '\n## note\n' >> "$d/docs/GLOSSARY.md"
@@ -524,17 +539,19 @@ git -C "$d" commit -aqm ritual
 expect_green "$d" "a real session line passes" "" "$b"
 
 d="$(fixture ci4)"
-expect_green "$d" "an unusable BASE_REF says so out loud instead of passing silently" \
-  "SKIPPED" "0000000000000000000000000000000000000000"
+expect_fail "$d" "an unusable BASE_REF fails instead of silently skipping" \
+  "BASE_REF" "0000000000000000000000000000000000000000"
 
 # stale board: rewrite the fixture commit with an old COMMITTER date (%ct is
 # what the guard reads; --date only moves the author date).
 d="$(fixture ci5)"
 OLD=$(date -v-40d '+%Y-%m-%dT%H:%M:%S' 2>/dev/null || date -d '40 days ago' '+%Y-%m-%dT%H:%M:%S')
 ( cd "$d" && GIT_COMMITTER_DATE="$OLD" GIT_AUTHOR_DATE="$OLD" git commit -q --amend --no-edit --allow-empty )
-expect_green "$d" "a stale board warns, using git dates not file mtime" "unchanged for"
+out=$(cd "$d" && bash scripts/docs-check.sh --inventory)
+printf '%s\n' "$out" | grep -q 'unchanged for' && ok "old board appears in inventory" || bad "old board inventory missing"
 c="$TMP/clone"; rm -rf "$c"; git clone -q "$d" "$c" 2>/dev/null
-expect_green "$c" "  ... and survives a fresh clone (i.e. it works in CI)" "unchanged for"
+out=$(cd "$c" && bash scripts/docs-check.sh --inventory)
+printf '%s\n' "$out" | grep -q 'unchanged for' && ok "board inventory survives a clone" || bad "clone reset board inventory"
 
 # ---------------------------------------------------------------------------
 echo; echo "this repository, checked by the thing it ships"
@@ -576,5 +593,7 @@ printf '\n- settled on 2026-08-24, revisited 2026-08-26\n' >> "$d/docs/STATE.md"
 expect_green "$d" "  ... and a date is not mistaken for one"
 
 echo
+# shellcheck source=tests/continuity.sh
+. "$ROOT/tests/continuity.sh"
 if [ "$failed" -gt 0 ]; then printf 'FAILED — %s passed, %s failed\n' "$pass" "$failed"; exit 1; fi
 printf 'GREEN — %s tests passed\n' "$pass"

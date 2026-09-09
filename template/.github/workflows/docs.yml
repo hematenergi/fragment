@@ -23,20 +23,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      # github.event.before is the all-zero SHA on the first push to a branch,
-      # and a force-push can leave it pointing at a commit that no longer
-      # exists. Resolve to something real, or to nothing at all.
+      # A first branch push has no earlier branch snapshot. State that limit.
+      # Other invalid bases are passed through and FAIL in the guard.
       - name: Resolve comparison commit
         id: base
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PUSH_BASE: ${{ github.event.before }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            ref="${{ github.event.pull_request.base.sha }}"
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            ref="$PR_BASE"
           else
-            ref="${{ github.event.before }}"
+            ref="$PUSH_BASE"
           fi
-          if ! git rev-parse --verify -q "${ref}^{commit}" >/dev/null 2>&1; then
-            ref="$(git rev-parse --verify -q HEAD~1 || true)"
+          if [ "$EVENT_NAME" = push ] && [ "$ref" = 0000000000000000000000000000000000000000 ]; then
+            echo "::notice::First branch push: checkout structure only; no previous branch snapshot for session evidence."
+            ref=HEAD
           fi
+          [ -n "$ref" ] || { echo "::error::Missing comparison base"; exit 1; }
           echo "ref=${ref}" >> "$GITHUB_OUTPUT"
 
       - name: docs-check

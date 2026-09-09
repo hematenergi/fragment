@@ -26,6 +26,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 |---|---|
 | [`STATE.md`](STATE.md) | **Where the work stands.** Read first, written last |
 | [`AGENT-PROTOCOL.md`](AGENT-PROTOCOL.md) | The rules, for every agent and every human |
+| [`continuity.md`](continuity.md) | Source roles, daily rollover, scoped checks and migration |
 | [`why.md`](why.md) | Every rule in Fragment, and the failure that produced it |
 
 ## Fragments
@@ -35,9 +36,10 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/README.md`](plans/README.md) | How fragments work |
 | [`plans/00-template.md`](plans/00-template.md) | Template for a new one |
 | [`plans/01-installer-cannot-upgrade.md`](plans/01-installer-cannot-upgrade.md) | `done` — an old install can upgrade its unmodified guard safely |
-| [`plans/02-no-way-down-from-a-warning-pile.md`](plans/02-no-way-down-from-a-warning-pile.md) | `todo` — 122 warnings with no per-rule grouping |
-| [`plans/03-last-verified-is-the-loudest-rule.md`](plans/03-last-verified-is-the-loudest-rule.md) | `todo` — correct, drowned, and now load-bearing |
+| [`plans/02-no-way-down-from-a-warning-pile.md`](plans/02-no-way-down-from-a-warning-pile.md) | `superseded` — 05 separates inventory from actionable warnings |
+| [`plans/03-last-verified-is-the-loudest-rule.md`](plans/03-last-verified-is-the-loudest-rule.md) | `superseded` — 05 moves review to relevant claims when used |
 | [`plans/04-version-written-by-hand.md`](plans/04-version-written-by-hand.md) | `todo` — seven places, one command |
+| [`plans/05-continuity-without-administration.md`](plans/05-continuity-without-administration.md) | `done` — inventory, scoped handoff and source authority |
 
 ## Decisions
 
@@ -45,6 +47,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 |---|---|
 | [`decisions/README.md`](decisions/README.md) | Decision format and the next number |
 | [`decisions/0001-one-canonical-guard-vendored-copies.md`](decisions/0001-one-canonical-guard-vendored-copies.md) | Three copies of the guard, checked by a test, never symlinked |
+| [`decisions/0002-continuity-evidence-and-inventory.md`](decisions/0002-continuity-evidence-and-inventory.md) | Scope, structural evidence, inventory and source authority |
 
 ## Lessons
 
@@ -55,3 +58,4 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`lessons/a-rule-enforced-only-in-ci.md`](lessons/a-rule-enforced-only-in-ci.md) | Anything CI can fail on, the local suite runs too |
 | [`lessons/measuring-touch-instead-of-review.md`](lessons/measuring-touch-instead-of-review.md) | Name the question a proxy actually answers |
 | [`lessons/the-secret-scanner-flagged-the-tests.md`](lessons/the-secret-scanner-flagged-the-tests.md) | A repo that tests a detector needs an allowlist for its fixtures |
+| [`lessons/history-is-not-session-evidence.md`](lessons/history-is-not-session-evidence.md) | A documentation clue is not a verified error or unfinished handoff |

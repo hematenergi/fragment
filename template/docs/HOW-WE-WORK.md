@@ -89,7 +89,9 @@ closed should not be.
 
 ## Daily note
 
-Template: [`templates/daily-note.md`](templates/daily-note.md). One per day.
+Optional template: [`templates/daily-note.md`](templates/daily-note.md). Keep an
+existing daily workflow and its source permissions. Selection, rollover and
+partial handoffs are described in [continuity.md](continuity.md).
 
 The section people skip and shouldn't: **Carry-over** — what was unfinished yesterday. If nothing, write "clean". Never leave it empty, so "nothing" and "not filled in" stay distinguishable.
 
@@ -110,7 +112,7 @@ Decisions already made are written in [`decisions/`](decisions/) so they are not
 ## The rules that keep this tidy
 
 - **One `in-progress` fragment at a time.** Found other work? Write a fragment; do not do it now.
-- **A session that ends without updating `STATE.md` is unfinished**, whatever it produced.
+- **A session needs results in its affected destinations.** Update STATE when position changes or it is the selected handoff home; do not duplicate all task details there.
 - **Bugs outside the current scope: note them, do not fix them.**
-- **If something is ambiguous, stop and ask.** Do not guess.
+- **Resolve ambiguity that affects the current decision.** Continue independent work while missing information is obtained.
 - **KISS, DRY, YAGNI.** Adding an abstraction, refactoring outside scope, swapping a library? Ask first.

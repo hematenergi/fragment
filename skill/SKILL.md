@@ -20,7 +20,7 @@ machine driving a different agent. Install the Core first, always.
 | `docs/AGENT-PROTOCOL.md` | The rules. The only place they live |
 | `CLAUDE.md` / `AGENTS.md` | Thin front doors pointing at the protocol. Three lines each |
 | `docs/STATE.md` | The board. Read first, written last |
-| `docs/README.md` | The index. Every doc listed, or the guard fails |
+| `docs/README.md` | Index of managed docs; historical registration is inventory |
 | `scripts/docs-check.sh` | The guard |
 | `.github/workflows/docs.yml` | Runs the guard for whoever pushes, with whatever tool |
 | `.gitattributes` | `eol=lf` for the script; `merge=union` for the board |
@@ -66,6 +66,12 @@ answer before writing files.**
    teaches everyone to ignore it.
 5. **Start with the Core.** Add `plans/` when the user is the one holding a
    plan. Add `research/`, `runbooks/`, `GLOSSARY.md` only if they need them.
+6. **Map existing source roles in the protocol.** Reuse the user's chosen daily,
+   task and decision homes with their authority and read/write permissions. Read
+   the supplied `docs/continuity.md` guidance for rollover, partial writes and
+   portable decisions. Do not crawl private notes or create a daily by default.
+7. **Review claims when they are used.** Date/size clues are `--inventory`, not
+   a migration backlog. Never mass-stamp review dates or create dummy work.
 
 ## Steps
 
@@ -115,7 +121,7 @@ Not a blank board. Fill it from what the repo actually shows: **Phase** from
 recent commit history; **Queue** from TODOs, issues or the user; **Blocked**
 with who and since when; a first honest **Session log** line.
 
-### 5. Write the first real fragment (if they took the plans tier)
+### 5. Write a fragment only if real authorised work exists
 
 Copy `docs/plans/00-template.md` to `01-<slug>.md` for work that actually needs
 doing. Fill `Current state` with facts read from the code (`file.ext:123`),
@@ -159,10 +165,13 @@ enforcement they will ever see.
 
 ### 9. Close the session using the ritual you just installed
 
-Run the Close ritual on your own work: tick the fragment, add a `Session log`
-line that reads as a handoff (`date · agent · fragment · what changed · what is
-next` — the guard rejects a line too thin to be one), update `STATE.md`, run the
-guard until green, commit.
+Run the Close ritual on your own work: update affected task criteria, evidence,
+position and durable decisions in their primary homes. Use each destination's
+format and permissions. STATE is the default checkout handoff; select other
+affected destinations with `--handoff`. The guard checks body changes, while you
+check meaning and confirm external writes. Report partial results and provide
+ready-to-copy entries for failed required writes; read the latest state before
+retrying to preserve others' edits and avoid duplicate blocks.
 
 Do it visibly. **It is the clearest possible demonstration of how the thing is
 meant to be used**, and it is the step most likely to be skipped later if nobody
@@ -174,15 +183,15 @@ has seen it done once.
   the green one.
 - The rules now live in exactly one file. Changing them anywhere else is how two
   agents end up following two rulebooks.
-- `STATE.md` is read first and written last. A session that ends without
-  updating it is unfinished.
+- STATE is read first; update its position only where affected. Results must
+  reach the destinations agreed in the protocol, with pending writes stated.
 - Adding a third AI tool later costs three lines, not a fork of the rules.
 
 ## Failure modes to warn about
 
 | Symptom | What it means |
 |---|---|
-| `STATE.md` untouched for weeks | The board is fiction. Either the team stopped using it, or work stopped |
+| `STATE.md` untouched for weeks | Inventory clue only; inspect relevant claims when work resumes |
 | Front doors growing past ~40 lines | Rules leaking back out of the protocol. They will drift |
 | `lessons/` still empty after a month | Either nothing broke, or nobody is writing them down. It is the second one |
 | Guard disabled in CI "temporarily" | The structure is now decorative and will rot within weeks |

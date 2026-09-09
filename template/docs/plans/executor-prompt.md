@@ -20,11 +20,14 @@ the queue whose dependencies are done, and set it to in-progress.
 Work on THAT FRAGMENT ONLY. If you find other work that needs doing, write a new
 fragment in the queue — do not do it now.
 
-Before touching code: tell me which fragment you took and your planned diff.
-Wait for my answer.
+Before touching code: state the selected work, session scope and affected
+handoff destinations from the protocol. Resolve missing decisions that affect
+the work; continue the authorised parts.
 
 Before closing the session, run the Close ritual in AGENT-PROTOCOL.md until
-`bash scripts/docs-check.sh` is green.
+`bash scripts/docs-check.sh` is green. Check relevant claims and actual results,
+not just dates. Report pending external writes honestly; use the chosen daily
+or ticket's format without copying private history into the repo.
 ```
 
 ## If you only want to ask, not work

@@ -49,6 +49,8 @@ it.
 1. Read **`STATE.md`** — it says which fragment is active.
 2. Read that fragment in `plans/NN-*.md` **in full**, including its `Session log`.
 3. Before asking anything, search `decisions/`.
+4. Establish the session's range and affected destinations. Check relevant
+   claims against code or records before using them; dates alone prove nothing.
 
 ### Work
 - **One fragment at a time.** Found other work? Write a fragment in the queue.
@@ -69,6 +71,18 @@ it.
 5. Fixed a non-obvious bug that could recur? One file in `lessons/`
    (**Symptom → Root cause → Rule**), listed in `README.md`.
 6. `bash tests/run.sh` and `bash scripts/docs-check.sh` must both be green.
+
+## Source roles
+
+Here, the user-selected conversation supplies direction, STATE supplies project
+position and the checkout handoff, the fragment supplies detailed evidence, and
+decisions/ holds durable choices. Update each only where affected. One fact has
+one primary home. External sources are optional and follow the user's read/write
+permissions; their unavailability blocks only work needing missing information.
+Use [continuity.md](continuity.md) for daily selection, partial writes, retries,
+portable context and the guard's evidence limits. Once required destinations
+are confirmed, close without another ritual question. GREEN does not certify
+the truth of all prose or any external write.
 
 ## Source-of-truth hierarchy
 

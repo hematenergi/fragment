@@ -14,16 +14,16 @@ last-verified: 2026-09-09
 
 ## Phase
 
-**0.4.0 released.** Everything local is pushed and tagged, and it went out on a
-green build — which 0.2.0 did not. The next phase is the queue below, taken in
-order, starting with warning triage.
+**0.4.0 is the published baseline.** Fragment 05 implements the owner's
+continuity proposal locally: optional inventory, scoped session evidence and
+existing source roles. These changes are not yet released.
 
-The gate that ends it: an existing install can reach a newer guard with one
-documented command.
+The gate: the mature-adopter case closes quietly with recorded results while
+missing checkout handoff evidence and concrete structural conflicts still fail.
 
 ## Active fragment
 
-_(none — 02 is next, pending the owner's design decision)_
+_(none — 05 is complete locally; release/migration is a separate next step)_
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -33,15 +33,16 @@ _(none — 02 is next, pending the owner's design decision)_
 | # | Fragment | Status | Blocked by |
 |---|---|---|---|
 | 01 | [install.sh cannot upgrade](plans/01-installer-cannot-upgrade.md) | `done` | — |
-| 02 | [no way down from a warning pile](plans/02-no-way-down-from-a-warning-pile.md) | `todo` | — |
-| 03 | [last-verified is the loudest rule](plans/03-last-verified-is-the-loudest-rule.md) | `todo` | 02 |
+| 02 | [no way down from a warning pile](plans/02-no-way-down-from-a-warning-pile.md) | `superseded` | replaced by 05 |
+| 03 | [last-verified is the loudest rule](plans/03-last-verified-is-the-loudest-rule.md) | `superseded` | replaced by 05 |
 | 04 | [version written by hand](plans/04-version-written-by-hand.md) | `todo` | — |
+| 05 | [continuity without administration](plans/05-continuity-without-administration.md) | `done` | — |
 
 ## Blocked / waiting on a human
 
 | What | Waiting on | Since |
 |---|---|---|
-| Whether 02 and 04 are wanted at all, or whether 01 ends this round | owner | 2026-09-09 |
+| Whether version-bump automation (04) is wanted | owner | 2026-09-09 |
 
 ## Decisions already made — do not ask again
 
@@ -53,6 +54,10 @@ _(none — 02 is next, pending the owner's design decision)_
   No non-engineer layer, no runbooks, no research — everyone working here reads
   code and the repository operates nothing. That is the README's own advice,
   followed rather than quoted.
+- **Dates and size are inventory; session evidence is scoped.** See
+  [decision 0002](decisions/0002-continuity-evidence-and-inventory.md). Source
+  authority and update destinations live in the existing protocol; an external
+  daily is optional and CI cannot certify a write it did not observe.
 
 ---
 
@@ -61,6 +66,7 @@ _(none — 02 is next, pending the owner's design decision)_
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-09-09 · GPT-6 / Codex · 05 · completed the continuity proposal with 138 passing tests; an isolated adopter checkout moved from 122 warnings to a quiet daily result, while inventory retained the clues · next: review the unreleased implementation and protocol migration; no adopter files or public release changed in this session.
 - `2026-09-09` · codex · 01 · released 0.4.0 with `install.sh --upgrade`; an
   unmodified guard from a known earlier Fragment release upgrades in one
   command, while customisations are retained and named · **Next:** owner

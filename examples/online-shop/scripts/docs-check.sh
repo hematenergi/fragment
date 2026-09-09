@@ -5,10 +5,15 @@
 # source code, so it works the same in any stack.
 #
 #   Local:  bash scripts/docs-check.sh
-#   CI:     BASE_REF=<sha> bash scripts/docs-check.sh    (adds the session-ritual check)
+#   CI:     BASE_REF=<sha> bash scripts/docs-check.sh    (committed range)
 #
 #   --version            print the Fragment version this copy came from
 #   --max-warnings N     fail if more than N warnings survive
+#   --inventory          include historical documentation clues
+#   --handoff path       checkout evidence destination (repeatable; default STATE)
+#   --check-doc path     contract used for this work (repeatable)
+#   --worktree           include pending work when BASE_REF is supplied
+#   -- pathspec...       Git scope, including exclusions for other/generated work
 #   DOCS_ROOT=<dir>      documents live somewhere other than docs/
 #
 # Exit 0 = green. Exit 1 = at least one failure. Warnings never fail the build
@@ -26,17 +31,28 @@ for arg in "$@"; do
   esac
 done
 
-MAX_WARNINGS=""
+MAX_WARNINGS=""; INVENTORY=0; WORKTREE=0
+handoffs=(); selected_docs=(); scope=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    --max-warnings) MAX_WARNINGS="${2:-}"; shift 2 ;;
+    --max-warnings|--handoff|--check-doc)
+      [ $# -ge 2 ] && [ -n "$2" ] || { printf '%s requires a value\n' "$1" >&2; exit 2; }
+      case "$1" in
+        --max-warnings) MAX_WARNINGS="$2" ;;
+        --handoff) handoffs+=("$2") ;;
+        --check-doc) selected_docs+=("$2") ;;
+      esac
+      shift 2 ;;
     --max-warnings=*) MAX_WARNINGS="${1#*=}"; shift ;;
-    *) shift ;;
+    --inventory) INVENTORY=1; shift ;;
+    --worktree) WORKTREE=1; shift ;;
+    --version) shift ;;
+    --) shift; scope=("$@"); break ;;
+    *) printf 'unknown option: %s\n' "$1" >&2; exit 2 ;;
   esac
 done
 case "$MAX_WARNINGS" in
-  ''|[0-9]*) ;;
-  *) printf '--max-warnings expects a number, got: %s\n' "$MAX_WARNINGS" >&2; exit 2 ;;
+  *[!0-9]*) printf '%s\n' '--max-warnings expects a non-negative integer' >&2; exit 2 ;;
 esac
 
 cd "$(dirname "$0")/.." || exit 1
@@ -54,17 +70,80 @@ if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
 else
   RED=''; YEL=''; GRN=''; DIM=''; OFF=''
 fi
-fail=0; warn=0
-err()   { printf '%s✗%s %s\n' "$RED" "$OFF" "$1"; fail=$((fail+1)); }
-warnf() { printf '%s!%s %s\n' "$YEL" "$OFF" "$1"; warn=$((warn+1)); }
+fail=0; warn=0; historical=0; inventory_count=0
+inventory() {
+  [ "$INVENTORY" = 1 ] || return 0
+  if [ "$inventory_count" = 0 ]; then
+    printf 'INVENTORY — documentation clues; not a session-readiness verdict.\n'
+  fi
+  printf '  %s\n' "$1"; inventory_count=$((inventory_count+1))
+}
+err()   {
+  if [ "$historical" = 1 ]; then inventory "$1"; return; fi
+  printf '%s✗%s %s\n' "$RED" "$OFF" "$1"; fail=$((fail+1))
+}
+warnf() {
+  if [ "$historical" = 1 ]; then inventory "$1"; return; fi
+  printf '%s!%s %s\n' "$YEL" "$OFF" "$1"; warn=$((warn+1))
+}
 note()  { printf '%s·%s %s\n' "$DIM" "$OFF" "$1"; }
 
-INDEX="$DOCS/README.md"
-[ -f "$INDEX" ] || { err "$DOCS/README.md (the index) is missing"; exit 1; }
+STATE="${STATE_FILE:-$DOCS/STATE.md}"
+PROTOCOL="${PROTOCOL_FILE:-$DOCS/AGENT-PROTOCOL.md}"
+INDEX="${INDEX_FILE:-$DOCS/README.md}"
+[ -f "$INDEX" ] || { err "$INDEX (the index) is missing"; exit 1; }
 
 HAVE_GIT=0
-unstamped=""
 git rev-parse --verify -q HEAD >/dev/null 2>&1 && HAVE_GIT=1
+git_prefix=$(git rev-parse --show-prefix 2>/dev/null || true)
+
+# Paths always refer to this checkout, never through symlinks to private notes.
+checkout_path() {
+  local part="$1"
+  case "$part" in /*|..|../*|*/../*|*/..|./*|-*|'') return 1 ;; esac
+  while :; do
+    [ ! -L "$part" ] || return 1
+    case "$part" in */*) part="${part%/*}" ;; *) break ;; esac
+  done
+}
+for p in "$DOCS" "$STATE" "$PROTOCOL" "$INDEX" "${handoffs[@]+"${handoffs[@]}"}" "${selected_docs[@]+"${selected_docs[@]}"}"; do
+  if ! checkout_path "$p"; then
+    printf 'use a repo-relative checkout path without symlinks: %s\n' "$p" >&2; exit 2
+  fi
+done
+[ "${#handoffs[@]}" -gt 0 ] || handoffs=("$STATE")
+[ "${#scope[@]}" -gt 0 ] || scope=(.)
+comparison=""; end=(); changed=(); working_docs=()
+session_result='session comparison unavailable (no Git history)'
+if [ -n "${BASE_REF:-}" ]; then
+  comparison=$(git rev-parse --verify -q --end-of-options "${BASE_REF}^{commit}") \
+    || { err "BASE_REF is not an available commit: $BASE_REF. Fetch the intended comparison; do not silently substitute another range."; exit 1; }
+  [ "$WORKTREE" = 1 ] || end=(HEAD)
+elif [ "$HAVE_GIT" = 1 ]; then
+  comparison=HEAD
+fi
+if [ -n "$comparison" ]; then
+  # Validate pathspecs and the range before reading a process substitution,
+  # whose exit status bash would otherwise hide.
+  git diff --relative --name-only "$comparison" "${end[@]+"${end[@]}"}" -- "${scope[@]}" >/dev/null \
+    || { err 'cannot compare the selected Git range or paths'; exit 1; }
+  while IFS= read -r -d '' p; do changed+=("$p"); done < <(
+    git diff --relative --name-only -z "$comparison" "${end[@]+"${end[@]}"}" -- "${scope[@]}"
+    if [ "${#end[@]}" = 0 ]; then
+      git diff --relative --cached --name-only -z "$comparison" -- "${scope[@]}"
+      git ls-files --others --exclude-standard -z -- "${scope[@]}"
+    fi
+  )
+fi
+# Structural checks inspect the available checkout. This includes dirty docs
+# even when the chosen handoff comparison covers committed work only.
+if [ "$HAVE_GIT" = 1 ]; then
+  while IFS= read -r -d '' p; do working_docs+=("$p"); done < <(
+    git diff --relative --name-only -z HEAD -- "${scope[@]}"
+    git diff --relative --cached --name-only -z HEAD -- "${scope[@]}"
+    git ls-files --others --exclude-standard -z -- "${scope[@]}"
+  )
+fi
 
 # Portable "date -> epoch seconds" for YYYY-MM-DD. GNU and BSD disagree; try both.
 to_epoch() {
@@ -113,11 +192,52 @@ is_fragment() {
   esac
 }
 
+current_doc() {
+  local p
+  case "$1" in "$STATE"|"$INDEX"|"$PROTOCOL") return 0 ;; esac
+  if is_fragment "$1" && [ "${1##*/}" != 00-template.md ]; then
+    case "$(fm status "$1")" in
+      done|parked|superseded)
+        # A board that still claims this work is open makes a contradictory
+        # closed file relevant even in an otherwise clean checkout.
+        if grep -F -- "${1##*/}" "$STATE" 2>/dev/null | grep -qE '`(todo|in-progress)`'; then return 0; fi ;;
+      *) return 0 ;;
+    esac
+  fi
+  for p in "${changed[@]+"${changed[@]}"}" "${working_docs[@]+"${working_docs[@]}"}" \
+    "${selected_docs[@]+"${selected_docs[@]}"}" "${handoffs[@]}"; do
+    [ "$1" != "$p" ] || return 0
+  done
+  return 1
+}
+doc_paths() {
+  find "$DOCS" -name '*.md' -not -path "$DOCS/_attic/*"
+  printf '%s\n' "$STATE" "$PROTOCOL" "$INDEX"
+  for p in "${selected_docs[@]+"${selected_docs[@]}"}"; do printf '%s\n' "$p"; done
+}
+index_target() {
+  local parent="${INDEX%/*}" up=''
+  [ "$parent" != "$INDEX" ] || parent=.
+  while [ "$parent" != . ]; do
+    case "$1" in "$parent"/*) printf '%s%s\n' "$up" "${1#"$parent"/}"; return ;; esac
+    up="../$up"
+    case "$parent" in */*) parent="${parent%/*}" ;; *) parent=. ;; esac
+  done
+  printf '%s%s\n' "$up" "$1"
+}
+for p in "$STATE" "$PROTOCOL" "${selected_docs[@]+"${selected_docs[@]}"}"; do
+  [ -f "$p" ] || err "$p — required checkout document is missing"
+done
+
 # ---------------------------------------------------------------------------
 # 1. every doc: real frontmatter, real values, known status, listed in the index
 # ---------------------------------------------------------------------------
 while IFS= read -r f; do
   rel="${f#./}"
+  historical=0
+  current_doc "$rel" || historical=1
+  [ "$historical" = 0 ] || [ "$INVENTORY" = 1 ] || continue
+  [ -f "$f" ] || continue
   head -1 "$f" | grep -q '^---$' || { err "$rel — no frontmatter"; continue; }
 
   for key in id title status owner last-verified; do
@@ -134,7 +254,7 @@ while IFS= read -r f; do
   if [ -n "$lv" ]; then
     case "$lv" in
       [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;;
-      '<YYYY-MM-DD>') unstamped="$unstamped $rel" ;;
+      '<YYYY-MM-DD>') err "$rel — last-verified is a template date; record a review when this document is used" ;;
       *) err "$rel — last-verified: '$lv' is not a date (expected YYYY-MM-DD)" ;;
     esac
   fi
@@ -180,36 +300,30 @@ while IFS= read -r f; do
   fi
 
   # Registered in the index, as an actual link. Fixed-string, so dots are dots.
-  base="${rel#$DOCS/}"
-  if [ "$rel" != "$INDEX" ]; then
+  base=$(index_target "$rel")
+  if [ "$rel" != "$INDEX" ] && [[ "$rel" == "$DOCS/"* ]]; then
     grep -qF -- "]($base)" "$INDEX" \
-      || err "$rel — not listed in $DOCS/README.md (add a link: [\`$base\`]($base))"
+      || err "$rel — not listed in $INDEX (add a link: [\`$base\`]($base))"
   fi
 
   # last-verified vs reality: content newer than its last review.
-  if [ "$HAVE_GIT" = 1 ] && [ -n "$lv" ]; then
+  if [ "$INVENTORY" = 1 ] && [ "$HAVE_GIT" = 1 ] && [ -n "$lv" ]; then
     gd=$(git log -1 --format=%cs -- "$f" 2>/dev/null || true)
     case "$gd" in
       [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
         e_lv=$(to_epoch "$lv"); e_gd=$(to_epoch "$gd")
         if [ -n "$e_lv" ] && [ -n "$e_gd" ] && [ "$e_gd" -gt "$e_lv" ]; then
-          warnf "$rel — last changed $gd but last-verified says $lv. Re-read it or bump the date"
+          inventory "$rel — last changed $gd but last-verified says $lv; a commit date does not establish a content change or an incorrect claim"
         fi ;;
     esac
   fi
-done < <(find "$DOCS" -name '*.md' -not -path "$DOCS/_attic/*" | sort)
-
-if [ -n "$unstamped" ]; then
-  n=$(printf '%s' "$unstamped" | wc -w | tr -d ' ')
-  err "$n document(s) still carry last-verified: <YYYY-MM-DD>. Stamp them with a real date:"
-  printf '%s\n' "$unstamped" | tr ' ' '\n' | grep -v '^$' | head -6 | sed 's/^/    /'
-  [ "$n" -gt 6 ] && printf '    ... and %s more\n' "$((n-6))"
-fi
+done < <(doc_paths | sort -u)
+historical=0
 
 # ---------------------------------------------------------------------------
 # 2. setup completeness — an unfilled install is not a finished install
 # ---------------------------------------------------------------------------
-for f in CLAUDE.md AGENTS.md START-HERE.md $DOCS/AGENT-PROTOCOL.md $DOCS/STATE.md $DOCS/README.md; do
+for f in CLAUDE.md AGENTS.md "$PROTOCOL" "$STATE" "$INDEX"; do
   [ -f "$f" ] || continue
   hits=$(awk 'NR==1&&/^---$/{fm=1;next} fm&&/^---$/{fm=0;next} !fm{print NR": "$0}' "$f" \
     | grep -E '<[A-Z][^>]*>' | head -2 || true)
@@ -218,7 +332,7 @@ for f in CLAUDE.md AGENTS.md START-HERE.md $DOCS/AGENT-PROTOCOL.md $DOCS/STATE.m
     printf '%s\n' "$hits" | sed 's/^/    /'
   fi
 done
-for f in $DOCS/AGENT-PROTOCOL.md $DOCS/STATE.md $DOCS/README.md; do
+for f in "$PROTOCOL" "$STATE" "$INDEX"; do
   [ -f "$f" ] || continue
   grep -q '^owner:[[:space:]]*unassigned[[:space:]]*$' "$f" \
     && err "$f — owner: unassigned. A load-bearing document needs a named owner"
@@ -233,8 +347,6 @@ if [ -d "$DOCS/plans" ]; then
   frags=$(find "$DOCS/plans" -name '*.md' -not -name '00-template.md' \
     | while IFS= read -r c; do is_fragment "${c#./}" && printf '%s\n' "$c"; done | sort)
 
-  [ -z "$frags" ] && err "$DOCS/plans/ has no fragment yet — the install is not finished (see $DOCS/plans/README.md)"
-
   inprog=0
   while IFS= read -r f; do
     [ -z "$f" ] && continue
@@ -244,22 +356,25 @@ if [ -d "$DOCS/plans" ]; then
 
   while IFS= read -r f; do
     [ -z "$f" ] && continue
+    historical=0
+    current_doc "$f" || historical=1
+    [ "$historical" = 0 ] || [ "$INVENTORY" = 1 ] || continue
     b=$(basename "$f")
     st=$(grep -m1 '^status:' "$f" | sed 's/^status:[[:space:]]*//; s/[[:space:]]*$//')
 
     # 3a. every fragment is on the board
-    rows=$(grep -F -- "$b" $DOCS/STATE.md || true)
+    rows=$(grep -F -- "$b" "$STATE" || true)
     if [ -z "$rows" ]; then
-      err "$f — missing from the queue in $DOCS/STATE.md"
+      err "$f — missing from the queue in $STATE"
     else
       # 3b. and the board agrees with the fragment about its status.
       #     A fragment can be named in prose too; only rows carrying a status
       #     token count as the queue row.
       statusrows=$(printf '%s\n' "$rows" | grep -E "\`($FRAGMENT_STATUS_RE)\`" || true)
       if [ -z "$statusrows" ]; then
-        warnf "$f — no row in $DOCS/STATE.md carries a \`status\` token for it"
-      elif ! printf '%s\n' "$statusrows" | grep -qF -- "\`$st\`"; then
-        err "$f — status: $st, but its row in $DOCS/STATE.md says otherwise. One of them is lying"
+        warnf "$f — no row in $STATE carries a \`status\` token for it"
+      elif [ "$(printf '%s\n' "$statusrows" | grep -oE "\`($FRAGMENT_STATUS_RE)\`" | sort -u)" != "\`$st\`" ]; then
+        err "$f — status: $st, but its row in $STATE says otherwise. One of them is lying"
       fi
     fi
 
@@ -290,16 +405,17 @@ if [ -d "$DOCS/plans" ]; then
     #     `last-verified` is the one field here that means a human confirmed
     #     this is still true. Nothing mechanical can bump it honestly, and a
     #     human bumping it is precisely the event being measured.
-    if [ "$st" = "todo" ]; then
+    if [ "$INVENTORY" = 1 ] && [ "$st" = "todo" ]; then
       flv=$(fm last-verified "$f")
       e_flv=$(to_epoch "$flv")
       if [ -n "$e_flv" ]; then
         fage=$(( (NOW - e_flv) / 86400 ))
-        [ "$fage" -gt "$STALE_TODO_DAYS" ] && warnf "$f — todo, unverified for $fage days. Still wanted, or overtaken? (superseded-by / parked)"
+        [ "$fage" -gt "$STALE_TODO_DAYS" ] && inventory "$f — todo, unverified for $fage days; review relevant claims when selecting this work"
       fi
     fi
   done < <(printf '%s\n' "$frags")
 fi
+historical=0
 
 # ---------------------------------------------------------------------------
 # 4. front doors stay thin and keep pointing at the protocol
@@ -308,22 +424,22 @@ for door in CLAUDE.md AGENTS.md; do
   if [ ! -f "$door" ]; then
     err "$door is missing — that agent has no entry point into this repo"; continue
   fi
-  grep -q 'AGENT-PROTOCOL.md' "$door" || err "$door — does not point at $DOCS/AGENT-PROTOCOL.md"
+  grep -qF -- "${PROTOCOL##*/}" "$door" || err "$door — does not point at $PROTOCOL"
   lines=$(wc -l < "$door" | tr -d ' ')
-  [ "$lines" -gt 40 ] && warnf "$door — $lines lines. Front doors stay thin; rules live in AGENT-PROTOCOL.md"
+  [ "$lines" -gt 40 ] && inventory "$door — $lines lines. Front doors stay thin; rules live in $PROTOCOL"
 done
-proto=$(wc -l < $DOCS/AGENT-PROTOCOL.md 2>/dev/null | tr -d ' ')
-[ "${proto:-0}" -gt 150 ] && warnf "$DOCS/AGENT-PROTOCOL.md — $proto lines (>150). Move content into its own document"
+proto=$(wc -l < "$PROTOCOL" 2>/dev/null | tr -d ' ')
+[ "${proto:-0}" -gt 150 ] && inventory "$PROTOCOL — $proto lines (>150); size alone does not establish a continuity problem"
 
 # ---------------------------------------------------------------------------
 # 5. the board should not go stale (git commit date; file mtime is meaningless
 #    in CI, where every clone is brand new)
 # ---------------------------------------------------------------------------
-if [ "$HAVE_GIT" = 1 ]; then
-  last=$(git log -1 --format=%ct -- $DOCS/STATE.md 2>/dev/null || true)
+if [ "$INVENTORY" = 1 ] && [ "$HAVE_GIT" = 1 ]; then
+  last=$(git log -1 --format=%ct -- "$STATE" 2>/dev/null || true)
   if [ -n "$last" ]; then
     age=$(( (NOW - last) / 86400 ))
-    [ "$age" -gt 7 ] && warnf "$DOCS/STATE.md unchanged for $age days — does it still reflect reality?"
+    [ "$age" -gt 7 ] && inventory "$STATE unchanged for $age days; elapsed time alone does not imply missing work"
   fi
 fi
 
@@ -331,6 +447,10 @@ fi
 # 6. no dangling relative links between documents (anchors included)
 # ---------------------------------------------------------------------------
 while IFS= read -r f; do
+  historical=0
+  current_doc "$f" || historical=1
+  [ "$historical" = 0 ] || [ "$INVENTORY" = 1 ] || continue
+  [ -f "$f" ] || continue
   d=$(dirname "$f")
   while IFS= read -r target; do
     [ -z "$target" ] && continue
@@ -342,7 +462,8 @@ while IFS= read -r f; do
     [ -e "$d/$path" ] || err "${f#./} → dangling link: $target"
   done < <(awk '/^[[:space:]]*```/{fence=!fence;next} !fence' "$f" \
              | grep -oE '\]\([^) ]+\)' 2>/dev/null | sed 's/^](//; s/)$//')
-done < <(find "$DOCS" -name '*.md' -not -path "$DOCS/_attic/*")
+done < <(doc_paths | sort -u)
+historical=0
 
 # ---------------------------------------------------------------------------
 # 7. secrets. High-confidence patterns only.
@@ -403,47 +524,50 @@ if [ -f scripts/docs-check.local.sh ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 8. session ritual -> CI only, needs a comparison commit.
-#    The rule from AGENT-PROTOCOL.md: docs changed means STATE.md changed too,
-#    and the change has to say something.
+# 8. Session evidence: body additions in the selected checkout destinations.
+#    This is a structural floor, not a semantic judgment of the handoff.
 # ---------------------------------------------------------------------------
-if [ -n "${BASE_REF:-}" ]; then
-  if ! git rev-parse --verify -q "${BASE_REF}^{commit}" >/dev/null 2>&1; then
-    note "session-ritual check SKIPPED — BASE_REF '${BASE_REF}' is not a commit in this repo"
-  else
-    changed=$(git diff --name-only "$BASE_REF" HEAD -- $DOCS/ | grep -v "^$DOCS/_attic/" || true)
-    if [ -n "$changed" ]; then
-      if ! printf '%s\n' "$changed" | grep -q "^$DOCS/STATE\.md$"; then
-        err "$DOCS/ changed but $DOCS/STATE.md did not. The Close ritual in $DOCS/AGENT-PROTOCOL.md was skipped."
+body_lines() {
+  awk '
+    NR==1 && /^---$/ {fm=1; next}
+    fm && /^---$/ {fm=0; next}
+    fm {next}
+    /<!--/ {comment=1}
+    comment {if (/-->/) comment=0; next}
+    /^[[:space:]]*#/ {next}
+    {
+      gsub(/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/, "")
+      gsub(/·|—|–/, " ")
+      gsub(/[[:punct:]]/, " ")
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "")
+      gsub(/[[:space:]]+/, " ")
+      if (length) print
+    }'
+}
+if [ -n "$comparison" ]; then
+  session_result='no changes in the checked range'
+  if [ "${#changed[@]}" -gt 0 ]; then
+    session_result='handoff body updated in selected checkout destinations'
+    for p in "${handoffs[@]}"; do
+      before=$(git show "$comparison:$git_prefix$p" 2>/dev/null | body_lines || true)
+      if [ "${#end[@]}" -gt 0 ]; then
+        after=$(git show "HEAD:$git_prefix$p" 2>/dev/null | body_lines || true)
+      elif [ -f "$p" ] && [ ! -L "$p" ]; then
+        after=$(body_lines < "$p")
       else
-        added=$(git diff "$BASE_REF" HEAD -- $DOCS/STATE.md | grep '^+[^+]' | grep '·' || true)
-        if [ -z "$added" ]; then
-          err "$DOCS/STATE.md changed but gained no Session log line — this session left no trace."
-        else
-          best=0
-          while IFS= read -r l; do
-            [ -z "$l" ] && continue
-            body=$(printf '%s' "$l" | sed 's/^+//')
-            seps=$(printf '%s' "$body" | tr -cd '·' | wc -c | tr -d ' ')
-            len=$(printf '%s' "$body" | tr -d '[:space:]' | wc -c | tr -d ' ')
-            [ "$seps" -ge 3 ] && [ "$len" -ge 40 ] && best=1
-          done < <(printf '%s\n' "$added")
-          if [ "$best" -eq 0 ]; then
-            err "$DOCS/STATE.md's new Session log line is too thin to be a handoff."
-            printf '    expected: %s\n' 'date · agent · fragment · what changed · what is next'
-            printf '%s\n' "$added" | head -2 | cut -c1-120 | sed 's/^/    got: /'
-          fi
-        fi
+        after=''
       fi
-      for f in $(printf '%s\n' "$changed" | grep "^$DOCS/plans/.*[0-9].*\.md$" || true); do
-        [ "$(basename "$f")" = "00-template.md" ] && continue
-        git diff "$BASE_REF" HEAD -- "$f" | grep '^+[^+]' | grep -q '·' \
-          || warnf "$f changed without a new Session log line."
-      done
-    fi
+      # ponytail: new body text is a structural floor. Agents must still check
+      # outcome, evidence and next step; this cannot prove prose is truthful.
+      added=$(LC_ALL=C comm -13 <(printf '%s\n' "$before" | LC_ALL=C sort -u) \
+                       <(printf '%s\n' "$after" | LC_ALL=C sort -u))
+      if ! printf '%s\n' "$added" | awk '
+        {s=$0; gsub(/·|—|–/, "", s); gsub(/[[:space:][:punct:][:digit:]]/, "", s); n+=length(s)}
+        END {exit !(n>=24)}'; then
+        err "$p — selected work changed but no substantive handoff body was added. Record the outcome, evidence and next step here, or select the affected checkout destination with --handoff. Metadata and separators do not establish a handoff."
+      fi
+    done
   fi
-else
-  note "session-ritual check skipped — set BASE_REF=<sha> to run it (CI does this for you)"
 fi
 
 echo
@@ -460,5 +584,5 @@ if [ -n "$MAX_WARNINGS" ] && [ "$warn" -gt "$MAX_WARNINGS" ]; then
   exit 1
 fi
 
-printf '%sGREEN%s — documents are consistent%s\n' "$GRN" "$OFF" "$([ "$warn" -gt 0 ] && echo " ($warn warning(s))")"
-printf '%sOne last thing: does %s/STATE.md reflect this session?%s\n' "$DIM" "$DOCS" "$OFF"
+[ "$INVENTORY" != 1 ] || [ "$inventory_count" -ne 0 ] || printf 'INVENTORY — no documentation clues found.\n'
+printf '%sGREEN%s — checked workflow structure; %s%s\n' "$GRN" "$OFF" "$session_result" "$([ "$warn" -gt 0 ] && echo " ($warn warning(s))")"

@@ -229,7 +229,6 @@ $ bash scripts/docs-check.sh
 ✗ CLAUDE.md — still contains template placeholders. Fill them in:
     1: # <PROJECT> — front door for Claude Code
 ✗ docs/STATE.md — owner: unassigned. A load-bearing document needs a named owner
-✗ docs/plans/ has no fragment yet — the install is not finished
 
 FAILED — 11 problem(s), 0 warning(s)
 ```
@@ -245,16 +244,40 @@ there and never overwrites what you have changed.
 
 ### Options
 
+The development checkout adds the continuity options below. For the released
+guard, use the options documented with its tag.
+
 ```text
 bash scripts/docs-check.sh --version           which Fragment this copy came from
 bash scripts/docs-check.sh --max-warnings 5    fail if more than 5 warnings survive
 DOCS_ROOT=documentation bash scripts/docs-check.sh    documents are not in docs/
 BASE_REF=<sha> bash scripts/docs-check.sh      adds the session-ritual check (CI)
+bash scripts/docs-check.sh --inventory        optional historical date/size clues
+bash scripts/docs-check.sh --check-doc docs/contracts/payment.md
+bash scripts/docs-check.sh --handoff docs/plans/07-checkout.md
+bash scripts/docs-check.sh -- src/checkout ':!src/checkout/generated/**'
 ```
 
-`--max-warnings` exists because a warning nobody is ever required to clear stops
-being read. Once the backlog is down, set a budget and the count becomes a
-ratchet instead of scenery.
+`--max-warnings` limits actionable warnings, including project-local rules.
+Inventory does not spend that budget. Daily checks cover core documents, open
+work, changed docs and selected contracts; they do not demand a retrospective
+audit of all history or a dummy fragment for an idle repository.
+
+Local handoff checks compare HEAD with staged, unstaged and new non-ignored work.
+`BASE_REF` selects committed work for CI; add `--worktree` for a longer local
+session. Explicit Git pathspecs scope shared work and generated exclusions.
+The default checkout handoff is STATE; repeat `--handoff` to select only the
+affected destinations from your protocol's source-role map. Body changes are
+structural evidence, not proof of truthful prose or external writes.
+
+Existing daily notes, tickets and task formats remain yours. See
+[continuity and migration](docs/continuity.md) for authority, daily rollover,
+partial updates and portable decisions. Upgrade preserves user-owned protocols
+and workflows, so review those instructions deliberately; do not stamp old dates
+or archive history just to make the guard quiet.
+For existing core filenames, `STATE_FILE`, `PROTOCOL_FILE` and `INDEX_FILE`
+select repo-relative paths and may name the same document. Describe their roles
+in the protocol and supply the values in your existing local/CI command.
 
 ### Two status vocabularies, and why the guard enforces the split
 

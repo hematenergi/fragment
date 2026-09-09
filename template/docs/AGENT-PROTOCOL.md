@@ -31,10 +31,27 @@ Breaking one of these means: revert first, discuss after.
 Work here runs as **fragments**: one self-contained unit of work that can be left at any moment and picked up by someone else — without the conversation that produced it.
 
 ### Open
-1. Read **`STATE.md`** — it says which fragment is active.
-2. Read that fragment in `plans/NN-*.md` **in full**, including its `Session log`.
-3. Read whatever its **"Read first"** section points at.
-4. If no fragment is active: take the top of the queue in `STATE.md` whose dependencies are `done`, and set it to `in-progress`.
+1. Read **`STATE.md`** and the source selected for this session. Search decisions before reopening a settled question.
+2. Read the active fragment or task specification in full. If no work is active, select authorised work whose dependencies are satisfied; do not invent work to fill the board.
+3. Read contracts needed for that work. Check relevant claims against code or other evidence before using them; an old date alone proves neither error nor correctness.
+4. Establish the session's Git range, paths and affected handoff destinations. Do not attribute all dirty files to this session when work is shared.
+
+## Source roles — adapt this table to the project's existing workflow
+
+| Role | Default home | Update when |
+|---|---|---|
+| Session direction | Source chosen by the user: conversation, daily, ticket or brief | Its workflow calls for session results |
+| Project position | `STATE.md` | Active work, blockers or next step changes |
+| Work detail and evidence | Fragment or existing task spec | Progress or acceptance evidence changes |
+| Durable decisions | Existing ADR/design record | A decision must survive the session |
+| Operational contract | Relevant runbook/API/release record | Its contract changes |
+| History | Completed tasks and prior daily notes | Normally retained as history |
+
+One document may hold several roles. Each fact has one primary home; other
+documents link or summarise only what they need. Record authority and read/write
+permissions for selected sources. Newest-file-wins is not an authority rule.
+Use [continuity.md](continuity.md) for daily selection, partial writes and
+portability; no external service or extra daily is required for repo-only work.
 
 ### Work
 - **One fragment at a time.** Found other work? Write a new fragment in the queue; do not do it now.
@@ -42,14 +59,17 @@ Work here runs as **fragments**: one self-contained unit of work that can be lef
 - **Never claim something is done without running the fragment's validation commands** and pasting the result. `status: done` is machine-checked: every checkbox ticked, and the commands you ran recorded in the file. A fragment that is deliberately unfinished is `parked` with a reason, not `done`.
 
 ### Close — do not skip, however small the work was
-1. Tick the checkboxes in the fragment. For anything unticked, write why, there.
-2. Add **one line** to that fragment's `Session log`.
-3. Update `STATE.md`: active fragment, queue, blocked. Its status for the fragment must match the fragment's own `status:` — the guard fails when the two disagree. The session log line is a handoff, not a tick: `date · agent · fragment · what changed · what is next`.
+1. Review the session's outcomes, evidence, decisions and open next steps. Determine which source-role destinations are affected.
+2. Update only the relevant parts, using each destination's format and permissions. Tick completed task criteria and record validation where the task keeps it.
+3. Keep STATE's position consistent with the task. When STATE is the handoff destination, a useful default is `date · agent · fragment · what changed · what is next`; other formats work too.
 4. If a handoff is involved, label it (see `HOW-WE-WORK.md`).
 5. Just fixed a non-obvious, recurrence-prone bug? Write one file in `lessons/` (**Symptom → Root cause → Rule**) and list it in `README.md`.
 6. `bash scripts/docs-check.sh` must be green.
 
-A session that ends without steps 1–3 is **not finished**, no matter how much code got written.
+Report saved and pending destinations honestly. If a required write failed,
+provide the ready-to-copy entry and say the handoff is partial. GREEN checks
+checkout structure and body changes; the agent still checks meaning and external
+write results. Once required updates are confirmed, close without another ritual question.
 
 ## Source-of-truth hierarchy
 
@@ -76,7 +96,7 @@ When two sources disagree, the higher one wins. If the higher one turns out to b
 
 ## Writing rules
 
-- **Frontmatter required** on every `.md` under `docs/`: `id`, `title`, `status`, `owner`, `last-verified`. Values, not just keys — the guard rejects an empty `owner` and a `last-verified` that is not a real date, and warns when a document has changed since the date it claims to have been verified.
+- **Frontmatter on managed working documents**: `id`, `title`, `status`, `owner`, `last-verified`, with real values. Historical documents need no bulk migration. Review relevant claims when using a document; update review dates only after review. `--inventory` exposes date/size clues without warning-budget penalties.
 - **One file, one topic.** New topic = new file + one line in the index.
 - **Point at code with `file.ext:123`**, never a vague description.
 - **Write in the language your team actually speaks.** Documents about cost, authority, or how to stop the system must be readable by non-engineers on their own.
@@ -90,6 +110,7 @@ A new tool does **not** get a copy of the rules. Create its convention file, wri
 
 ```bash
 bash scripts/docs-check.sh
+bash scripts/docs-check.sh --inventory
 ```
 
 Rules that are true only for this repo go in `scripts/docs-check.local.sh` (see

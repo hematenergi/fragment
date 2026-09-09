@@ -8,7 +8,9 @@ last-verified: <YYYY-MM-DD>
 
 # Document index
 
-**Every file under `docs/` must be listed on this page.** Anything unlisted is treated as junk — `scripts/docs-check.sh` will find it. Registration means a markdown link whose target is the file's path relative to `docs/` — exactly like the rows below.
+**List managed documents here.** The guard checks registration for current work;
+older documents appear in optional inventory until brought into use. A link is
+a lookup aid, not a request to read or activate every linked document.
 
 The one exception is `docs/_attic/`, which the guard ignores entirely. Put a document there when it is dead but you are not ready to delete it — inherited files, superseded drafts, anything you want out of the index without losing the trail. Nothing in `_attic/` is checked, indexed, or trusted.
 
@@ -34,6 +36,7 @@ When two documents disagree, the higher one wins. If the higher one is wrong, **
 | [`HOW-WE-WORK.md`](HOW-WE-WORK.md) | Team rhythm: fragments, status labels, who decides what |
 | [`GLOSSARY.md`](GLOSSARY.md) | Jargon in plain language |
 | [`AGENT-PROTOCOL.md`](AGENT-PROTOCOL.md) | The working contract for every agent and human |
+| [`continuity.md`](continuity.md) | Source roles, daily rollover, scoped checks and migration |
 
 ## Fragments
 

@@ -33,6 +33,10 @@ TARGET="${1:-.}"
 DST="$(cd "$TARGET" && pwd)" || exit 1
 [ -n "$DST" ] || { echo "cannot resolve target directory"; exit 1; }
 [ "$SRC" = "$DST" ] && { echo "target is the template itself"; exit 1; }
+if [ "$UPGRADE" = 1 ] && [ ! -f "$DST/scripts/docs-check.sh" ]; then
+  echo "no installed scripts/docs-check.sh — run install.sh without --upgrade for a first install"
+  exit 1
+fi
 
 echo "Fragment $FRAGMENT_VERSION → $DST"
 [ "$DRY" = 1 ] && echo "(dry run — nothing will be written)"
@@ -68,7 +72,11 @@ if [ -f "$DST/scripts/docs-check.sh" ]; then
   if [ -z "$existing" ]; then
     echo "  Fragment is already installed here, from a build too old to carry a version."
   elif [ "$existing" = "$FRAGMENT_VERSION" ]; then
-    echo "  Fragment $existing is already installed here. Nothing to upgrade."
+    if cmp -s "$DST/scripts/docs-check.sh" "$SRC/scripts/docs-check.sh"; then
+      echo "  Fragment $existing is already installed here, identical to this source guard."
+    else
+      echo "  Fragment $existing is already installed here, but its bytes differ from this source guard."
+    fi
   else
     echo "  Fragment $existing is already installed here; this is $FRAGMENT_VERSION."
   fi
@@ -86,6 +94,10 @@ copied=0; skipped=0; upgraded=0; retained=0
 while IFS= read -r f; do
   rel="${f#"$SRC"/}"
   out="$DST/$rel"
+  if [ "$UPGRADE" = 1 ] && [ "$rel" != scripts/docs-check.sh ] && [ ! -e "$out" ]; then
+    printf '  absent  %s  (not added by --upgrade)\n' "$rel"
+    skipped=$((skipped+1)); continue
+  fi
   if [ -e "$out" ]; then
     if [ "$UPGRADE" = 1 ] && [ "$rel" = "scripts/docs-check.sh" ]; then
       installed=$(guard_version "$out")
@@ -141,8 +153,8 @@ echo
 echo "  bash scripts/docs-check.sh"
 echo
 echo "It will fail until you have: filled the <PLACEHOLDER> fields, named an owner"
-echo "on the three load-bearing documents, stamped last-verified with real dates,"
-echo "and written one real fragment in docs/plans/. That is the whole install."
+echo "on the three load-bearing documents, and recorded their real review dates."
+echo "Create a fragment only for real work. Historical documents need no bulk migration."
 echo
 echo "Skipped files were left untouched. Merge them by hand — especially CLAUDE.md"
 echo "and AGENTS.md, which must end up pointing at docs/AGENT-PROTOCOL.md."
