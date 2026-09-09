@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### Fixed — main was red, and only CI knew
+
+`origin/main` had been failing since `266f08c`, and 0.2.0 was tagged and
+released on top of a red build. The cause was one word: `done` sitting
+unquoted in a `for` list in `tests/run.sh`, which shellcheck reads as the
+loop's closing keyword (SC1010). Bash runs it correctly — all four iterations
+happen — so no test was silently lost. It was purely a lint failure, and it
+still stopped the build.
+
+- **`tests/run.sh` now runs shellcheck itself**, with the same invocation CI
+  uses. shellcheck was enforced in exactly one place, and that place was not
+  the one anybody looks at before pushing — which is this project's own
+  argument about single points of enforcement, pointed the wrong way.
+- A missing shellcheck prints a visible `SKIP` rather than failing. The suite's
+  one hard rule is that it needs nothing beyond `bash` and `git`, and making
+  the tests unrunnable without a linter to enforce a linter would break it.
+
 ## 0.3.0 — 2026-09-09
 
 ### Upgrading from 0.2.0 — every parked fragment needs a reason

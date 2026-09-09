@@ -96,6 +96,31 @@ echo "Fragment — guard tests"
 echo
 
 # ---------------------------------------------------------------------------
+echo "lint"
+# ---------------------------------------------------------------------------
+# CI ran shellcheck and nothing else did, so a warning rode into a tagged
+# release: nobody had it installed locally, and `origin/main` was red for two
+# commits before anyone looked. Running it here closes that gap for whoever
+# does have it.
+#
+# A missing shellcheck is a visible skip rather than a failure. The one hard
+# rule for this suite is that it needs nothing beyond bash and git, and making
+# the tests unrunnable without a linter would break it to enforce a linter.
+if command -v shellcheck >/dev/null 2>&1; then
+  if shellcheck -S warning \
+       "$ROOT/install.sh" \
+       "$ROOT/template/scripts/docs-check.sh" \
+       "$ROOT/tests/run.sh" > "$TMP/shellcheck.out" 2>&1; then
+    ok "shellcheck is clean at -S warning (the invocation CI uses)"
+  else
+    bad "shellcheck reports what CI will fail on"
+    sed 's/^/        /' "$TMP/shellcheck.out" | head -24
+  fi
+else
+  printf '  SKIP  shellcheck not installed — CI still runs it. brew install shellcheck\n'
+fi
+
+# ---------------------------------------------------------------------------
 echo "adoption"
 # ---------------------------------------------------------------------------
 raw="$TMP/raw"; mkdir -p "$raw"; git -C "$raw" init -q .
@@ -204,7 +229,7 @@ for st in active draft; do
     "is a document status, not a fragment one"
 done
 
-for st in todo in-progress done parked; do
+for st in todo in-progress 'done' parked; do
   d="$(fixture "dv-$st")"
   perl -pi -e "s/^status: active\$/status: $st/" "$d/docs/GLOSSARY.md"
   expect_fail "$d" "a document marked '$st' is told it is not a fragment" \
