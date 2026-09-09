@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+### Added — Fragment uses Fragment
+
+Until now `docs/` here held a single file and the guard was never pointed at the
+repository that ships it. Every defect found so far had to be found in somebody
+else's project first, including both of the ones above.
+
+- **The harness is installed into its own root**: `docs/STATE.md` as the board,
+  `docs/plans/` carrying the four open items as real fragments, `docs/decisions/`
+  and `docs/lessons/`, and the shipped `docs.yml` workflow running the guard on
+  every push. Core and fragment-workflow tiers only — no non-engineer layer, no
+  runbooks, no research, because the README's own advice says to strip what does
+  not apply.
+- `scripts/docs-check.sh` is a third byte-identical copy of the canonical guard,
+  with a test that fails if it drifts.
+- The session ritual now applies here: a change touching `docs/` that leaves
+  `docs/STATE.md` alone fails the build.
+
+**It found something on the first run.** gitleaks — part of the workflow Fragment
+ships — flags `tests/run.sh`, which carries a fake AWS key id and a fake GitHub
+token because the guard's secret tripwire has to be tested against something
+secret-shaped. `.gitleaks.toml` exempts that one file, and the shipped workflow
+now warns adopters that a repository testing a detector needs to allowlist the
+path rather than pin a fingerprint.
+
 ### Fixed — the staleness warning measured the wrong thing
 
 0.3.0 added a warning for a `todo` left alone too long. It read the fragment's

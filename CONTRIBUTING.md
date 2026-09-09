@@ -14,7 +14,26 @@ standing between that claim and hypocrisy.
 bash tests/run.sh
 ```
 
-43 cases, no dependencies beyond `bash`, `git` and `perl`.
+83 cases, no dependencies beyond `bash`, `git` and `perl`. It also runs
+shellcheck when you have it, with the same arguments CI uses, and prints a
+visible `SKIP` when you do not — a rule enforced only in CI is a rule nobody
+runs, which is how a lint warning once rode into a tagged release.
+
+**The guard has three copies and two of them are vendored.** Changing
+`template/scripts/docs-check.sh` means copying it to `scripts/` and to
+`examples/online-shop/scripts/` in the same commit; a test fails on either
+drifting. See `docs/decisions/0001-one-canonical-guard-vendored-copies.md` for
+why they are copies rather than symlinks.
+
+## Fragment uses Fragment
+
+This repository installs its own harness: `docs/STATE.md` is the board,
+`docs/plans/` is the real backlog, and `scripts/docs-check.sh` runs against it in
+CI. That means the session ritual applies here too — **a change that touches
+`docs/` and leaves `docs/STATE.md` alone fails the build.**
+
+It is not decoration. Until it was installed, every defect Fragment shipped was
+found in somebody else's repository.
 
 ## Rules for the guard itself
 

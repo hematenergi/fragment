@@ -1,3 +1,11 @@
+---
+id: why
+title: Why each rule exists
+status: active
+owner: hematenergi
+last-verified: 2026-09-09
+---
+
 # Why each rule exists
 
 Every rule in Fragment exists because something broke without it. This page is the receipts.

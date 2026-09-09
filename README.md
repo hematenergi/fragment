@@ -451,7 +451,7 @@ it.
 bash tests/run.sh
 ```
 
-43 cases across Linux, macOS and Windows/Git Bash. The guard is the load-bearing
+83 cases across Linux, macOS and Windows/Git Bash. The guard is the load-bearing
 part of this project and it does not change without a test —
 see [`CONTRIBUTING.md`](CONTRIBUTING.md). It shipped without one once, and an
 untouched install came out green while the README called it a checklist.

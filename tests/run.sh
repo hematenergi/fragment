@@ -494,6 +494,20 @@ c="$TMP/clone"; rm -rf "$c"; git clone -q "$d" "$c" 2>/dev/null
 expect_green "$c" "  ... and survives a fresh clone (i.e. it works in CI)" "unchanged for"
 
 # ---------------------------------------------------------------------------
+echo; echo "this repository, checked by the thing it ships"
+# ---------------------------------------------------------------------------
+# Fragment did not use Fragment for its first three releases, and every defect
+# found so far was found in somebody else's repository. These two cases are the
+# whole reason the next one gets found here first.
+expect_green "$ROOT" "Fragment's own docs pass Fragment's own guard"
+
+if cmp -s "$ROOT/scripts/docs-check.sh" "$ROOT/template/scripts/docs-check.sh"; then
+  ok "  ... running a verbatim copy of the canonical guard"
+else
+  bad "  ... but scripts/docs-check.sh has drifted from template/scripts/docs-check.sh"
+fi
+
+# ---------------------------------------------------------------------------
 echo; echo "published example"
 # ---------------------------------------------------------------------------
 expect_green "$ROOT/examples/online-shop" "the filled-in example is green"

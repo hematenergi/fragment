@@ -1,0 +1,16 @@
+# gitleaks runs in the workflow Fragment ships (.github/workflows/docs.yml),
+# and this repository is the first thing it flagged: tests/run.sh carries a fake
+# AWS key id and a fake GitHub token on purpose, because the guard's own secret
+# tripwire has to be tested against something that looks like a secret.
+#
+# Scanning is off for that one file and nowhere else. A test file whose job is
+# to contain credential-shaped strings is the one place where a hit means the
+# tests are working.
+title = "fragment"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "deliberate credential-shaped test vectors"
+paths = ['''tests/run\.sh''']
