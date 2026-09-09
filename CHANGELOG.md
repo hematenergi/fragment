@@ -2,6 +2,49 @@
 
 ## Unreleased
 
+### Fixed — a fragment could declare a status it was then punished for
+
+- **`status: active` on a fragment was impossible to satisfy.** The frontmatter
+  check accepted `active`, `draft` and `superseded` on any document; the board
+  check only recognised `todo`, `in-progress`, `done`, `parked`. So a fragment
+  marked `active` either warned forever ("no row carries a `status` token") or,
+  if you did add a row, failed with *"one of them is lying"* — blaming two files
+  that were both telling the truth. No board edit could clear it; the only way
+  out was to guess a different status.
+
+  `HOW-WE-WORK.md` was teaching the wrong word: *"One **active** fragment at a
+  time"*, when the lifecycle value is `in-progress`. That sentence is where the
+  broken state came from in the repo Fragment was extracted from — eleven
+  fragments marked `active`, eleven permanent warnings, and a board column
+  filled with prose because no token fit.
+
+  The two vocabularies are now enforced separately, at the file: documents are
+  `active`/`draft`/`superseded`, fragments are `todo`/`in-progress`/`done`/`parked`.
+  The error names the vocabulary it wanted instead of pointing at the board.
+
+- **The tests could not have caught it.** Every fragment fixture used
+  `status: todo` — the one value that worked. The suite now walks the whole
+  vocabulary in both directions and asserts every legal fragment status can
+  actually reach green.
+
+- **`is_fragment()` is now the single definition of what a fragment is.** The
+  vocabulary check and the board check used to describe that set separately.
+
+### Added
+
+- **`--version`**, on both the guard and the installer. An installed copy
+  carries `FRAGMENT_VERSION`, so a repo that adopted Fragment months ago can be
+  asked what it is running — previously nothing on disk recorded it.
+- **`install.sh --dry-run`** — list what would be written, touch nothing.
+- **Re-running the installer recognises an existing install** and names both
+  versions, instead of looking like a fresh install that mostly skipped.
+- **`DOCS_ROOT`** — documents no longer have to live in `docs/`. The path was
+  hardcoded in about thirty places, which kept the guard out of every repo that
+  had settled on another name, and out of monorepos entirely.
+- **`--max-warnings N`** — fail when more than N warnings survive. Warnings
+  still never fail the build on their own; this makes the count a ratchet once
+  the backlog is down, so it stays something people read.
+
 ## 0.1.0 — 2026-08-28
 
 The guard was audited against the private repo it was extracted from, and
