@@ -70,6 +70,14 @@ git rev-parse --verify -q HEAD >/dev/null 2>&1 && HAVE_GIT=1
 to_epoch() {
   date -j -f '%Y-%m-%d' "$1" '+%s' 2>/dev/null || date -d "$1" '+%s' 2>/dev/null || echo ''
 }
+
+# One frontmatter field, unquoted. The document loop and the fragment loop both
+# need `last-verified`; two copies of this expression are two chances for them
+# to disagree about what the field says.
+fm() {  # $1 = key, $2 = file
+  grep -m1 "^$1:" "$2" 2>/dev/null \
+    | sed "s/^$1:[[:space:]]*//; s/[[:space:]]*\$//; s/^[\"']//; s/[\"']\$//"
+}
 NOW=$(date '+%s')
 
 # What counts as a fragment, defined once. Section 3 finds the same set with
@@ -122,7 +130,7 @@ while IFS= read -r f; do
   done
 
   # last-verified must be a real ISO date, not <YYYY-MM-DD> and not prose.
-  lv=$(grep -m1 '^last-verified:' "$f" | sed 's/^last-verified:[[:space:]]*//; s/[[:space:]]*$//; s/^["'"'"']//; s/["'"'"']$//')
+  lv=$(fm last-verified "$f")
   if [ -n "$lv" ]; then
     case "$lv" in
       [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;;
@@ -265,18 +273,29 @@ if [ -d "$DOCS/plans" ]; then
       [ "${fences:-0}" -lt 2 ] && err "$f — status: done but it records no commands that were run. Paste the validation output"
     fi
 
-    # 3d. a queue nobody revisits is not a queue. A `todo` sitting untouched for
-    #     a season is usually one of two things — overtaken by work that
-    #     happened elsewhere, or no longer wanted — and both have somewhere to
-    #     go now (`superseded`, `parked`). Warning, not error: this should
-    #     prompt a decision, not block a release over a document.
+    # 3d. a queue nobody revisits is not a queue. A `todo` left alone for a
+    #     season is usually one of two things — overtaken by work that happened
+    #     elsewhere, or no longer wanted — and both have somewhere to go now
+    #     (`superseded`, `parked`). Warning, not error: this should prompt a
+    #     decision, not block a release over a document.
     #
-    #     Git commit date, not file mtime: in CI every clone is brand new.
-    if [ "$st" = "todo" ] && [ "$HAVE_GIT" = 1 ]; then
-      fd=$(git log -1 --format=%ct -- "$f" 2>/dev/null || true)
-      if [ -n "$fd" ]; then
-        fage=$(( (NOW - fd) / 86400 ))
-        [ "$fage" -gt "$STALE_TODO_DAYS" ] && warnf "$f — todo, untouched for $fage days. Still wanted, or overtaken? (superseded-by / parked)"
+    #     Measured from `last-verified`, not from the file's commit date. The
+    #     commit date answers "was this file touched", and a rename, a
+    #     formatting pass or a frontmatter sweep answers yes for every fragment
+    #     at once. That is not hypothetical: the first version of this check
+    #     measured exactly that, and in the repo it was written for it never
+    #     fired once — a single mechanical commit had reset the clock on
+    #     fragments nobody had reconsidered in two seasons.
+    #
+    #     `last-verified` is the one field here that means a human confirmed
+    #     this is still true. Nothing mechanical can bump it honestly, and a
+    #     human bumping it is precisely the event being measured.
+    if [ "$st" = "todo" ]; then
+      flv=$(fm last-verified "$f")
+      e_flv=$(to_epoch "$flv")
+      if [ -n "$e_flv" ]; then
+        fage=$(( (NOW - e_flv) / 86400 ))
+        [ "$fage" -gt "$STALE_TODO_DAYS" ] && warnf "$f — todo, unverified for $fage days. Still wanted, or overtaken? (superseded-by / parked)"
       fi
     fi
   done < <(printf '%s\n' "$frags")

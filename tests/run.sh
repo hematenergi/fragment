@@ -286,22 +286,37 @@ expect_fail "$d" "a superseded document also has to say what replaced it" "needs
 # ---------------------------------------------------------------------------
 echo; echo "a queue nobody revisits"
 # ---------------------------------------------------------------------------
-# The fixture commits everything as it builds, so the fragment must actually
-# change for the backdated commit to touch its path — `git log -- <file>` only
-# lists commits that modified it, and an empty commit would leave the fragment
-# dated today.
+# Staleness is measured from `last-verified` — the one field that means a human
+# looked — and not from the file's commit date.
 d="$(fixture stale)"
-printf '\n<!-- aged -->\n' >> "$d/docs/plans/01-example.md"
+perl -pi -e 's/^last-verified: .*/last-verified: 2024-01-01/' "$d/docs/plans/01-example.md"
+expect_green "$d" "a todo nobody has verified in a season warns instead of failing" "unverified for"
+
+# The regression that forced the measurement to change. The old check read the
+# file's commit date, so one mechanical commit — a rename, a formatting sweep —
+# reset the clock on every fragment at once, and in the repo this was written
+# for the warning never fired once. Commit a touch dated now: the fragment is
+# still unverified since 2024 and must still say so.
+d="$(fixture bulk-touch)"
+perl -pi -e 's/^last-verified: .*/last-verified: 2024-01-01/' "$d/docs/plans/01-example.md"
+printf '\n<!-- reflowed by a formatting sweep -->\n' >> "$d/docs/plans/01-example.md"
 git -C "$d" add -A >/dev/null 2>&1
-GIT_COMMITTER_DATE="2024-01-01T00:00:00" GIT_AUTHOR_DATE="2024-01-01T00:00:00" \
-  git -C "$d" commit -qm old >/dev/null 2>&1
-expect_green "$d" "an old todo warns instead of failing" "untouched for"
+git -C "$d" commit -qm "chore: formatting sweep" >/dev/null 2>&1
+expect_green "$d" "  ... and a bulk commit touching every fragment does not reset the clock" "unverified for"
 
 # The threshold is a knob, so a team that works in longer cycles is not nagged.
 out=$( cd "$d" && STALE_TODO_DAYS=99999 bash scripts/docs-check.sh 2>&1 )
-printf '%s\n' "$out" | grep -q 'untouched for' \
+printf '%s\n' "$out" | grep -q 'unverified for' \
   && bad "  ... but STALE_TODO_DAYS did not raise the threshold" \
   || ok "  ... and STALE_TODO_DAYS raises the threshold"
+
+# The other half of the rule: a fragment somebody verified today is left alone,
+# so the warning stays worth reading.
+d="$(fixture fresh-todo)"
+out=$( cd "$d" && bash scripts/docs-check.sh 2>&1 )
+printf '%s\n' "$out" | grep -q 'unverified for' \
+  && bad "a freshly verified todo is nagged anyway" \
+  || ok "a freshly verified todo is left alone"
 
 # ---------------------------------------------------------------------------
 echo; echo "installer"

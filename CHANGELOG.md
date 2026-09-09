@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### Fixed — the staleness warning measured the wrong thing
+
+0.3.0 added a warning for a `todo` left alone too long. It read the fragment's
+git commit date, which answers *was this file touched* — and a rename, a
+formatting pass or a frontmatter sweep answers yes for every fragment at once.
+
+In the repo it was written for, one mechanical commit had already reset the
+clock on the whole queue, so the warning **never fired once**, including on
+fragments nobody had reconsidered in two seasons. It could not have caught the
+case it exists for.
+
+- **Staleness is now measured from `last-verified`**, the one field whose
+  meaning is "a human confirmed this is still true". Nothing mechanical can
+  bump it honestly, and a human bumping it is exactly the event worth
+  measuring. The check no longer needs git at all.
+- The wording changed with the measurement: *unverified for N days*, not
+  *untouched for N days*.
+- `fm` reads one frontmatter field, in one place, for both the document loop
+  and the fragment loop.
+
 ### Fixed — main was red, and only CI knew
 
 `origin/main` had been failing since `266f08c`, and 0.2.0 was tagged and
