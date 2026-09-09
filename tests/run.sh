@@ -248,6 +248,33 @@ printf '%s\n' "$out" | grep -q 'too old to carry a version' \
   || bad "  ... unversioned copy was not recognised"
 
 # ---------------------------------------------------------------------------
+echo; echo "release consistency"
+# ---------------------------------------------------------------------------
+# The version is written by hand in seven places. It drifted on the very release
+# that introduced --version: the guard still said 0.1.0 while behaving
+# differently from it, so the stamp meant to end "which version is this?" was
+# the first thing to lie. Nothing here is clever; it just refuses to let the
+# copies disagree.
+V=$(sed -n 's/^FRAGMENT_VERSION="\(.*\)"$/\1/p' "$ROOT/template/scripts/docs-check.sh" | head -1)
+case "$V" in
+  [0-9]*.[0-9]*.[0-9]*) ok "the guard carries a version-shaped FRAGMENT_VERSION ($V)" ;;
+  *) bad "FRAGMENT_VERSION is not a version: '$V'" ;;
+esac
+
+# The newest dated section of the changelog is the release being shipped.
+CL=$(grep -m1 -E '^## [0-9]+\.[0-9]+\.[0-9]+ ' "$ROOT/CHANGELOG.md" | sed -E 's/^## ([0-9.]+) .*/\1/')
+[ "$CL" = "$V" ] && ok "  ... and the newest CHANGELOG entry is that same version" \
+  || bad "  ... but the newest CHANGELOG entry is $CL"
+
+# Every other hand-written mention must agree. A stale install line sends people
+# to a tag that predates the fix they are reading about.
+for f in README.md site/index.html; do
+  wrong=$(grep -oE 'v?[0-9]+\.[0-9]+\.[0-9]+' "$ROOT/$f" | sed 's/^v//' | sort -u | grep -v "^$V\$" || true)
+  [ -z "$wrong" ] && ok "  ... and $f mentions no other version" \
+    || bad "  ... but $f still mentions: $(printf '%s' "$wrong" | tr '\n' ' ')"
+done
+
+# ---------------------------------------------------------------------------
 echo; echo "portability and reporting"
 # ---------------------------------------------------------------------------
 d="$(fixture ver)"

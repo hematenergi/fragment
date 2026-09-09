@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## 0.2.0 — 2026-09-09
+
+### Upgrading from 0.1.0 — this one can turn an existing repo red
+
+`status: active` on a fragment now **fails**, where 0.1.0 let it warn forever.
+If your `docs/plans/` has fragments marked `active`, `draft` or `superseded`,
+they will each raise an error until you move them onto the fragment lifecycle:
+`todo`, `in-progress`, `done` or `parked`. A fragment being worked on right now
+is `in-progress`.
+
+That is the point — those fragments were never satisfiable before, so the red is
+older than this release. But it arrives the moment you copy the new guard in,
+and the installer does not overwrite files, so it arrives when you choose.
+
 ### Fixed — a fragment could declare a status it was then punished for
 
 - **`status: active` on a fragment was impossible to satisfy.** The frontmatter
