@@ -10,9 +10,13 @@ last-verified: 2026-09-09
 
 ## Symptom
 
-A warning shipped in 0.3.0 for a `todo` fragment left alone too long. In the only
-repository using Fragment outside its own tests, it **never fired once** —
+A warning written during the 0.3.0 work, for a `todo` fragment left alone too
+long. In the one repository using Fragment for real — where the guard is copied
+in directly rather than installed from a tag — it **never fired once**,
 including on fragments nobody had opened in two seasons.
+
+It was caught before the release went out, which is the only reason this is a
+lesson and not an incident.
 
 ## Root cause
 

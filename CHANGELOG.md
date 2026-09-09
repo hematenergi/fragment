@@ -1,68 +1,5 @@
 # Changelog
 
-## Unreleased
-
-### Added — Fragment uses Fragment
-
-Until now `docs/` here held a single file and the guard was never pointed at the
-repository that ships it. Every defect found so far had to be found in somebody
-else's project first, including both of the ones above.
-
-- **The harness is installed into its own root**: `docs/STATE.md` as the board,
-  `docs/plans/` carrying the four open items as real fragments, `docs/decisions/`
-  and `docs/lessons/`, and the shipped `docs.yml` workflow running the guard on
-  every push. Core and fragment-workflow tiers only — no non-engineer layer, no
-  runbooks, no research, because the README's own advice says to strip what does
-  not apply.
-- `scripts/docs-check.sh` is a third byte-identical copy of the canonical guard,
-  with a test that fails if it drifts.
-- The session ritual now applies here: a change touching `docs/` that leaves
-  `docs/STATE.md` alone fails the build.
-
-**It found something on the first run.** gitleaks — part of the workflow Fragment
-ships — flags `tests/run.sh`, which carries a fake AWS key id and a fake GitHub
-token because the guard's secret tripwire has to be tested against something
-secret-shaped. `.gitleaks.toml` exempts that one file, and the shipped workflow
-now warns adopters that a repository testing a detector needs to allowlist the
-path rather than pin a fingerprint.
-
-### Fixed — the staleness warning measured the wrong thing
-
-0.3.0 added a warning for a `todo` left alone too long. It read the fragment's
-git commit date, which answers *was this file touched* — and a rename, a
-formatting pass or a frontmatter sweep answers yes for every fragment at once.
-
-In the repo it was written for, one mechanical commit had already reset the
-clock on the whole queue, so the warning **never fired once**, including on
-fragments nobody had reconsidered in two seasons. It could not have caught the
-case it exists for.
-
-- **Staleness is now measured from `last-verified`**, the one field whose
-  meaning is "a human confirmed this is still true". Nothing mechanical can
-  bump it honestly, and a human bumping it is exactly the event worth
-  measuring. The check no longer needs git at all.
-- The wording changed with the measurement: *unverified for N days*, not
-  *untouched for N days*.
-- `fm` reads one frontmatter field, in one place, for both the document loop
-  and the fragment loop.
-
-### Fixed — main was red, and only CI knew
-
-`origin/main` had been failing since `266f08c`, and 0.2.0 was tagged and
-released on top of a red build. The cause was one word: `done` sitting
-unquoted in a `for` list in `tests/run.sh`, which shellcheck reads as the
-loop's closing keyword (SC1010). Bash runs it correctly — all four iterations
-happen — so no test was silently lost. It was purely a lint failure, and it
-still stopped the build.
-
-- **`tests/run.sh` now runs shellcheck itself**, with the same invocation CI
-  uses. shellcheck was enforced in exactly one place, and that place was not
-  the one anybody looks at before pushing — which is this project's own
-  argument about single points of enforcement, pointed the wrong way.
-- A missing shellcheck prints a visible `SKIP` rather than failing. The suite's
-  one hard rule is that it needs nothing beyond `bash` and `git`, and making
-  the tests unrunnable without a linter to enforce a linter would break it.
-
 ## 0.3.0 — 2026-09-09
 
 ### Upgrading from 0.2.0 — every parked fragment needs a reason
@@ -88,10 +25,61 @@ outside the fragment cannot supply, and `parked` demanded nothing at all.
   green: park everything, explain nothing. The guard's own error message
   suggested it ("or park the fragment and say why") while never checking that a
   why was written.
-- **A `todo` untouched for 30 days now warns**, with `STALE_TODO_DAYS` to change
-  the threshold. A queue nobody revisits is not a queue; this is what surfaces
-  the fragments that were quietly overtaken, instead of leaving them to look
-  like work that is still coming.
+- **A `todo` nobody has verified for 30 days now warns**, with `STALE_TODO_DAYS`
+  to change the threshold. A queue nobody revisits is not a queue; this is what
+  surfaces the fragments that were quietly overtaken, instead of leaving them to
+  look like work that is still coming.
+
+  It measures `last-verified`, not the file's commit date. The first cut of this
+  check used the commit date and never fired once, in the one repository using
+  Fragment for real — a rename, a formatting pass or a frontmatter sweep touches
+  every fragment at once and resets the whole queue's clock, and one such commit
+  had landed the week before. `last-verified` is the only field here whose
+  meaning is a human confirming the document is still true, which makes it the
+  only one a mechanical commit cannot bump honestly. The check needs no git at
+  all now. Written up in `docs/lessons/measuring-touch-instead-of-review.md`.
+
+### Added — Fragment uses Fragment
+
+Until now `docs/` here held a single file and the guard was never pointed at the
+repository that ships it. Every defect found so far had to be found in somebody
+else's project first — including the status-vocabulary bug in 0.2.0 and the
+staleness measurement above.
+
+- **The harness is installed into its own root**: `docs/STATE.md` as the board,
+  `docs/plans/` carrying the four open items as real fragments, `docs/decisions/`
+  and `docs/lessons/`, and the shipped `docs.yml` workflow running the guard on
+  every push. Core and fragment-workflow tiers only — no non-engineer layer, no
+  runbooks, no research, because the README's own advice says to strip what does
+  not apply.
+- `scripts/docs-check.sh` is a third byte-identical copy of the canonical guard,
+  with a test that fails if it drifts.
+- The session ritual now applies here: a change touching `docs/` that leaves
+  `docs/STATE.md` alone fails the build.
+
+**It found something on the first run.** gitleaks — part of the workflow Fragment
+ships — flags `tests/run.sh`, which carries a fake AWS key id and a fake GitHub
+token because the guard's secret tripwire has to be tested against something
+secret-shaped. `.gitleaks.toml` exempts that one file, and the shipped workflow
+now warns adopters that a repository testing a detector needs to allowlist the
+path rather than pin a fingerprint.
+
+### Fixed — main was red, and only CI knew
+
+`origin/main` had been failing since `266f08c`, and 0.2.0 was tagged and
+released on top of a red build. The cause was one word: `done` sitting
+unquoted in a `for` list in `tests/run.sh`, which shellcheck reads as the
+loop's closing keyword (SC1010). Bash runs it correctly — all four iterations
+happen — so no test was silently lost. It was purely a lint failure, and it
+still stopped the build.
+
+- **`tests/run.sh` now runs shellcheck itself**, with the same invocation CI
+  uses. shellcheck was enforced in exactly one place, and that place was not
+  the one anybody looks at before pushing — which is this project's own
+  argument about single points of enforcement, pointed the wrong way.
+- A missing shellcheck prints a visible `SKIP` rather than failing. The suite's
+  one hard rule is that it needs nothing beyond `bash` and `git`, and making
+  the tests unrunnable without a linter to enforce a linter would break it.
 
 ### Changed
 

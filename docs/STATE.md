@@ -14,14 +14,16 @@ last-verified: 2026-09-09
 
 ## Phase
 
-**Post-0.3.0, unreleased.** Three commits sit ahead of `origin/main`: the 0.3.0
-feature, a red-CI fix, and a correction to the staleness check that 0.3.0
-shipped broken. The gate that ends this phase is a release that goes out on a
-green build, which 0.2.0 did not.
+**0.3.0 released.** Everything local is pushed and tagged, and it went out on a
+green build — which 0.2.0 did not. The next phase is the queue below, taken in
+order, starting with the one adopter who is stuck.
+
+The gate that ends it: an existing install can reach a newer guard with one
+documented command.
 
 ## Active fragment
 
-_(none — the queue below is real work, none of it started)_
+_(none — 01 is next, not yet started)_
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -39,8 +41,7 @@ _(none — the queue below is real work, none of it started)_
 
 | What | Waiting on | Since |
 |---|---|---|
-| Whether 02, 03 and 04 are wanted at all, or whether the release comes first | owner | 2026-09-09 |
-| Push and tag: three commits are local only, and pushing `site/` redeploys the site | owner | 2026-09-09 |
+| Whether 02 and 04 are wanted at all, or whether 01 ends this round | owner | 2026-09-09 |
 
 ## Decisions already made — do not ask again
 
@@ -60,6 +61,11 @@ _(none — the queue below is real work, none of it started)_
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- `2026-09-09` · claude-opus-5 · — · 0.3.0 tagged and released on a green build.
+  `Unreleased` was folded into it rather than cut as 0.3.1: 0.3.0 had never been
+  tagged, so nothing in it had ever reached anyone, and describing the staleness
+  correction as a fix to a shipped release would have invented one · **Next:**
+  fragment 01.
 - `2026-09-09` · claude-opus-5 · — · Fragment now uses Fragment: Core plus the fragment
   workflow installed into its own root, with the four open items written up as
   a real queue. The first run of the shipped workflow immediately found
