@@ -14,16 +14,17 @@ last-verified: 2026-09-09
 
 ## Phase
 
-**0.4.0 is the published baseline.** Fragment 05 implements the owner's
-continuity proposal locally: optional inventory, scoped session evidence and
-existing source roles. These changes are not yet released.
+**0.5.0 is prepared for the owner-authorised release.** Fragment 05 implements
+optional inventory, scoped session evidence and existing source roles. Release
+notes include the handoff and CI migration; user-owned adopter protocols and
+workflows still require deliberate review, not an automatic overwrite.
 
 The gate: the mature-adopter case closes quietly with recorded results while
 missing checkout handoff evidence and concrete structural conflicts still fail.
 
 ## Active fragment
 
-_(none — 05 is complete locally; release/migration is a separate next step)_
+_(none — 05 is complete; adopter migration remains a separate next step)_
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -66,6 +67,7 @@ _(none — 05 is complete locally; release/migration is a separate next step)_
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-09-09 · GPT-6 / Codex · 05 · packaged 0.5.0 with consistent version stamps, an immutable upgrade fingerprint and migration notes; 138 release tests and the local guard passed before the owner-authorised push/release · next: verify publication and GitHub checks; adopter migration is not included.
 - 2026-09-09 · GPT-6 / Codex · 05 · completed the continuity proposal with 138 passing tests; an isolated adopter checkout moved from 122 warnings to a quiet daily result, while inventory retained the clues · next: review the unreleased implementation and protocol migration; no adopter files or public release changed in this session.
 - `2026-09-09` · codex · 01 · released 0.4.0 with `install.sh --upgrade`; an
   unmodified guard from a known earlier Fragment release upgrades in one

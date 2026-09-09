@@ -76,4 +76,5 @@ checks cannot certify external writes or truth of prose.
 
 ## Session log
 
+- 2026-09-09 · GPT-6 / Codex · 05 · prepared release 0.5.0 at the owner's request, including migration guidance, matching stamps and the next-release upgrade regression; all 138 release tests and the local guard passed · next: publish the verified tag as Latest and inspect CI; the real adopter remains unchanged.
 - 2026-09-09 · GPT-6 / Codex · 05 · implemented inventory, scoped checkout evidence, reusable source roles and upgrade without optional-file backlogs; 138 tests and adopter-clone comparison passed · next: review the unreleased change and migrate user-owned protocols deliberately before rollout.

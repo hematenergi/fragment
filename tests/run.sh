@@ -355,18 +355,18 @@ printf '%s\n' "$out" | grep -q 'too old to carry a version' \
   || bad "  ... unversioned copy was not recognised"
 
 # Upgrade from a clean, recognised guard. Give a disposable copy of the
-# installer the next version number: the target remains a real 0.4.0 install,
+# installer the next version number: the target remains a real 0.5.0 install,
 # so this proves the same checksum gate an actual later release will use.
 upgrader="$TMP/upgrader"; mkdir -p "$upgrader"
 cp "$ROOT/install.sh" "$upgrader/install.sh"
 cp -R "$ROOT/template" "$upgrader/template"
-perl -pi -e 's/^FRAGMENT_VERSION="0\.4\.0"$/FRAGMENT_VERSION="0.5.0"/' \
+perl -pi -e 's/^FRAGMENT_VERSION="0\.5\.0"$/FRAGMENT_VERSION="0.6.0"/ or die "missing version stamp" if /^FRAGMENT_VERSION=/' \
   "$upgrader/template/scripts/docs-check.sh"
 # This simulation recognises the source guard as its preceding version. Real
 # release fingerprints in install.sh remain immutable; never update a released
 # checksum merely because the development worktree changes.
 read -r test_sum test_bytes _ < <(cksum "$ROOT/template/scripts/docs-check.sh")
-perl -pi -e 's/0\.4\.0:3777372876:21571/0.4.0:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.4\.0:/' "$upgrader/install.sh"
+perl -pi -e 's/0\.5\.0:3804662719:26463/0.5.0:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.5\.0:/' "$upgrader/install.sh"
 
 d="$TMP/upgrade-dry"; mkdir -p "$d"; git -C "$d" init -q .
 bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
@@ -381,7 +381,7 @@ after=$(cksum "$d/scripts/docs-check.sh")
 out=$( bash "$upgrader/install.sh" --upgrade "$d" 2>&1 ); c=$?
 installed=$(sed -n 's/^FRAGMENT_VERSION="\(.*\)"$/\1/p' "$d/scripts/docs-check.sh" | head -1)
 [ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'upgraded scripts/docs-check.sh' \
-  && [ "$installed" = "0.5.0" ] \
+  && [ "$installed" = "0.6.0" ] \
   && cmp -s "$d/scripts/docs-check.sh" "$upgrader/template/scripts/docs-check.sh" \
   && ok "--upgrade replaces an unmodified known guard" \
   || bad "--upgrade did not replace the known guard"
@@ -397,7 +397,7 @@ printf '\n# team-specific guard rule\n' >> "$d/scripts/docs-check.sh"
 before=$(cksum "$d/scripts/docs-check.sh")
 out=$( bash "$upgrader/install.sh" --upgrade "$d" 2>&1 ); c=$?
 after=$(cksum "$d/scripts/docs-check.sh")
-[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.4.0' \
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.5.0' \
   && [ "$before" = "$after" ] \
   && ok "--upgrade never overwrites a customised guard" \
   || bad "--upgrade overwrote or failed to name a customised guard"

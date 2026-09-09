@@ -1,6 +1,20 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 — 2026-09-09
+
+### Migration — session evidence now includes code changes
+
+Local checks now include pending code and documentation changes. Record results
+in STATE or select the affected checkout destinations with `--handoff`; metadata
+alone does not count. Use explicit Git pathspecs to scope generated or parallel
+work. CI must provide its actual comparison base; unavailable bases fail instead
+of silently falling back to another commit.
+
+The guard upgrade preserves custom protocols and workflows. Review the source
+role and CI guidance deliberately when adopting this release. Date/size clues
+remain available with `--inventory` and no longer consume warning budgets.
+
+### Changes
 
 - Historical review-date and size clues move to `--inventory`, outside warning
   budgets. Daily checks focus on core, open work, changed docs and contracts

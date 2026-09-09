@@ -23,7 +23,7 @@ set -uo pipefail
 # Stamped so an installed copy can say where it came from. Without this a repo
 # that adopted Fragment has no way to answer "which version is this?", and
 # neither does anyone helping them.
-FRAGMENT_VERSION="0.4.0"
+FRAGMENT_VERSION="0.5.0"
 
 for arg in "$@"; do
   case "$arg" in
