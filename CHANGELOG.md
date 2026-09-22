@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- `docs.yml` `secrets` job now grants `pull-requests: read`. On pull requests
+  gitleaks-action lists the PR's commits; with only `contents: read` it got a
+  403 and failed every PR while passing on push. Adopters: `install.sh` never
+  overwrites an existing workflow, so add the two-line `permissions` block to
+  your `.github/workflows/docs.yml` by hand. Found adopting Fragment in Kidney.
+
 ## 0.5.0 — 2026-09-09
 
 ### Migration — session evidence now includes code changes
