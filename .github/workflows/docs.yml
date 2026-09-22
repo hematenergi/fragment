@@ -61,6 +61,13 @@ jobs:
   # not. Fragment's own repository does exactly this for `tests/run.sh`.
   secrets:
     runs-on: ubuntu-latest
+    # On pull_request events gitleaks-action lists the PR's commits through the
+    # API. With only the workflow-level `contents: read` that call is refused
+    # (403 "Resource not accessible by integration") and the job fails on every
+    # PR while passing on push — which reads like a leak when it is not.
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v6
         with:
