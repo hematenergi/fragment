@@ -24,8 +24,8 @@ missing checkout handoff evidence and concrete structural conflicts still fail.
 
 ## Active fragment
 
-**06 — freeze the benchmark extraction prompt.** Commit and push the reviewed
-prompt before writing benchmark questions.
+**None.** Fragment 06 is complete. Its prompt commit is recorded below and in
+the fragment handoff.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -39,7 +39,7 @@ prompt before writing benchmark questions.
 | 03 | [last-verified is the loudest rule](plans/03-last-verified-is-the-loudest-rule.md) | `superseded` | replaced by 05 |
 | 04 | [version written by hand](plans/04-version-written-by-hand.md) | `todo` | — |
 | 05 | [continuity without administration](plans/05-continuity-without-administration.md) | `done` | — |
-| 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `in-progress` | — |
+| 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `done` | — |
 
 ## Blocked / waiting on a human
 
@@ -68,6 +68,8 @@ prompt before writing benchmark questions.
 
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
+
+- 2026-10-08 · GPT-6 / Codex · 06 · committed and pushed `bench/extract-prompt.md` as `4582cec728a46aa9122005314fd923e17b937052`; remote prompt blob matched · next: follow frozen §7; its current order differs from the user's summary, so report the discrepancy before changing sequence.
 
 - 2026-09-22 · claude-opus-5 · — · secrets CI job + template: `pull-requests: read` so gitleaks passes on PRs (403 before); CHANGELOG Unreleased · next: include in the next release
 - 2026-09-09 · GPT-6 / Codex · 05 · packaged 0.5.0 with consistent version stamps, an immutable upgrade fingerprint and migration notes; 138 release tests and the local guard passed before the owner-authorised push/release · next: verify publication and GitHub checks; adopter migration is not included.

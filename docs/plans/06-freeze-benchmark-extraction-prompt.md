@@ -1,7 +1,7 @@
 ---
 id: plan-06
 title: "06 — freeze the benchmark extraction prompt"
-status: in-progress
+status: done
 owner: hematenergi
 last-verified: 2026-10-08
 depends-on: []
@@ -22,18 +22,18 @@ The benchmark protocol uses the prompt to extract the Draupnir knowledge base. T
 
 ## Current state
 
-`bench/extract-prompt.md` is untracked. It is the only file under `bench/`; no benchmark question files have been written.
+`bench/extract-prompt.md` was committed in `4582cec728a46aa9122005314fd923e17b937052`. At verification, remote `origin/main` pointed to that commit and its prompt blob matched the local blob (`8d78088a2ec78056edd1de7199fd7b29e21a1ec8`). No benchmark question files have been written.
 
 ## Work
 
-- [ ] Commit the reviewed prompt contents before writing any benchmark questions.
-- [ ] Push the prompt commit to `origin/main`.
-- [ ] Verify the remote contains that commit and record its SHA in the handoff.
+- [x] Commit the reviewed prompt contents before writing any benchmark questions.
+- [x] Push the prompt commit to `origin/main`.
+- [x] Verify the remote contains that commit and record its SHA in the handoff.
 
 ## Done when
 
-- [ ] The exact prompt is present on `origin/main` in a verified commit.
-- [ ] The prompt commit SHA is recorded for the next benchmark step.
+- [x] The exact prompt is present on `origin/main` in a verified commit.
+- [x] The prompt commit SHA is recorded for the next benchmark step.
 
 ## Traps
 
@@ -52,3 +52,5 @@ rtk git ls-remote origin refs/heads/main
 Cloning Draupnir, pinning a model, writing medulla or Draupnir questions, and running the benchmark.
 
 ## Session log
+
+- 2026-10-08 · GPT-6 / Codex · 06 · committed and pushed the frozen prompt as `4582cec728a46aa9122005314fd923e17b937052`; remote prompt blob verified · next: follow frozen §7 while preserving the prompt's commit-before-questions rule; the user's summarized ordering differs from the current §7, so report before any sequence change.
