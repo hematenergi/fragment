@@ -40,6 +40,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/03-last-verified-is-the-loudest-rule.md`](plans/03-last-verified-is-the-loudest-rule.md) | `superseded` — 05 moves review to relevant claims when used |
 | [`plans/04-version-written-by-hand.md`](plans/04-version-written-by-hand.md) | `todo` — seven places, one command |
 | [`plans/05-continuity-without-administration.md`](plans/05-continuity-without-administration.md) | `done` — inventory, scoped handoff and source authority |
+| [`plans/06-freeze-benchmark-extraction-prompt.md`](plans/06-freeze-benchmark-extraction-prompt.md) | `in-progress` — commit and push the extraction prompt before writing questions |
 
 ## Decisions
 

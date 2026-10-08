@@ -24,7 +24,8 @@ missing checkout handoff evidence and concrete structural conflicts still fail.
 
 ## Active fragment
 
-_(none — 05 is complete; adopter migration remains a separate next step)_
+**06 — freeze the benchmark extraction prompt.** Commit and push the reviewed
+prompt before writing benchmark questions.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -38,6 +39,7 @@ _(none — 05 is complete; adopter migration remains a separate next step)_
 | 03 | [last-verified is the loudest rule](plans/03-last-verified-is-the-loudest-rule.md) | `superseded` | replaced by 05 |
 | 04 | [version written by hand](plans/04-version-written-by-hand.md) | `todo` | — |
 | 05 | [continuity without administration](plans/05-continuity-without-administration.md) | `done` | — |
+| 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `in-progress` | — |
 
 ## Blocked / waiting on a human
 
