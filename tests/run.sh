@@ -81,7 +81,9 @@ capture() {
   if [ -z "$comparison" ] && git -C "$1" rev-parse --verify -q HEAD >/dev/null 2>&1; then comparison=HEAD; fi
   OUT=$( cd "$1" && BASE_REF="$comparison" bash scripts/docs-check.sh 2>&1 ); CODE=$?
 }
-has()     { printf '%s\n' "$OUT" | grep -qF -- "$1"; }
+# Avoid grep -q closing the pipe early: with pipefail that can make printf's
+# SIGPIPE look like a missing match on macOS.
+has()     { printf '%s\n' "$OUT" | grep -F -- "$1" >/dev/null; }
 dump()    { printf '%s\n' "$OUT" | head -"${1:-6}" | sed 's/^/        /'; }
 
 expect_fail()  { # dir, label, [substring], [base_ref]
