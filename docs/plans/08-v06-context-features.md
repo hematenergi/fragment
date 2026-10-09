@@ -3,7 +3,7 @@ id: plan-08
 title: "08 — ship the v0.6 context features"
 status: done
 owner: hematenergi
-last-verified: 2026-10-08
+last-verified: 2026-10-09
 depends-on: []
 ---
 
@@ -87,3 +87,4 @@ Benchmark model calls/runs (plan 07), adopter outreach, v0.7 features, and the v
 - 2026-10-08 · GPT-6 / Codex · 08 · created the feature fragment after the owner chose develop-first; no benchmark result data was used · next: define and implement `/recall` with tags.
 - 2026-10-08 · GPT-6 / Codex · 08 · implemented tagged deterministic recall, dry-run STATE history archival with a traceable archive link, and a hard conservative context budget; focused tests pass · next: run and record the full repo suite, then finish product docs.
 - 2026-10-08 · GPT-6 / Codex · 08 · rejected symlinked paths in retrieval, archival, and loading; all feature docs and tests are complete, with 147 tests and the docs guard green · next: resume benchmark plan 07 when authorized API access is available; no results exist.
+- 2026-10-09 · GPT-6 / Codex · 08 · committed the v0.6 context features and supporting docs as `ee9feff`; reran the repository suite (147 tests) and docs guard, both green · next: resume plan 07 §7.3 when a supported model API path is available.
