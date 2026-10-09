@@ -127,6 +127,8 @@ if make_test_dir_link "$REPO/docs" "$REPO/docs-link"; then
   fi
   printf '  ok    recall refuses DOCS_ROOT links\n'
 else
+  link_status=$?
+  [ "$link_status" -ne 2 ] || { printf '  FAIL  Windows link fixture was not a reparse point\n'; exit 1; }
   printf '  SKIP  DOCS_ROOT link check unavailable on this platform\n'
 fi
 

@@ -54,6 +54,8 @@ if make_test_dir_link "$TMP/outside" "$REPO/docs/escape"; then
   [ ! -e "$TMP/outside/history.md" ] || { printf 'FAIL: archive escaped through a symlinked directory\n'; exit 1; }
   printf '  ok    archive refuses linked parent directories\n'
 else
+  link_status=$?
+  [ "$link_status" -ne 2 ] || { printf 'FAIL: Windows parent-link fixture was not a reparse point\n'; exit 1; }
   printf '  SKIP  linked-parent check unavailable on this platform\n'
 fi
 

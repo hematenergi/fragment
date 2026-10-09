@@ -36,4 +36,5 @@ jobs:
         run: |
           bash tests/recall.sh
           bash tests/state-prune.sh
+          bash tests/load-context.sh
       - run: bash tests/run.sh

@@ -112,6 +112,8 @@ if make_test_file_link "$TMP/outside-state.md" "$REPO/docs/state-link.md"; then
   fi
   printf '  ok    loader refuses symlinked STATE files\n'
 else
+  link_status=$?
+  [ "$link_status" -ne 2 ] || { printf 'FAIL: Windows STATE-link fixture was not a reparse point\n'; exit 1; }
   printf '  SKIP  symlinked STATE check unavailable on this platform\n'
 fi
 
