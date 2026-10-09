@@ -14,6 +14,8 @@
 
 ### Fixes
 
+- Context commands now detect Windows directory-junction aliases when checking
+  repository paths, closing a Git Bash bypass of the checkout boundary.
 - `docs.yml` `secrets` job now grants `pull-requests: read`. On pull requests
   gitleaks-action lists the PR's commits; with only `contents: read` it got a
   403 and failed every PR while passing on push. Adopters: `install.sh` never

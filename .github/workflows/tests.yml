@@ -32,4 +32,8 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v6
+      - name: context path safety
+        run: |
+          bash tests/recall.sh
+          bash tests/state-prune.sh
       - run: bash tests/run.sh

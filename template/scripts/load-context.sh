@@ -66,15 +66,19 @@ esac
 state_rel=${state_file#"$root"/}
 
 path_has_symlink() {
-  local path="$1" relative component current logical physical
+  local path="$1" relative component current logical physical last_dir last_rel git_prefix expected_prefix
   case "$path" in "$root"/*) relative=${path#"$root"/} ;; *) return 1 ;; esac
   current=$root
+  last_dir=$root
+  last_rel=''
   while [ -n "$relative" ]; do
     component=${relative%%/*}
     if [ -n "$component" ]; then
       current="$current/$component"
       [ ! -L "$current" ] || return 0
       if [ -d "$current" ]; then
+        last_dir=$current
+        last_rel=${current#"$root"/}
         logical=$(cd -L "$current" 2>/dev/null && pwd -L) || return 0
         physical=$(cd -P "$current" 2>/dev/null && pwd -P) || return 0
         [ "$logical" = "$physical" ] || return 0
@@ -82,6 +86,11 @@ path_has_symlink() {
     fi
     case "$relative" in */*) relative=${relative#*/} ;; *) relative='' ;; esac
   done
+  # Git Bash can traverse a Windows directory junction without marking it -L.
+  git_prefix=$(git -C "$last_dir" rev-parse --show-prefix 2>/dev/null) || return 0
+  expected_prefix=''
+  [ -z "$last_rel" ] || expected_prefix="${last_rel%/}/"
+  [ "$git_prefix" = "$expected_prefix" ] || return 0
   return 1
 }
 
