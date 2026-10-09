@@ -119,9 +119,7 @@ if ln -s "$REPO/docs" "$REPO/docs-link" 2>/dev/null; then
       printf '  DEBUG Windows metadata for %s:\n' "$windows_link"
       FRAGMENT_REPO_ROOT="$windows_root" FRAGMENT_CHECK_PATH="$windows_link" \
         powershell.exe -NoProfile -NonInteractive -Command \
-        '$repo=$env:FRAGMENT_REPO_ROOT; $path=$env:FRAGMENT_CHECK_PATH; $item=Get-Item -LiteralPath $path -Force; Write-Output "repo=$repo"; Write-Output "path=$path"; Write-Output "attributes=$($item.Attributes)"; Write-Output "reparse=$([bool]($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint))"' 2>&1 || true
-      printf '  DEBUG Windows reparse entries in repo root:\n'
-      MSYS_NO_PATHCONV=1 cmd.exe /d /c "dir /a:l /b \"$windows_root\"" 2>&1 | tr -d '\r' || true
+        '$repo=$env:FRAGMENT_REPO_ROOT; $path=$env:FRAGMENT_CHECK_PATH; $parent=Split-Path -LiteralPath $path -Parent; $name=Split-Path -LiteralPath $path -Leaf; $item=Get-ChildItem -LiteralPath $parent -Force | Where-Object { $_.Name -ieq $name } | Select-Object -First 1; Write-Output "repo=$repo"; Write-Output "path=$path"; Write-Output "parent-entry=$($item.Attributes)"; Write-Output "reparse=$([bool]($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint))"' 2>&1 || true
     fi
     exit 1
   fi

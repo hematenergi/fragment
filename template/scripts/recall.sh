@@ -60,7 +60,25 @@ path_has_symlink() {
       windows_status=0
       FRAGMENT_REPO_ROOT="$windows_root" FRAGMENT_CHECK_PATH="$windows_path" \
         powershell.exe -NoProfile -NonInteractive -Command \
-        '$repo=$env:FRAGMENT_REPO_ROOT; $path=$env:FRAGMENT_CHECK_PATH; $prefix=$repo.TrimEnd([char]92,[char]47)+[char]92; if (-not $path.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase)) { exit 2 }; $relative=$path.Substring($prefix.Length); $current=$repo.TrimEnd([char]92,[char]47); foreach ($part in ($relative -split "[\\/]+")) { if ($part -eq "") { continue }; $current=Join-Path $current $part; if (-not (Test-Path -LiteralPath $current)) { break }; try { $item=Get-Item -LiteralPath $current -Force -ErrorAction Stop } catch { exit 2 }; if (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { exit 0 } }; exit 1' \
+        '$repo=$env:FRAGMENT_REPO_ROOT
+        $path=$env:FRAGMENT_CHECK_PATH
+        $prefix=$repo.TrimEnd([char]92,[char]47)+[char]92
+        if (-not $path.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase)) { exit 2 }
+        $relative=$path.Substring($prefix.Length)
+        $current=$repo.TrimEnd([char]92,[char]47)
+        foreach ($part in ($relative -split "[\\/]+")) {
+          if ($part -eq "") { continue }
+          $parent=$current
+          $current=Join-Path $parent $part
+          if (-not (Test-Path -LiteralPath $current)) { break }
+          try {
+            $item=Get-ChildItem -LiteralPath $parent -Force -ErrorAction Stop |
+              Where-Object { $_.Name -ieq $part } | Select-Object -First 1
+          } catch { exit 2 }
+          if ($null -eq $item) { exit 2 }
+          if (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { exit 0 }
+        }
+        exit 1' \
         >/dev/null 2>&1 || windows_status=$?
       case "$windows_status" in 0) return 0 ;; 1) ;; *) return 0 ;; esac ;;
   esac
