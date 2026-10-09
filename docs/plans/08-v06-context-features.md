@@ -84,6 +84,7 @@ Benchmark model calls/runs (plan 07), adopter outreach, v0.7 features, and the v
 
 ## Session log
 
+- 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); fixed the macOS output matcher and verified all required checks on `4ea6587` · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.
 - 2026-10-08 · GPT-6 / Codex · 08 · created the feature fragment after the owner chose develop-first; no benchmark result data was used · next: define and implement `/recall` with tags.
 - 2026-10-08 · GPT-6 / Codex · 08 · implemented tagged deterministic recall, dry-run STATE history archival with a traceable archive link, and a hard conservative context budget; focused tests pass · next: run and record the full repo suite, then finish product docs.
 - 2026-10-08 · GPT-6 / Codex · 08 · rejected symlinked paths in retrieval, archival, and loading; all feature docs and tests are complete, with 147 tests and the docs guard green · next: resume benchmark plan 07 when authorized API access is available; no results exist.

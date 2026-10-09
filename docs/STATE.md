@@ -14,10 +14,11 @@ last-verified: 2026-10-09
 
 ## Phase
 
-**v0.5.0 is released; v0.6 context features are implemented and validated.**
-The extraction prompt is committed and pushed. The frozen benchmark protocol
-still requires its baseline and v0.6 validation before release; no run data
-exists, and benchmark work is parked until authorized API access is available.
+**v0.5.0 is released; v0.6 context features are implemented, validated, and merged.**
+Feature PR #2 merged as `5f13f7b`. The extraction prompt is committed and
+pushed. The frozen benchmark protocol still requires its baseline and v0.6
+validation before release; no run data exists, and benchmark work is parked
+until authorized API access is available.
 
 ## Active fragment
 
@@ -75,6 +76,7 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.
 - 2026-10-09 · GPT-6 / Codex · 08 · macOS CI exposed a flaky `grep -q`/`pipefail` test helper that could report a broken pipe despite a match; changed it to drain the output, and the full local suite (147 tests) plus docs guard now pass · next: confirm CI on the fix before merging; benchmark plan 07 still awaits an authorized model API path.
 - 2026-10-09 · GPT-6 / Codex · 08 · Windows CI now passes the verified junction/file-link safety tests and the full 147-test suite; Ubuntu, macOS, docs guard, and secrets checks also pass on `07c9831` · next: merge the v0.6 feature PR; benchmark plan 07 still awaits an authorized model API path.
 - 2026-10-09 · GPT-6 / Codex · 08 · Windows CI showed the old `ln -s` fixture created a plain directory, not a junction; fixtures now assert the Windows reparse-point attribute, and the early safety step covers recall, pruning, and loading while product checks remain Bash/Git-only · next: confirm the Bash/Git checks reject the verified junction and file link on Windows; benchmark still awaits model API access.
