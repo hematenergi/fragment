@@ -26,7 +26,7 @@ The Northstar identifies context bloat as Fragment's main product problem. A new
 ## Current state
 
 - Fragment v0.5.0 is released. The template and this checkout now contain deterministic `recall.sh`, `state-prune.sh`, and `load-context.sh` commands.
-- The installer copies the `template/` tree without overwriting existing adopter files. Commands run in Bash/Git; Git Bash path checks also query Windows' built-in PowerShell for reparse-point metadata so directory junctions cannot bypass the checkout boundary.
+- The installer copies the `template/` tree without overwriting existing adopter files. Product commands keep the Bash/Git-only runtime contract.
 - New decision/lesson guidance uses optional inline YAML tags; all seven existing repo records now have tags, while retrieval still supports untagged legacy records.
 - Benchmark fragment 07 is parked. No model calls or benchmark results exist.
 - The command tests cover matching and empty retrieval, legacy and tagged records, malformed/empty STATE history, archive safety, and exact/insufficient loading budgets. Symlinked paths are rejected before retrieval or writes.
@@ -38,7 +38,7 @@ The Northstar identifies context bloat as Fragment's main product problem. A new
 - [x] Add optional minimal tags metadata and update templates/guidance so new records can be retrieved by topic.
 - [x] Implement STATE archival/pruning that preserves history while bounding the active hot tier.
 - [x] Implement deterministic context loading with an explicit token budget and documented counting/estimation behavior.
-- [x] Wire commands into the installed template and agent protocol without breaking existing adopters or the Bash/Git command workflow; use the built-in Windows metadata query only for junction safety.
+- [x] Wire commands into the installed template and agent protocol without breaking existing adopters or the Bash/Git-only runtime contract.
 - [x] Add focused tests for ranking, tags, archive safety, and budget limits.
 - [x] Run the full repository suite and guard; add the three features to the Unreleased release notes for v0.6.
 
@@ -88,4 +88,4 @@ Benchmark model calls/runs (plan 07), adopter outreach, v0.7 features, and the v
 - 2026-10-08 · GPT-6 / Codex · 08 · implemented tagged deterministic recall, dry-run STATE history archival with a traceable archive link, and a hard conservative context budget; focused tests pass · next: run and record the full repo suite, then finish product docs.
 - 2026-10-08 · GPT-6 / Codex · 08 · rejected symlinked paths in retrieval, archival, and loading; all feature docs and tests are complete, with 147 tests and the docs guard green · next: resume benchmark plan 07 when authorized API access is available; no results exist.
 - 2026-10-09 · GPT-6 / Codex · 08 · committed the v0.6 context features and supporting docs as `ee9feff`; reran the repository suite (147 tests) and docs guard, both green · next: resume plan 07 §7.3 when a supported model API path is available.
-- 2026-10-09 · GPT-6 / Codex · 08 · Windows CI showed the test's `ln -s` created a plain directory rather than a junction, so PowerShell correctly reported no reparse point; Windows fixtures now create a junction explicitly and file links through native PowerShell · next: verify the actual Windows junction test and adjust only from its result.
+- 2026-10-09 · GPT-6 / Codex · 08 · Windows CI showed the old `ln -s` fixture created a plain directory, not a junction; fixtures now create actual Windows links, and product path checks remain Bash/Git-only per the protocol · next: verify whether the existing Bash/Git checks reject a real junction on Windows.

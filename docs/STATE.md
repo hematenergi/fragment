@@ -75,7 +75,7 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
-- 2026-10-09 · GPT-6 / Codex · 08 · Windows CI showed the test's `ln -s` created a plain directory rather than a junction, so PowerShell correctly reported no reparse point; Windows fixtures now create a junction explicitly and file links through native PowerShell · next: verify the actual Windows junction test and adjust only from its result; benchmark still awaits model API access.
+- 2026-10-09 · GPT-6 / Codex · 08 · Windows CI showed the old `ln -s` fixture created a plain directory, not a junction; fixtures now create actual Windows links, and product path checks remain Bash/Git-only per the protocol · next: verify whether the existing Bash/Git checks reject a real junction on Windows; benchmark still awaits model API access.
 - 2026-10-09 · GPT-6 / Codex · 08 · committed v0.6 context features and supporting docs as `ee9feff`; 147 repository tests and the docs guard pass · next: resume benchmark plan 07 §7.3 when a supported model API path is available.
 - 2026-10-08 · GPT-6 / Codex · 07 · rechecked official GPT-5.4 Mini snapshot, retirement, parameter and price docs; $20 is not a safe cap for 60 runs at preliminary N · next: authorized API path for §7.3 runtime verification and dry run; spec and prompt remain frozen.
 - 2026-10-08 · GPT-6 / Codex · 06 · committed and pushed `bench/extract-prompt.md` as `4582cec728a46aa9122005314fd923e17b937052`; remote prompt blob matched · next: follow frozen §7; its current order differs from the user's summary, so report the discrepancy before changing sequence.

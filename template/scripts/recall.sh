@@ -47,41 +47,7 @@ docs_dir="$root/$docs_root"
 
 path_has_symlink() {
   local path="$1" relative component current logical physical last_dir last_rel git_prefix expected_prefix
-  local windows_root windows_path windows_status
   case "$path" in "$root"/*) relative=${path#"$root"/} ;; *) return 1 ;; esac
-  case "${OSTYPE:-}" in
-    msys*|cygwin*)
-      # Git Bash treats directory junctions as ordinary directories. Ask the
-      # Windows filesystem for its reparse-point attribute before traversing.
-      command -v powershell.exe >/dev/null 2>&1 || return 0
-      command -v cygpath >/dev/null 2>&1 || return 0
-      windows_root=$(cygpath -aw "$root" 2>/dev/null) || return 0
-      windows_path=$(cygpath -aw "$path" 2>/dev/null) || return 0
-      windows_status=0
-      FRAGMENT_REPO_ROOT="$windows_root" FRAGMENT_CHECK_PATH="$windows_path" \
-        powershell.exe -NoProfile -NonInteractive -Command \
-        '$repo=$env:FRAGMENT_REPO_ROOT
-        $path=$env:FRAGMENT_CHECK_PATH
-        $prefix=$repo.TrimEnd([char]92,[char]47)+[char]92
-        if (-not $path.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase)) { exit 2 }
-        $relative=$path.Substring($prefix.Length)
-        $current=$repo.TrimEnd([char]92,[char]47)
-        foreach ($part in ($relative -split "[\\/]+")) {
-          if ($part -eq "") { continue }
-          $parent=$current
-          $current=Join-Path $parent $part
-          if (-not (Test-Path -LiteralPath $current)) { break }
-          try {
-            $item=Get-ChildItem -LiteralPath $parent -Force -ErrorAction Stop |
-              Where-Object { $_.Name -ieq $part } | Select-Object -First 1
-          } catch { exit 2 }
-          if ($null -eq $item) { exit 2 }
-          if (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { exit 0 }
-        }
-        exit 1' \
-        >/dev/null 2>&1 || windows_status=$?
-      case "$windows_status" in 0) return 0 ;; 1) ;; *) return 0 ;; esac ;;
-  esac
   current=$root
   last_dir=$root
   last_rel=''
