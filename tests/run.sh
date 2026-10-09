@@ -125,7 +125,8 @@ if command -v shellcheck >/dev/null 2>&1; then
        "$ROOT/tests/run.sh" \
        "$ROOT/tests/recall.sh" \
        "$ROOT/tests/state-prune.sh" \
-       "$ROOT/tests/load-context.sh" > "$TMP/shellcheck.out" 2>&1; then
+       "$ROOT/tests/load-context.sh" \
+       "$ROOT/tests/link-fixtures.sh" > "$TMP/shellcheck.out" 2>&1; then
     ok "shellcheck is clean at -S warning (the invocation CI uses)"
   else
     bad "shellcheck reports what CI will fail on"

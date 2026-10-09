@@ -2,6 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=tests/link-fixtures.sh
+. "$ROOT/tests/link-fixtures.sh"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 REPO="$TMP/repo"
@@ -103,7 +105,7 @@ fi
 printf '  ok    STATE paths cannot escape the checkout\n'
 
 printf 'outside STATE must never be emitted\n' > "$TMP/outside-state.md"
-if ln -s "$TMP/outside-state.md" "$REPO/docs/state-link.md" 2>/dev/null; then
+if make_test_file_link "$TMP/outside-state.md" "$REPO/docs/state-link.md"; then
   if (cd "$REPO" && STATE_FILE="$REPO/docs/state-link.md" \
     bash scripts/load-context.sh --budget 10000 liquidity >/dev/null 2>&1); then
     printf 'FAIL: a symlinked STATE path was accepted\n'; exit 1

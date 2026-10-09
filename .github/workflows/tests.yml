@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: shellcheck
         if: matrix.os == 'ubuntu-latest'
-        run: shellcheck -S warning install.sh template/scripts/docs-check.sh template/scripts/recall.sh template/scripts/state-prune.sh template/scripts/load-context.sh scripts/recall.sh scripts/state-prune.sh scripts/load-context.sh tests/run.sh tests/recall.sh tests/state-prune.sh tests/load-context.sh
+        run: shellcheck -S warning install.sh template/scripts/docs-check.sh template/scripts/recall.sh template/scripts/state-prune.sh template/scripts/load-context.sh scripts/recall.sh scripts/state-prune.sh scripts/load-context.sh tests/run.sh tests/recall.sh tests/state-prune.sh tests/load-context.sh tests/link-fixtures.sh
       - name: tests
         run: bash tests/run.sh
 

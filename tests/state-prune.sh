@@ -2,6 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=tests/link-fixtures.sh
+. "$ROOT/tests/link-fixtures.sh"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 REPO="$TMP/repo"
@@ -44,15 +46,15 @@ case "$out" in *"Would move 2"*"no files changed"*) ;; *) printf 'FAIL: dry run 
 printf '  ok    dry run previews without writing\n'
 
 mkdir -p "$TMP/outside"
-if ln -s "$TMP/outside" "$REPO/docs/escape" 2>/dev/null; then
+if make_test_dir_link "$TMP/outside" "$REPO/docs/escape"; then
   if (cd "$REPO" && STATE_ARCHIVE_FILE='docs/escape/history.md' \
     bash scripts/state-prune.sh --keep 2 --apply >/dev/null 2>&1); then
-    printf 'FAIL: archive path through a symlinked directory was accepted\n'; exit 1
+    printf 'FAIL: archive path through a linked directory was accepted\n'; exit 1
   fi
   [ ! -e "$TMP/outside/history.md" ] || { printf 'FAIL: archive escaped through a symlinked directory\n'; exit 1; }
-  printf '  ok    archive refuses symlinked parent directories\n'
+  printf '  ok    archive refuses linked parent directories\n'
 else
-  printf '  SKIP  symlink-parent check unavailable on this platform\n'
+  printf '  SKIP  linked-parent check unavailable on this platform\n'
 fi
 
 out=$(cd "$REPO" && bash scripts/state-prune.sh --keep 2 --apply)

@@ -2,6 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=tests/link-fixtures.sh
+. "$ROOT/tests/link-fixtures.sh"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 REPO="$TMP/repo"
@@ -102,9 +104,9 @@ out=$(bash "$REPO/scripts/recall.sh" --limit 1 'liquidity network')
 [ "$(printf '%s\n' "$out" | wc -l | tr -d '[:space:]')" = 1 ] || { printf '  FAIL  limit restricts result count\n'; exit 1; }
 printf '  ok    limit restricts result count\n'
 
-if ln -s "$REPO/docs" "$REPO/docs-link" 2>/dev/null; then
+if make_test_dir_link "$REPO/docs" "$REPO/docs-link"; then
   if DOCS_ROOT='docs-link' bash "$REPO/scripts/recall.sh" liquidity >/dev/null 2>&1; then
-    printf '  FAIL  DOCS_ROOT symlink was accepted\n'
+    printf '  FAIL  DOCS_ROOT link was accepted\n'
     printf '  DEBUG link: '; ls -ld "$REPO/docs-link"
     printf '  DEBUG -L: '; [ -L "$REPO/docs-link" ] && printf 'yes\n' || printf 'no\n'
     printf '  DEBUG readlink: '; readlink "$REPO/docs-link" 2>&1 || true
@@ -123,9 +125,9 @@ if ln -s "$REPO/docs" "$REPO/docs-link" 2>/dev/null; then
     fi
     exit 1
   fi
-  printf '  ok    recall refuses DOCS_ROOT symlinks\n'
+  printf '  ok    recall refuses DOCS_ROOT links\n'
 else
-  printf '  SKIP  DOCS_ROOT symlink check unavailable on this platform\n'
+  printf '  SKIP  DOCS_ROOT link check unavailable on this platform\n'
 fi
 
 out=$(bash "$REPO/scripts/recall.sh" 'xyzzy-quokka-unicorn-827')
