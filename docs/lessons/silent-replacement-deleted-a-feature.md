@@ -4,6 +4,7 @@ title: A silent replacement deleted a feature, and the board stayed green
 status: active
 owner: hematenergi
 last-verified: 2026-09-09
+tags: [automation, editing, regression-testing]
 ---
 
 # A silent replacement deleted a feature, and the board stayed green

@@ -4,6 +4,7 @@ title: The secret scanner flagged the tests that prove it works
 status: active
 owner: hematenergi
 last-verified: 2026-09-09
+tags: [security, secrets, tests, gitleaks]
 ---
 
 # The secret scanner flagged the tests that prove it works

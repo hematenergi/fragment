@@ -48,7 +48,8 @@ it.
 ### Open
 1. Read **`STATE.md`** — it says which fragment is active.
 2. Read that fragment in `plans/NN-*.md` **in full**, including its `Session log`.
-3. Before asking anything, search `decisions/`.
+3. Before asking anything, run `/recall` (`bash scripts/recall.sh "keywords"`)
+   and read matching records in `decisions/` or `lessons/`.
 4. Establish the session's range and affected destinations. Check relevant
    claims against code or records before using them; dates alone prove nothing.
 
@@ -111,6 +112,10 @@ the truth of all prose or any external write.
 ## Commands
 
 ```bash
+bash scripts/recall.sh "keywords"   # find related decisions and lessons
+bash scripts/state-prune.sh --keep 20             # preview STATE pruning
+bash scripts/state-prune.sh --keep 20 --apply     # archive older session history
+bash scripts/load-context.sh --budget 12000 "keywords"
 bash tests/run.sh                # the suite, including shellcheck
 bash scripts/docs-check.sh       # the guard, pointed at this repo
 gitleaks detect --no-banner      # what CI runs; .gitleaks.toml explains the one allowlist

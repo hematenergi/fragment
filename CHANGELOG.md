@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Added
+
+- Deterministic context tools: `recall.sh` ranks decisions and lessons by tags,
+  titles and body matches; `state-prune.sh` archives older STATE session history
+  with an explicit apply step; `load-context.sh` emits STATE plus ranked whole
+  records under a conservative byte upper bound for a requested token budget.
+- New decision and lesson records can use inline `tags: [topic, system]`
+  frontmatter. Existing untagged records remain searchable, with no automatic
+  adopter-file migration.
+
 ### Fixes
 
 - `docs.yml` `secrets` job now grants `pull-requests: read`. On pull requests

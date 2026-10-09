@@ -116,7 +116,16 @@ if command -v shellcheck >/dev/null 2>&1; then
   if shellcheck -S warning \
        "$ROOT/install.sh" \
        "$ROOT/template/scripts/docs-check.sh" \
-       "$ROOT/tests/run.sh" > "$TMP/shellcheck.out" 2>&1; then
+       "$ROOT/template/scripts/recall.sh" \
+       "$ROOT/template/scripts/state-prune.sh" \
+       "$ROOT/template/scripts/load-context.sh" \
+       "$ROOT/scripts/recall.sh" \
+       "$ROOT/scripts/state-prune.sh" \
+       "$ROOT/scripts/load-context.sh" \
+       "$ROOT/tests/run.sh" \
+       "$ROOT/tests/recall.sh" \
+       "$ROOT/tests/state-prune.sh" \
+       "$ROOT/tests/load-context.sh" > "$TMP/shellcheck.out" 2>&1; then
     ok "shellcheck is clean at -S warning (the invocation CI uses)"
   else
     bad "shellcheck reports what CI will fail on"
@@ -131,6 +140,13 @@ echo "adoption"
 # ---------------------------------------------------------------------------
 raw="$TMP/raw"; mkdir -p "$raw"; git -C "$raw" init -q .
 bash "$ROOT/install.sh" "$raw" >/dev/null 2>&1
+for helper in recall.sh state-prune.sh load-context.sh; do
+  if [ -x "$raw/scripts/$helper" ]; then
+    ok "installer includes executable $helper"
+  else
+    bad "installer did not include executable $helper"
+  fi
+done
 expect_fail "$raw" "an untouched install is NOT green — the guard is the to-do list" "template placeholders"
 has 'no fragment yet'   && bad "  ... it demands dummy work" || ok "  ... it does not demand a dummy fragment"
 has 'owner: unassigned' && ok "  ... and for a named owner"            || bad "  ... owner check"
@@ -591,6 +607,39 @@ expect_fail "$d" "  ... including the one that keeps customer details out" "shap
 d="$TMP/exdate"; rm -rf "$d"; cp -R "$ROOT/examples/online-shop" "$d"
 printf '\n- settled on 2026-08-24, revisited 2026-08-26\n' >> "$d/docs/STATE.md"
 expect_green "$d" "  ... and a date is not mistaken for one"
+
+# The retrieval command ships in the template and is copied byte-for-byte for
+# Fragment's own checkout. Ranking behavior is tested against disposable docs.
+if cmp -s "$ROOT/scripts/recall.sh" "$ROOT/template/scripts/recall.sh"; then
+  ok "recall command matches its shipped template"
+else
+  bad "recall command has drifted from its shipped template"
+fi
+if bash "$ROOT/tests/recall.sh"; then
+  ok "recall command behavior is covered"
+else
+  bad "recall command tests failed"
+fi
+if cmp -s "$ROOT/scripts/state-prune.sh" "$ROOT/template/scripts/state-prune.sh"; then
+  ok "state-prune command matches its shipped template"
+else
+  bad "state-prune command has drifted from its shipped template"
+fi
+if bash "$ROOT/tests/state-prune.sh"; then
+  ok "state-prune command behavior is covered"
+else
+  bad "state-prune command tests failed"
+fi
+if cmp -s "$ROOT/scripts/load-context.sh" "$ROOT/template/scripts/load-context.sh"; then
+  ok "load-context command matches its shipped template"
+else
+  bad "load-context command has drifted from its shipped template"
+fi
+if bash "$ROOT/tests/load-context.sh"; then
+  ok "load-context command behavior is covered"
+else
+  bad "load-context command tests failed"
+fi
 
 echo
 # shellcheck source=tests/continuity.sh

@@ -4,6 +4,7 @@ title: "0002 — separate continuity evidence from documentation inventory"
 status: active
 owner: hematenergi
 last-verified: 2026-09-09
+tags: [continuity, evidence, inventory, scope]
 ---
 
 # 0002 — separate continuity evidence from documentation inventory

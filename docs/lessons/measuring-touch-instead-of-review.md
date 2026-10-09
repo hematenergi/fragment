@@ -4,6 +4,7 @@ title: The staleness check measured touch, not review
 status: active
 owner: hematenergi
 last-verified: 2026-09-09
+tags: [staleness, review, dates, inventory]
 ---
 
 # The staleness check measured touch, not review

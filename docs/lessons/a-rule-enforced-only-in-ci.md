@@ -4,6 +4,7 @@ title: A rule enforced only in CI is a rule nobody runs
 status: active
 owner: hematenergi
 last-verified: 2026-09-09
+tags: [guard, ci, testing]
 ---
 
 # A rule enforced only in CI is a rule nobody runs
