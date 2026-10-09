@@ -75,7 +75,7 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
-- 2026-10-09 · GPT-6 / Codex · 08 · Windows CI showed Git Bash junctions also bypass logical/physical `pwd` checks; added Git-prefix path validation and an early Windows path-safety step; local suite 147 and docs guard pass · next: verify focused and full Windows CI; benchmark still awaits model API access.
+- 2026-10-09 · GPT-6 / Codex · 08 · Windows CI showed Git Bash treats directory junctions as ordinary directories, so `pwd`, `-L`, and Git prefix checks miss them; path checks now inspect Windows reparse-point metadata through built-in PowerShell, with a failing-case diagnostic in the focused test; local focused tests and shellcheck pass · next: verify focused and full Windows CI; benchmark still awaits model API access.
 - 2026-10-09 · GPT-6 / Codex · 08 · committed v0.6 context features and supporting docs as `ee9feff`; 147 repository tests and the docs guard pass · next: resume benchmark plan 07 §7.3 when a supported model API path is available.
 - 2026-10-08 · GPT-6 / Codex · 07 · rechecked official GPT-5.4 Mini snapshot, retirement, parameter and price docs; $20 is not a safe cap for 60 runs at preliminary N · next: authorized API path for §7.3 runtime verification and dry run; spec and prompt remain frozen.
 - 2026-10-08 · GPT-6 / Codex · 06 · committed and pushed `bench/extract-prompt.md` as `4582cec728a46aa9122005314fd923e17b937052`; remote prompt blob matched · next: follow frozen §7; its current order differs from the user's summary, so report the discrepancy before changing sequence.
