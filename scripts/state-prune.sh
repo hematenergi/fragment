@@ -39,6 +39,7 @@ root=$(git -C "$script_dir" rev-parse --show-toplevel 2>/dev/null) || {
   printf 'state pruning requires a Git checkout containing %s\n' "$script_dir" >&2
   exit 2
 }
+root=$(cd -P "$root" 2>/dev/null && pwd -P) || exit 2
 
 repo_path() {
   case "$1" in
@@ -56,7 +57,7 @@ repo_path() {
 }
 
 path_has_symlink() {
-  local path="$1" relative component current
+  local path="$1" relative component current logical physical
   case "$path" in "$root"/*) relative=${path#"$root"/} ;; *) return 1 ;; esac
   current=$root
   while [ -n "$relative" ]; do
@@ -64,6 +65,11 @@ path_has_symlink() {
     if [ -n "$component" ]; then
       current="$current/$component"
       [ ! -L "$current" ] || return 0
+      if [ -d "$current" ]; then
+        logical=$(cd -L "$current" 2>/dev/null && pwd -L) || return 0
+        physical=$(cd -P "$current" 2>/dev/null && pwd -P) || return 0
+        [ "$logical" = "$physical" ] || return 0
+      fi
     fi
     case "$relative" in */*) relative=${relative#*/} ;; *) relative='' ;; esac
   done
