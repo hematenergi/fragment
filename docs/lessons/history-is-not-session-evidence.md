@@ -4,6 +4,7 @@ title: A documentation clue is not an unfinished session
 status: active
 owner: hematenergi
 last-verified: 2026-09-09
+tags: [continuity, evidence, handoff, history]
 ---
 
 # A documentation clue is not an unfinished session

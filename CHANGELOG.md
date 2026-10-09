@@ -2,8 +2,20 @@
 
 ## Unreleased
 
+### Added
+
+- Deterministic context tools: `recall.sh` ranks decisions and lessons by tags,
+  titles and body matches; `state-prune.sh` archives older STATE session history
+  with an explicit apply step; `load-context.sh` emits STATE plus ranked whole
+  records under a conservative byte upper bound for a requested token budget.
+- New decision and lesson records can use inline `tags: [topic, system]`
+  frontmatter. Existing untagged records remain searchable, with no automatic
+  adopter-file migration.
+
 ### Fixes
 
+- Context commands now detect Windows directory-junction aliases when checking
+  repository paths, closing a Git Bash bypass of the checkout boundary.
 - `docs.yml` `secrets` job now grants `pull-requests: read`. On pull requests
   gitleaks-action lists the PR's commits; with only `contents: read` it got a
   403 and failed every PR while passing on push. Adopters: `install.sh` never

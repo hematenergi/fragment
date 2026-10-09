@@ -31,7 +31,7 @@ Breaking one of these means: revert first, discuss after.
 Work here runs as **fragments**: one self-contained unit of work that can be left at any moment and picked up by someone else — without the conversation that produced it.
 
 ### Open
-1. Read **`STATE.md`** and the source selected for this session. Search decisions before reopening a settled question.
+1. Read **`STATE.md`** and the source selected for this session. Before reopening a settled question, run `/recall` (`bash scripts/recall.sh "keywords"`) and read matching decisions or lessons.
 2. Read the active fragment or task specification in full. If no work is active, select authorised work whose dependencies are satisfied; do not invent work to fill the board.
 3. Read contracts needed for that work. Check relevant claims against code or other evidence before using them; an old date alone proves neither error nor correctness.
 4. Establish the session's Git range, paths and affected handoff destinations. Do not attribute all dirty files to this session when work is shared.
@@ -111,7 +111,26 @@ A new tool does **not** get a copy of the rules. Create its convention file, wri
 ```bash
 bash scripts/docs-check.sh
 bash scripts/docs-check.sh --inventory
+bash scripts/recall.sh "keywords"
+bash scripts/state-prune.sh --keep 20             # preview STATE history pruning
+bash scripts/state-prune.sh --keep 20 --apply     # archive older records
+bash scripts/load-context.sh --budget 12000 "keywords"
 ```
+
+`/recall` ranks decisions and lessons by optional exact tags, title terms and
+body matches. Ranking is a search aid, not an authority decision; read the
+source record. Legacy records without `tags` remain searchable.
+
+`state-prune.sh` previews by default. With `--apply`, it moves older dated
+session entries from the final level-two section to `docs/_attic/`, keeping the
+newest 20 unless `--keep` sets another positive count. The archive preserves the
+records; it is excluded from active indexing and checks.
+
+`load-context.sh` always includes STATE first, then whole ranked decision/lesson
+files that fit. `--budget` is a conservative UTF-8 byte upper bound on the
+loaded text's token count, not a tokenizer-exact count; it excludes the agent's
+system prompt and API framing. It refuses to emit partial output if STATE alone
+does not fit.
 
 Rules that are true only for this repo go in `scripts/docs-check.local.sh` (see
 `scripts/docs-check.local.sh.example`), never in `docs-check.sh` itself — the

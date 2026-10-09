@@ -123,3 +123,31 @@ Stated plainly, because a case study that only flatters itself is marketing.
   the origin repo today. Both are restored. The lesson generalises: a harness
   extracted by hand drifts from the harness that earned the evidence — which is
   the failure this project is nominally about.
+
+---
+
+## 6. The loop closed: two production repos, one identical guard
+
+Two production repos. Nothing in common except the guard.
+
+One is medulla (web3 autonomous liquidity provider bot) — an always-on system where a sloppy session costs real money. The other is flimapp (my fulltime company's super app) — a mobile app where a sloppy session means a broken release. Different stakes, different stacks, different rhythms. Same 588 lines of bash.
+
+Both repos are run by the harness author, so this is not third-party validation. It is the second data point on what happens when the extraction goes back into live repos — and a stronger one than §1's, because this time the harness had to survive two completely different repo shapes.
+
+**The setting.** Before the August extraction, the author was already keeping decision logs and lessons-learned files in medulla (web3 autonomous liquidity provider bot) — legacy files dated June–July 2026 predate the extraction commit. In early October, medulla onboarded the *formal* template: the continuity protocol, the how-we-work doc, and the agent protocol are all dated 2026-10-03/04 — after the extraction. A second repo, flimapp (my fulltime company's super app), runs the same template. The sequence is: practice → extraction → formal re-adoption. The loop closed.
+
+**Scale of the install — medulla (observed 2026-10-08).** `docs/STATE.md` — 40 KB, 187 lines, frontmatter `status: active`, `last-verified` days before observation, written in Indonesian. It holds a phase summary, the current work position (with PR numbers, process PIDs, boot timestamps, CI pass counts), and a queue table of numbered fragments (#89 down to #03), each with a status (`in-progress`/`done`/`parked`/`todo`) and a blocker. `docs/decisions/` holds 96 numbered records; `docs/lessons/` holds 51; `docs/plans/` holds 89. The newest six decisions and six plans were all written within the 48 hours before observation. The session pipeline is written down, not tribal: agent instructions → protocol + STATE → active fragments → isolated validation → CI/merge/rollout when authorized → operation evidence → fragment/STATE handoff.
+
+**Tiering held — the strongest finding.** `scripts/docs-check.sh` is byte-identical (26,463 bytes, 588 lines, stamped `FRAGMENT_VERSION="0.5.0"`) across the template repo and both installs. Every repo-specific rule lives in `scripts/docs-check.local.sh`, and the two diverge completely:
+
+| | medulla — 23 lines | flimapp — 80 lines |
+|---|---|---|
+| Guards | *runtime integrity* | *release integrity* |
+| Fails the build when | state/secret-shaped files get tracked; architecture budget breaks; contracts drift | release ledger ≠ app manifest; store copy ≠ build number; API changes ship without the inventory update |
+| Reads your code | never — filename checks only ("never read runtime files or credentials") | never — diff metadata only; error messages in Indonesian |
+
+The shared guard stayed pristine and upgradable; the local files absorbed 100% of the divergence. §1's claim — that what transfers is smaller than what was built — now has its mirror image: what *stays shared* is smaller than what each repo needs. That is the entire pitch of the tiering design, and the seam just held under two completely different definitions of "correct".
+
+**Localization happened without permission.** Both installs — STATE, continuity protocol, guard error messages — are written in Indonesian. Nobody configured that; the template never forbade it. A harness that only works in the author's language is a harness with one user. This one isn't.
+
+**What this does not prove.** All of the above is n=2, both repos run by the author, observed on a single day. CI enforcement is attested by commit messages ("CI 3/3 PASS" appears routinely in STATE and the git log), not by observed workflow runs. And one complication is live and unexamined: medulla still runs its older machine-readable logs alongside the markdown template (a lessons file near 18 MB, updated every minute; a decision log near 900 KB). Three memories in parallel, no declared source of truth for the day they disagree. The harness governs documents; the JSON governs the runtime. That split is currently peaceful and currently unproven.

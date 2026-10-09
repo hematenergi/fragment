@@ -16,6 +16,10 @@ The goal is not to record history. It is to stop the same *class* of bug from re
 
 After fixing a bug that is (a) not obvious in its cause, and (b) able to recur. A trivial bug with an obvious cause does not need a file.
 
+Add a short `tags: [symptom, system]` list to each new lesson's YAML frontmatter
+so `/recall` can find it directly. Existing lessons remain searchable without
+tags; do not mass-edit them just to fill this field.
+
 ## Why this folder earns its keep
 
 The bugs that cost the most are rarely hard. They are the ones somebody already solved once, in a session nobody can find any more.

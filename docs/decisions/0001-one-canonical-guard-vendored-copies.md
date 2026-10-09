@@ -4,6 +4,7 @@ title: "0001 — one canonical guard, copied byte-for-byte, never linked"
 status: active
 owner: hematenergi
 last-verified: 2026-09-09
+tags: [guard, portability, windows, vendoring]
 ---
 
 # 0001 — one canonical guard, copied byte-for-byte, never linked
