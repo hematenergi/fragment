@@ -104,7 +104,16 @@ printf '  ok    limit restricts result count\n'
 
 if ln -s "$REPO/docs" "$REPO/docs-link" 2>/dev/null; then
   if DOCS_ROOT='docs-link' bash "$REPO/scripts/recall.sh" liquidity >/dev/null 2>&1; then
-    printf '  FAIL  DOCS_ROOT symlink was accepted\n'; exit 1
+    printf '  FAIL  DOCS_ROOT symlink was accepted\n'
+    printf '  DEBUG link: '; ls -ld "$REPO/docs-link"
+    printf '  DEBUG -L: '; [ -L "$REPO/docs-link" ] && printf 'yes\n' || printf 'no\n'
+    printf '  DEBUG readlink: '; readlink "$REPO/docs-link" 2>&1 || true
+    printf '  DEBUG realpath: '; realpath "$REPO/docs-link" 2>&1 || true
+    printf '  DEBUG logical/physical: '
+    (cd -L "$REPO/docs-link" && pwd -L && pwd -P) 2>&1 || true
+    printf '  DEBUG git prefix: '
+    git -C "$REPO/docs-link" rev-parse --show-prefix 2>&1 || true
+    exit 1
   fi
   printf '  ok    recall refuses DOCS_ROOT symlinks\n'
 else
