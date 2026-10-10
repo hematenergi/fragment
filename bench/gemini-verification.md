@@ -40,6 +40,8 @@ The preceding “no model call” statement is scoped to the environment-check t
 
 At 2026-10-10 17:08 WIB, the frozen runner started condition-B calibration attempt `medulla-b-calibration-01` from a clean workspace at the recorded Medulla snapshot. The first `countTokens` request carried the onboarding material and returned HTTP 400 with API status `INVALID_ARGUMENT`. No `generateContent` request was made; there is no dry-run result or `N`. The private log retains the request/response, without authorization headers or key material. The attempt stopped and was not retried, per the frozen invalid-request rule. The run wrapper labeled the end state `infrastructure-incomplete`; the public record keeps the API status distinct from any model outcome.
 
+**Likely cause (inference; not re-tested):** a redacted local classifier extracted “model not specified” from the private error response. The frozen `countTokens` body wraps `generateContentRequest` but does not set its `model` field; Google's REST schema marks `GenerateContentRequest.model` required. No request was sent after this diagnosis. See the official [countTokens API](https://ai.google.dev/api/tokens) and [GenerateContentRequest schema](https://ai.google.dev/api/generate-content).
+
 ## Sources
 
 - [Model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash)

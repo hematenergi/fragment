@@ -28,7 +28,7 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 ## Current state
 
 - `FragmentBenchmarkSpec.md` and `bench/extract-prompt.md` remain frozen and unchanged.
-- Generic Gemini probes succeeded intermittently. The first data-bearing condition-B preflight sent Medulla onboarding material to `countTokens` and returned HTTP 400 `INVALID_ARGUMENT`; no generation, dry run, score, or calibrated `N` exists.
+- Generic Gemini probes succeeded intermittently. The first data-bearing condition-B preflight sent Medulla onboarding material to `countTokens` and returned HTTP 400 `INVALID_ARGUMENT`; no generation, dry run, score, or calibrated `N` exists. The likely missing nested `model` field is an untested inference, not an approved repair.
 - Gemini 3.8 Flash stable alias and `thinkingLevel=low` are pinned in the new spec. Exact dated backend snapshot and active quota remain unconfirmed.
 - The separate harness now carries one conversation across onboarding, quiz, and task, preflights the half-budget onboarding boundary, and restricts edits to per-run paths. It aborts if the first condition-B prompt exceeds 80% of context; the calibration safety ceiling is 10,000,000 cumulative input tokens.
 - The existing Linux/arm64 image was rechecked at snapshot `01667b95454663848f193cd84e3fb055507035b0`; `npm ci` and network-disabled `npm test` passed in a clean clone (1,304 unit + 369 integration).

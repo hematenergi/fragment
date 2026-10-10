@@ -22,7 +22,9 @@ its provider-specific protocol, extraction prompt, and harness are pushed. The
 first condition-B preflight transmitted Medulla onboarding content to Gemini
 `countTokens` and returned HTTP 400 `INVALID_ARGUMENT`; no `generateContent`,
 dry run, score, or `N` resulted. The frozen protocol stops on invalid requests,
-so no retry or harness/spec change has been made.
+so no retry or harness/spec change has been made. The likely cause is a missing
+`model` field in the nested countTokens request; this is an untested inference
+from the private error and Google's required-field schema.
 
 ## Active fragment
 
@@ -35,7 +37,9 @@ questions/key/task are drafted privately against snapshot
 `01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
 and clean Medulla test result are recorded. One private condition-B onboarding
 preflight reached `countTokens` and failed with HTTP 400 `INVALID_ARGUMENT`;
-there is no generation, dry run, score, or calibrated `N`.
+there is no generation, dry run, score, or calibrated `N`. The likely cause—a
+missing nested request `model` field—is documented as an inference, not a
+verified fix.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
