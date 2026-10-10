@@ -601,6 +601,40 @@ async function pinCheck() {
   if (!response.ok || typeof json.modelVersion !== 'string' || !json.modelVersion) process.exitCode = 2;
 }
 
+async function countOnboarding(args) {
+  const preflightId = args.preflight_id;
+  if (!/^[A-Za-z0-9_-]{1,80}$/.test(preflightId ?? '')) throw new Error('preflight id must use letters, digits, _ or -');
+  const privateDir = fs.realpathSync(args.private_dir);
+  const systemText = fs.readFileSync(args.system, 'utf8');
+  const onboardingText = fs.readFileSync(args.onboarding, 'utf8');
+  const logPath = path.join(privateDir, preflightId + '.jsonl');
+  if (fs.existsSync(logPath)) throw new Error('preflight log already exists; use a new id');
+  fs.chmodSync(privateDir, 0o700);
+  fs.writeFileSync(logPath, '', { mode: 0o600, flag: 'wx' });
+  const config = parseDotEnv(fs.readFileSync(path.join(ROOT, 'bench', '.env'), 'utf8'));
+  if (!config.GEMINI_API_KEY || /^(PASTE_|PLACEHOLDER|\[.*\])/i.test(config.GEMINI_API_KEY)) throw new Error('Gemini API key is missing or a placeholder');
+  if (config.GEMINI_MODEL_R3 !== MODEL || config.GEMINI_MODEL_VERSION_R3 !== 'gemini-3.1-flash-lite') {
+    throw new Error('R3 Gemini model pin does not match the recorded verification');
+  }
+  const request = buildRequest(systemText, [{ role: 'user', parts: [{ text: onboardingText }] }]);
+  appendLog(logPath, {
+    type: 'preflight_start', preflightId, model: MODEL, modelVersion: config.GEMINI_MODEL_VERSION_R3,
+    method: 'countTokens', sourceChars: onboardingText.length,
+  });
+  const result = await apiCall(
+    'countTokens', { generateContentRequest: request }, config.GEMINI_API_KEY,
+    { lastApiAt: 0, lastGenerationAt: 0 }, logPath, { stage: 'onboarding-preflight', preflightId },
+  );
+  if (!Number.isInteger(result.totalTokens) || result.totalTokens < 0) throw new RunFailure('TOKEN_PREFLIGHT_INVALID', null, 'measurement-invalid');
+  if (result.totalTokens > MAX_CONTEXT) throw new RunFailure('SINGLE_REQUEST_CONTEXT_LIMIT', null, 'context-limit');
+  appendLog(logPath, { type: 'preflight_end', preflightId, estimatedInputTokens: result.totalTokens });
+  process.stdout.write(JSON.stringify({
+    preflightId, method: 'countTokens', model: MODEL, modelVersion: config.GEMINI_MODEL_VERSION_R3,
+    estimatedInputTokens: result.totalTokens, sourceChars: onboardingText.length, privateLog: logPath,
+  }) + '\n');
+  config.GEMINI_API_KEY = '';
+}
+
 function selfTest() {
   assert.equal(parseArgs(['--self-test']).self_test, true);
   assert.equal(isCredentialShapedPath('.env.example'), false);
@@ -642,7 +676,8 @@ const args = parseArgs(process.argv.slice(2));
 if (args.self_test) selfTest();
 else if (args.positional[0] === 'run') await runBenchmark(args);
 else if (args.positional[0] === 'pin-check') await pinCheck();
+else if (args.positional[0] === 'count-onboarding') await countOnboarding(args);
 else {
-  process.stderr.write('Usage: node bench/gemini-runner-r3.mjs --self-test | pin-check | run --repo PATH --deps PATH --private-dir PATH --system FILE --onboarding FILE --questions FILE --task FILE --run-id ID [--budget N] [--edit-path PATH ...]\n');
+  process.stderr.write('Usage: node bench/gemini-runner-r3.mjs --self-test | pin-check | count-onboarding --private-dir DIR --system FILE --onboarding FILE --preflight-id ID | run --repo PATH --deps PATH --private-dir PATH --system FILE --onboarding FILE --questions FILE --task FILE --run-id ID [--budget N] [--edit-path PATH ...]\n');
   process.exitCode = 2;
 }

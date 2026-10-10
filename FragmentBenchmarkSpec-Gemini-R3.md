@@ -23,7 +23,7 @@ The AI Studio project dashboard was checked on 2026-10-10 with All models enable
 
 - Keep every generation request at or below 230,000 preflight input tokens. If countTokens exceeds this ceiling, do not dispatch generateContent; mark the attempt incomplete and return the evidence for review.
 - Start generateContent requests at least 61 seconds apart. Keep all API calls at least 4.1 seconds apart. This keeps a single 230,000-token generation below the observed 250,000 TPM ceiling and all calls below the observed RPM limit, assuming no unrelated project traffic.
-- Condition B's initial onboarding bundle has a separate cap of 170,000 preflight input tokens. Prepare the bundle from the complete raw decisions/lessons/plans set; remove oldest whole records first until it fits. Record the bundle SHA, included and omitted record manifest, and omitted fraction. Do not summarize or rewrite retained records.
+- Condition B's initial onboarding bundle has a separate cap of 170,000 preflight input tokens. Build it from tracked Markdown under decisions/, lessons/, and plans/ using bench/gemini-r3-bundle.mjs. The builder orders records by first Git-add date, then path; it adds source-path headers and removes only whole oldest records. Use the runner's count-onboarding mode with the frozen system text and tool schemas to choose the smallest drop count that yields at most 170,000 tokens. This countTokens preparation is unscored and never calls generateContent. Save each private preflight log; freeze the final bundle SHA, included/omitted manifest, and omitted fraction. Do not summarize or rewrite retained records.
 - Do not trim the transcript dynamically after onboarding. If any later request exceeds 230,000 tokens, stop before generation and record a request-cap failure. Do not count an incomplete attempt as a competent run.
 - Reconfirm the project remains Free Tier before each benchmark phase. A quota rejection stops the affected attempt; preserve its log, do not retry it in the same run, and pause the phase for review.
 
@@ -58,6 +58,7 @@ This quota-bounded B condition is specific to R3. It is not the full untruncated
 - R2 ancestor protocol freeze: 6ad0871326da41631df20a2acf8b5bc3e76b8fd5.
 - R3 protocol/prompt/runner freeze commit: c2671ac5a873af1ca046054ffee2e8e3f6dbf018.
 - R3 modelVersion from ping: gemini-3.1-flash-lite.
+- R3 bundle-preparation amendment freeze: recorded in bench/gemini-r3-verification.md before any repository-content request.
 - Medulla snapshot: 01667b95454663848f193cd84e3fb055507035b0.
 - Draupnir snapshot: fill only after the R3 Medulla calibration completes.
 - R3 N: fill only after the R3 Medulla calibration completes.

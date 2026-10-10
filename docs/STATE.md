@@ -34,8 +34,9 @@ Gemini benchmark. AI Studio now confirms the selected Free-tier project has
 Gemini 3.1 Flash-Lite limits of 15 RPM, 250K TPM, and 500 RPD. R3 protocol,
 prompt, and runner were pushed at c2671ac5a873af1ca046054ffee2e8e3f6dbf018
 and the remote SHA matched. A single ping-only pin check returned HTTP 200 and
-pinned modelVersion gemini-3.1-flash-lite with thinking low. No repository
-content has been sent for R3.
+pinned modelVersion gemini-3.1-flash-lite with thinking low. The 236-record
+Medulla B bundle is assembled locally; a count-only preparation amendment is
+being validated and pushed before any R3 repository content is sent.
 
 ## Active fragment
 
@@ -54,8 +55,9 @@ onboarding preflight reached `countTokens` and failed with HTTP 400
 then `generateContent` failed with HTTP 429 because the Free-tier input-token
 quota is 250,000. There is no R2 generation, dry run, score, or calibrated
 `N`; R2 remains frozen and its failed attempt was not replayed. R3 has a
-frozen protocol, extraction prompt, and separate runner; the ping-only pin
-check succeeded, while its capped B bundle and calibration remain pending.
+frozen core protocol, extraction prompt, and separate runner; the ping-only pin
+check succeeded. The quota-aware bundle/counting amendment, capped B preflight,
+and calibration remain pending.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
