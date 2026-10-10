@@ -23,10 +23,10 @@ daily request cap; the quiz and task did not finish, so there is no valid score,
 
 ## Active fragment
 
-**Active: Fragment 14.** README, install guide, and homepage again link to
-Fragment's skills.sh repository listing, preserve the working `adopt-fragment`
-install command and source, and explain the stale catalog entry. The local suite
-(150 tests) and docs guard pass; publish and live-page verification remain.
+**No active fragment.** Fragment 14 is complete: README, install guide, and
+homepage again link to Fragment's skills.sh repository listing, preserve the
+working `adopt-fragment` install command and source, and explain the stale catalog
+entry. PR #12 is merged and the live homepage and GitHub README were verified.
 Fragment 13's source-link correction remains valid; its removal of the skills.sh
 link was reversed at the owner's request. Skills.sh ranks skills from anonymous
 install telemetry; no synthetic installs were created. Fragment 12 completed the
@@ -55,7 +55,7 @@ decision.
 | 11 | [put production evidence on the public site and README](plans/11-site-production-evidence.md) | `done` | 10 |
 | 12 | [complete Fragment's public install presence](plans/12-public-presence.md) | `done` | — |
 | 13 | [replace the unavailable skills.sh link](plans/13-fix-skills-catalog-links.md) | `done` | — |
-| 14 | [keep Fragment discoverable on skills.sh](plans/14-restore-skills-presence.md) | `in-progress` | — |
+| 14 | [keep Fragment discoverable on skills.sh](plans/14-restore-skills-presence.md) | `done` | — |
 
 ## Blocked / waiting on a human
 
@@ -89,6 +89,7 @@ decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 14 · merged PR #12 (`2b1f068`), Pages deploy `38065113487` succeeded, and live homepage plus GitHub README show the restored skills.sh link and stale-catalog note · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 14 · restored the skills.sh repository link and current install/source guidance across README, INSTALL.md, and homepage; reviewed the live all-time top ten and official telemetry rules; local validation passed · next: publish the link restoration and verify the live homepage.
 - 2026-10-10 · GPT-6 / Codex · 13 · merged PR #10 (`b8e6f38`), Pages deploy `38063624357` succeeded, live homepage HTTP 200 contains the raw GitHub skill link and no stale skills.sh link, and the source file returns HTTP 200; local suite (150 tests) and docs guard passed · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 13 · replaced README, INSTALL.md, and homepage links with the GitHub skill source; corrected the prior HTTP-only verification; local suite passed 150 tests and docs-check passed · next: publish and verify the deployed links.
