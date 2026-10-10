@@ -31,9 +31,11 @@ for the Free-tier 250,000 input-token quota. No generation, dry run, score, or
 `N` resulted. R2 remains frozen; no replacement request was sent pending owner
 review of the protocol gap. The owner then explicitly approved a new, separate
 Gemini benchmark. AI Studio now confirms the selected Free-tier project has
-Gemini 3.1 Flash-Lite limits of 15 RPM, 250K TPM, and 500 RPD. R3 is being
-prepared with a quota-bounded B condition and separate runner; no R3 model ping
-or repository-content request has been sent.
+Gemini 3.1 Flash-Lite limits of 15 RPM, 250K TPM, and 500 RPD. R3 protocol,
+prompt, and runner were pushed at c2671ac5a873af1ca046054ffee2e8e3f6dbf018
+and the remote SHA matched. A single ping-only pin check returned HTTP 200 and
+pinned modelVersion gemini-3.1-flash-lite with thinking low. No repository
+content has been sent for R3.
 
 ## Active fragment
 
@@ -43,7 +45,7 @@ template and this checkout; all 147 tests and the docs guard pass. Fragment 07
 remains parked for the original frozen GPT protocol. The new Gemini track is
 defined separately in `FragmentBenchmarkSpec-Gemini.md` (failed R1), the
 frozen `FragmentBenchmarkSpec-Gemini-R2.md`, and the newly approved R3
-revision. Its medulla
+revision, frozen at c2671ac5a873af1ca046054ffee2e8e3f6dbf018. Its Medulla
 questions/key/task are drafted privately against snapshot
 `01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
 and clean Medulla test result are recorded. The R1 private condition-B
@@ -52,8 +54,8 @@ onboarding preflight reached `countTokens` and failed with HTTP 400
 then `generateContent` failed with HTTP 429 because the Free-tier input-token
 quota is 250,000. There is no R2 generation, dry run, score, or calibrated
 `N`; R2 remains frozen and its failed attempt was not replayed. R3 has a
-draft protocol, extraction prompt, and separate runner; its pin check and
-calibration remain pending.
+frozen protocol, extraction prompt, and separate runner; the ping-only pin
+check succeeded, while its capped B bundle and calibration remain pending.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.

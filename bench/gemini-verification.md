@@ -69,4 +69,4 @@ The Free-tier limit is lower than the 488,670-token B onboarding prompt. The fro
 
 ## Gemini R3 project quota check (2026-10-10)
 
-AI Studio was opened to the selected Gemini API project. It showed Free tier and Set up billing; with All models enabled, the Gemini 3.1 Flash Lite row showed 0 / 15 RPM, 0 / 250K TPM, and 0 / 500 RPD in the 28-day peak-usage table. This confirms the project's displayed model quota, not guaranteed live capacity. The R3 model pin check has not been sent.
+AI Studio was opened to the selected Gemini API project. It showed Free tier and Set up billing; with All models enabled, the Gemini 3.1 Flash Lite row showed 0 / 15 RPM, 0 / 250K TPM, and 0 / 500 RPD in the 28-day peak-usage table. This confirms the project's displayed model quota, not guaranteed live capacity. The R3 ping-only model pin check returned HTTP 200 on 2026-10-10 17:53:10 WIB with modelVersion gemini-3.1-flash-lite, thinking low, and temperature omitted. It contained no repository material.

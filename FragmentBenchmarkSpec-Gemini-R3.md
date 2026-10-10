@@ -1,6 +1,6 @@
 # Fragment Benchmark Spec — Gemini R3 Free Tier
 
-**Status: protocol revision for the separate Gemini track.** The owner approved a new Gemini benchmark after the Free Tier data-use disclosure. R3 starts a new dataset. It does not alter or pool with the frozen GPT spec, Gemini R1, or Gemini R2. R2 remains frozen at 6ad0871326da41631df20a2acf8b5bc3e76b8fd5.
+**Status: protocol frozen at core commit c2671ac5a873af1ca046054ffee2e8e3f6dbf018 before the R3 pin check or any repository-content request.** The owner approved a new Gemini benchmark after the Free Tier data-use disclosure. R3 starts a new dataset. It does not alter or pool with the frozen GPT spec, Gemini R1, or Gemini R2. R2 remains frozen at 6ad0871326da41631df20a2acf8b5bc3e76b8fd5.
 
 ## 1. Inherited protocol
 
@@ -56,8 +56,8 @@ This quota-bounded B condition is specific to R3. It is not the full untruncated
 ## 7. Freeze anchors
 
 - R2 ancestor protocol freeze: 6ad0871326da41631df20a2acf8b5bc3e76b8fd5.
-- R3 protocol/prompt/runner freeze: fill after push.
-- R3 modelVersion from ping: fill after the no-repository-content pin check.
+- R3 protocol/prompt/runner freeze commit: c2671ac5a873af1ca046054ffee2e8e3f6dbf018.
+- R3 modelVersion from ping: gemini-3.1-flash-lite.
 - Medulla snapshot: 01667b95454663848f193cd84e3fb055507035b0.
 - Draupnir snapshot: fill only after the R3 Medulla calibration completes.
 - R3 N: fill only after the R3 Medulla calibration completes.
