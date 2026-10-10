@@ -50,6 +50,14 @@ At **2026-10-10 17:25 WIB**, R2 attempt `medulla-b-calibration-r2-01` used Medul
 
 The Free-tier limit is lower than the 488,670-token B onboarding prompt. The frozen spec's 80%-of-context truncation threshold is 838,860, so it would not truncate this prompt. A repeated identical request would still exceed the API's reported 250,000 input-token quota. No replacement attempt was sent. This is a protocol gap, recorded for owner review; the frozen R2 spec was not changed.
 
+## No-cost alternatives checked (2026-10-10)
+
+- The ignored local `.env` has a configured Gemini key; `GH_MODELS_TOKEN` is empty, and no other provider key is configured there. No key value was read out or recorded.
+- The installed Muse app exposed only an `AmbientPanel` window with the Muse label; no model chat or benchmark controls were available in its current UI.
+- Ollama local model inventory contains `qwen2.5:0.5b` (32K context), too small for the unchanged B prompt. `gpt-oss:20b-cloud` reports 131,072 context and is a cloud model; the Ollama Free plan includes starter usage credits, but this model's eligibility/remaining credits were not verified and no request was sent. The `kimi-k2.5:cloud` tag reports retired. Ollama's official [pricing page](https://ollama.com/pricing) describes local inference as unlimited; its [Qwen 2.5 library page](https://ollama.com/library/qwen2.5) lists the installed 0.5B tag at 32K context.
+- Google documents Gemini 3.1 Flash-Lite as a Free-tier model with a 1,048,576-token input window ([model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite), [pricing](https://ai.google.dev/gemini-api/docs/pricing)). Its project-specific RPM/TPM/RPD for this key were not visible in the current AI Studio model table, so it is only a candidate; no request was sent.
+- Any next run must belong to a separately frozen benchmark revision. If retaining Gemini 3.8 Flash, the protocol must account for its observed 250,000 input-token TPM cap; R2's 488,670-token B prompt cannot be replayed unchanged. Do not pool R2's failed preflight with a later benchmark.
+
 ## Sources
 
 - [Model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash)

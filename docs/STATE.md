@@ -29,7 +29,11 @@ nested `model` field and corrects API error categories. Its first B calibration
 counted 488,670 onboarding tokens, then `generateContent` returned HTTP 429
 for the Free-tier 250,000 input-token quota. No generation, dry run, score, or
 `N` resulted. R2 remains frozen; no replacement request was sent pending owner
-review of the protocol gap.
+review of the protocol gap. A local alternative check found no configured
+provider key beyond Gemini; the installed Muse UI exposes only its ambient
+panel, and the available local Ollama model is too small for the full B prompt.
+Gemini 3.1 Flash-Lite is a possible Free-tier candidate, but its project quota
+has not been confirmed. No R3 draft or further model request exists.
 
 ## Active fragment
 
@@ -63,7 +67,7 @@ R2 remains frozen and no replacement request was sent.
 | 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `done` | — |
 | 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | original frozen GPT-5.4 Mini access is unavailable; the separate Gemini track is plan 09 |
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
-| 09 | [run the Gemini benchmark and release v0.6](plans/09-gemini-benchmark-and-v06-release.md) | `in-progress` | owner review: frozen B prompt is 488,670 tokens, above the Free-tier 250,000 TPM |
+| 09 | [run the Gemini benchmark and release v0.6](plans/09-gemini-benchmark-and-v06-release.md) | `in-progress` | owner review: choose a free-tier-compatible model/protocol after R2's 488,670 vs. 250,000 TPM result |
 
 ## Blocked / waiting on a human
 
@@ -97,6 +101,7 @@ One line per session, newest first. Format:
 - 2026-10-10 · GPT-6 / Codex · 09 · owner directed work through v0.6 release; retained failed Gemini R1 and started separate R2 with required nested model field and accurate API categories; local self-check passes, no R2 request sent · next: freeze/push R2 before its condition-B calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · froze and pushed separate Gemini R2 protocol/harness correction at `6ad0871`; local and remote SHAs match, 147 tests and docs guard pass, no R2 request sent · next: reconfirm Free Tier/no billing, then run B-condition Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · R2 B calibration counted 488,670 onboarding tokens, then Free-tier `generateContent` returned 429 for the 250,000 input-token quota; no usage, score, or `N`, and no replacement sent because frozen truncation threshold would not reduce this prompt · next: owner reviews the protocol gap before any R3 or further API call.
+- 2026-10-10 · GPT-6 / Codex · 09 · checked no-cost alternatives without sending content: Muse exposes only its ambient panel; local Ollama is 0.5B/32K and cloud options do not fit the full prompt; Gemini 3.1 Flash-Lite has a documented 1M window but project quota is unconfirmed · next: owner review before creating another frozen benchmark revision.
 - 2026-10-10 · GPT-6 / Codex · 09 · pushed frozen Gemini harness/system prompt/tool allowlist as `e05a5b9`; local and remote SHAs match, the key stayed ignored, and no repository content has been sent · next: record the freeze anchor and run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · repaired the Gemini harness so onboarding, quiz, and task share one transcript; enforced the onboarding cap and per-run edit paths; harness self-check and all 147 repository tests pass · next: push the frozen harness/system prompt, then run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · confirmed the AI Studio key project remains Free tier; clean Medulla snapshot passed npm ci and 1,304 unit + 369 integration tests in the pinned image with test networking disabled · next: freeze benchmark harness before calibration.
