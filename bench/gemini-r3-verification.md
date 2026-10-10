@@ -26,7 +26,32 @@ AI Studio showed the selected project on Free tier with Set up billing still off
 - Rate-limit headers: none returned.
 - Authorization header and API key: not logged or recorded.
 
-The Medulla candidate bundle was assembled locally from the verified snapshot and remains private. One count-only CLI invocation stopped locally because the parser did not yet allow the non-secret model-version setting; the log is empty and no API request was sent. No R3 countTokens preflight, condition-B calibration, or other repository-content request has been sent yet.
+## Medulla condition-B calibration attempts
+
+The private R3 bundle was built from Medulla snapshot
+`01667b95454663848f193cd84e3fb055507035b0`. It retains 86 of 236 records and
+omits the 150 oldest whole records (63.6% by record count). The final private
+bundle SHA-256 is
+`7d0567f74942613f6da04563e0883f7b2ab58a21f3b5187c3522657bf321715d`; its
+included/omitted manifest and count-only preflight logs are retained outside
+the repository. The B onboarding preflight was 169,271 tokens, within the
+170,000-token onboarding cap.
+
+No calibration completed and no `N` was set. Three private attempts used the
+same pinned Medulla snapshot and frozen R3 inputs:
+
+| Run | Time (WIB) | Outcome |
+|---|---|---|
+| `medulla-b-calibration-r3-01` | 2026-10-10 18:07:13–18:15:27 | Eight successful generations; then HTTP 503. Partial successful-response input usage: 1,393,404 tokens. |
+| `medulla-b-calibration-r3-02` | 2026-10-10 18:17:04–18:17:13 | Initial onboarding count was 169,271; first generation returned HTTP 503. No generation usage. |
+| `medulla-b-calibration-r3-03` | 2026-10-10 18:20:03–18:46:04 | Twenty-six successful generations; partial successful-response input usage: 5,317,452 tokens. One response omitted `thoughtsTokenCount`. The next countTokens estimate was 232,231, above the 230,000 per-request cap, so the runner stopped before sending that generation (`FREE_TIER_REQUEST_TOKEN_CAP`). |
+
+These are incomplete calibration attempts, not task results or exact
+tokens-to-competent measurements. The partial input sums are diagnostic only.
+The raw request/response logs remain private with owner-only permissions. No
+question grading, score, or calibrated `N` exists. R3's request-cap stop was
+followed; any protocol or bundle change requires a separately frozen Gemini
+revision. The local failed-attempt workspace is retained privately.
 
 ## Sources
 

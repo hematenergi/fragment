@@ -29,19 +29,22 @@ nested `model` field and corrects API error categories. Its first B calibration
 counted 488,670 onboarding tokens, then `generateContent` returned HTTP 429
 for the Free-tier 250,000 input-token quota. No generation, dry run, score, or
 `N` resulted. R2 remains frozen; no replacement request was sent pending owner
-review of the protocol gap. The owner then explicitly approved a new, separate
-Gemini benchmark. AI Studio now confirms the selected Free-tier project has
-Gemini 3.1 Flash-Lite limits of 15 RPM, 250K TPM, and 500 RPD. R3 protocol,
-prompt, and runner were pushed at c2671ac5a873af1ca046054ffee2e8e3f6dbf018
-and the remote SHA matched. A single ping-only pin check returned HTTP 200 and
-pinned modelVersion gemini-3.1-flash-lite with thinking low. The 236-record
-Medulla B bundle is assembled locally. The deterministic builder and
-count-only preflight amendment are pushed at
-7ba4fdc140cd917a16721d5ff5d8ea5357849400. A parser allowlist fix for the
-non-secret model-version pin was pushed at
-998fe25b7345951aa4155c35cd1cee6a6bfd0e00; both remote SHAs matched. One
-count-only invocation stopped locally before network because of that parser
-bug; no R3 repository content has been sent.
+review of the protocol gap. The owner then approved a separate Gemini R3.
+AI Studio showed Free-tier limits of 15 RPM, 250K TPM, and 500 RPD. R3
+protocol, prompt, runner, deterministic bundle builder, and count-only
+preflight fix were pushed with matching remote SHAs. Its ping-only pin check
+returned HTTP 200 and pinned `gemini-3.1-flash-lite`, thinking low, with
+temperature omitted. The private Medulla B bundle retains 86 of 236 records,
+omits the 150 oldest whole records, and has SHA-256
+`7d0567f74942613f6da04563e0883f7b2ab58a21f3b5187c3522657bf321715d`; its
+onboarding count is 169,271. Three B-calibration attempts were retained
+privately: run 01 had eight successful generations then HTTP 503 (1,393,404
+partial prompt tokens); run 02 had zero generations then HTTP 503; run 03 had
+26 successful generations (5,317,452 partial prompt tokens), then its next
+countTokens estimate was 232,231 and the runner stopped before generation at
+the 230,000-token request cap. One successful run-03 response lacked reasoning
+usage. No attempt completed the task, so there is no calibration result, score,
+or `N`; R3 remains frozen and work pauses before another benchmark revision.
 
 ## Active fragment
 
@@ -54,15 +57,16 @@ frozen `FragmentBenchmarkSpec-Gemini-R2.md`, and the newly approved R3
 revision, frozen at c2671ac5a873af1ca046054ffee2e8e3f6dbf018. Its Medulla
 questions/key/task are drafted privately against snapshot
 `01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
-and clean Medulla test result are recorded. The R1 private condition-B
-onboarding preflight reached `countTokens` and failed with HTTP 400
-`INVALID_ARGUMENT`. The R2 B calibration preflight counted 488,670 tokens,
-then `generateContent` failed with HTTP 429 because the Free-tier input-token
-quota is 250,000. There is no R2 generation, dry run, score, or calibrated
-`N`; R2 remains frozen and its failed attempt was not replayed. R3 has a
-frozen core protocol, extraction prompt, and separate runner; the ping-only pin
-check succeeded. The quota-aware builder/counting amendment is pushed. The capped B preflight
-and calibration remain pending.
+and clean Medulla test result are recorded. R1 stopped at HTTP 400; R2 stopped
+after its 488,670-token onboarding estimate exceeded the Free-tier input-token
+quota and returned HTTP 429. R3's capped private B bundle was sent for
+calibration: one run ended HTTP 503 after eight generations, one ended HTTP
+503 before generation, and the final fresh attempt reached a 232,231-token
+countTokens estimate and stopped before that generation at R3's 230,000-token
+cap. Raw logs and the changed attempt-03 workspace remain private. All three
+R3 attempts are incomplete; no task result, score, or `N` exists. Do not clone
+Draupnir or proceed to scored runs until the owner reviews a new benchmark
+revision.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -79,7 +83,7 @@ and calibration remain pending.
 | 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `done` | — |
 | 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | original frozen GPT-5.4 Mini access is unavailable; the separate Gemini track is plan 09 |
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
-| 09 | [run the Gemini benchmark and release v0.6](plans/09-gemini-benchmark-and-v06-release.md) | `in-progress` | owner review: choose a free-tier-compatible model/protocol after R2's 488,670 vs. 250,000 TPM result |
+| 09 | [run the Gemini benchmark and release v0.6](plans/09-gemini-benchmark-and-v06-release.md) | `in-progress` | owner review after R3 calibration hit the 230,000-token request cap; a new revision is required to change bundle/protocol |
 
 ## Blocked / waiting on a human
 
@@ -109,6 +113,7 @@ and calibration remain pending.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 09 · froze the private R3 Medulla B bundle and made three fresh calibration attempts; two received HTTP 503 and the final countTokens preflight was 232,231, so the runner stopped before generation at its request cap; no complete task, result, or N; 147 tests and docs guard green · next: owner review before any separately frozen Gemini revision; R3 stays unchanged.
 - 2026-10-10 · GPT-6 / Codex · 09 · condition-B preflight sent onboarding docs to Gemini `countTokens` and received HTTP 400 `INVALID_ARGUMENT`; no generation or calibration value exists, so stopped per frozen protocol · next: owner reviews the invalid-request evidence before any new benchmark revision.
 - 2026-10-10 · GPT-6 / Codex · 09 · owner directed work through v0.6 release; retained failed Gemini R1 and started separate R2 with required nested model field and accurate API categories; local self-check passes, no R2 request sent · next: freeze/push R2 before its condition-B calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · froze and pushed separate Gemini R2 protocol/harness correction at `6ad0871`; local and remote SHAs match, 147 tests and docs guard pass, no R2 request sent · next: reconfirm Free Tier/no billing, then run B-condition Medulla calibration.
