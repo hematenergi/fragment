@@ -98,7 +98,7 @@ decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
-- 2026-10-10 · GPT-6 / Codex · 16 · generated a 1536×1024 illustration, integrated it into the responsive homepage and canonical skill source, and confirmed the mobile preview · next: run repository validation and verify the live pages after publication.
+- 2026-10-10 · GPT-6 / Codex · 16 · generated a 1536×1024 illustration, integrated it into the responsive homepage, and synced both skill copies after CI caught their byte-identity rule · next: rerun CI and verify the live pages after publication.
 - 2026-10-10 · GPT-6 / Codex · 15 · merged PR #14 as `b3439c9`; Pages run `38066187505` succeeded; live detail page and homepage verified; CLI listed one `fragment` with telemetry disabled; 150 tests, docs guard, and required CI checks passed (Windows run still in progress) · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 15 · renamed the canonical CLI skill to `fragment`, aligned install surfaces and hero CTA, and passed all 150 tests plus docs guard · next: publish, confirm the CLI sees one `fragment` skill, then inspect the live page.
 - 2026-10-10 · GPT-6 / Codex · 15 · restoring the canonical skills CLI skill slug to `fragment`, linking directly to its skills.sh detail page, and keeping plugin package IDs intact per owner direction · next: validate CLI discovery, tests, docs guard, then publish and inspect the live detail page.
