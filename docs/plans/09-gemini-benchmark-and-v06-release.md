@@ -18,12 +18,15 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 ## Read first
 
 - `../../FragmentBenchmarkSpec-Gemini.md` — separate frozen Gemini protocol
-- `../../FragmentBenchmarkSpec-Gemini-R3.md` — current Free-tier Gemini revision; do not send repository content until R3 is frozen and pushed
+- `../../FragmentBenchmarkSpec-Gemini-R4.md` — current Gemini revision draft; do not send repository content until the R4 freeze is pushed and ping passes
+- `../../FragmentBenchmarkSpec-Gemini-R3.md` — frozen historical revision; do not run more R3 attempts
 - `../../FragmentBenchmarkSpec.md` — original frozen GPT protocol; do not edit
-- `../../bench/extract-prompt-gemini-r3.md` — R3 Draupnir extraction prompt
+- `../../bench/extract-prompt-gemini-r4.md` — R4 Draupnir extraction prompt
 - `../../bench/gemini-agent-system.md` — fixed agent instructions
+- `../../bench/gemini-r4-agent-system.md` — R4 fixed instructions with explicit command allowlist
 - `../../bench/gemini-verification.md` — original Gemini probe and quota evidence
 - `../../bench/gemini-r3-verification.md` — R3 freeze and ping-only model pin evidence
+- `../../bench/gemini-r4-verification.md` — R4 quota, freeze, and ping evidence
 - `08-v06-context-features.md` — shipped feature record
 - `../decisions/0004-separate-gemini-benchmark.md` — provider/model decision
 
@@ -31,8 +34,9 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 
 - `FragmentBenchmarkSpec.md` and `bench/extract-prompt.md` remain frozen and unchanged.
 - Gemini R1's first data-bearing condition-B preflight sent Medulla onboarding material to `countTokens` and returned HTTP 400 `INVALID_ARGUMENT`; it produced no generation, dry run, score, or `N` and remains unchanged. Separate Gemini R2 is frozen and pushed at `6ad0871326da41631df20a2acf8b5bc3e76b8fd5`, with the required nested model resource and distinct API error categories. Its first B calibration attempt returned a 488,670-token onboarding estimate from `countTokens`, then HTTP 429 `RESOURCE_EXHAUSTED` from `generateContent`; the structured quota metric was `generate_content_free_tier_input_token_count` at 250,000, with `RetryInfo=23s`. No generation usage, score, or `N` exists; the raw log remains private and no replacement was sent.
-- Gemini R2 remains frozen after its quota failure. The owner approved separate R3 using Gemini 3.1 Flash-Lite Free Tier; its frozen protocol, prompt, and runner are pushed, the ping-only pin check returned HTTP 200, and response `modelVersion` was `gemini-3.1-flash-lite` with thinking low. The private Medulla bundle retains 86 of 236 records, omits 150 oldest whole records (63.6% by record count), and has SHA-256 `7d0567f74942613f6da04563e0883f7b2ab58a21f3b5187c3522657bf321715d`; its 169,271-token onboarding preflight is within the 170,000 cap. Three private B-calibration attempts were made from the pinned snapshot: run 01 had eight successful generations then HTTP 503 and 1,393,404 partial prompt tokens; run 02 had zero generations and HTTP 503; run 03 had 26 successful generations and 5,317,452 partial prompt tokens, then countTokens estimated 232,231 and the runner stopped before generation at the 230,000 request cap. One successful response in run 03 lacked `thoughtsTokenCount`. All attempts are incomplete; no task result, score, or `N` exists. Raw logs and the modified third-attempt workspace remain private. Preserve R3 unchanged and pause before a new revision.
-- Other no-cost alternatives were checked without sending benchmark content: the only configured provider key is Gemini; Muse exposes only its ambient panel; local Ollama has Qwen 0.5B/32K, while its cloud GPT-OSS tag is 131K context and usage-credit eligibility was not checked. Gemini 3.1 Flash-Lite is documented with a 1,048,576-token input window and Free Tier pricing; its selected-project quota is now verified in AI Studio.
+- Gemini R2 remains frozen after its quota failure. R3 used Gemini 3.1 Flash-Lite Free Tier; its protocol, prompt, and runner remain pushed and unchanged. Its three B-calibration attempts were incomplete: two HTTP 503s; the last stopped before generation at a 232,231-token request estimate. One successful response lacked `thoughtsTokenCount`; no task result, score, or `N` exists. Raw logs and the modified attempt workspace remain private. Keep R3 evidence out of R4 metrics.
+- A separate R4 draft now returns to the model selected in decision 0004, Gemini 3.8 Flash, while preserving R3 as historical evidence. AI Studio shows Free-tier limits of 5 RPM, 250K input TPM, and 20 RPD for Gemini 3.8 Flash. The R4 draft uses a 220K per-request cap, 120K B-onboarding cap, 15-second API spacing, and 61-second generation spacing. No R4 ping or repository-content request has been sent; freeze and push the new artifacts before the ping.
+- Other no-cost alternatives were checked without sending benchmark content: the only configured provider key is Gemini; Muse exposes only its ambient panel; local Ollama has Qwen 0.5B/32K, while its cloud GPT-OSS tag is 131K context and usage-credit eligibility was not checked. Gemini 3.8 Flash is documented with a 1,048,576-token input window and Free Tier pricing; its selected-project quota is now verified in AI Studio.
 - The separate harness now carries one conversation across onboarding, quiz, and task, preflights the half-budget onboarding boundary, and restricts edits to per-run paths. It aborts if the first condition-B prompt exceeds 80% of context; the calibration safety ceiling is 10,000,000 cumulative input tokens.
 - The existing Linux/arm64 image was rechecked at snapshot `01667b95454663848f193cd84e3fb055507035b0`; `npm ci` and network-disabled `npm test` passed in a clean clone (1,304 unit + 369 integration).
 - Fragment v0.6 features are implemented and merged; GitHub v0.6.0 release is not published.
@@ -54,9 +58,13 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 - [x] Validate and push the deterministic R3 bundle builder and count-only preflight extension before sending any repo content.
 - [x] Fix the R3 config parser to read its non-secret response model pin; confirm the failed local invocation sent no request and push the fix.
 - [x] Use countTokens to trim the Medulla B bundle to the 170K onboarding cap; preserve its record manifest and hash.
-- [ ] Run the R3 Medulla B calibration and set N; do not replay the R2 attempt. **Unticked:** three attempts ended incomplete (two HTTP 503s, then the explicit 230,000-token request cap); no calibration completed and no `N` exists. Stop here pending owner review of a new benchmark revision.
+- [x] Preserve the three incomplete R3 calibration attempts without changing frozen R3 files or treating partial usage as a result; no R3 `N` exists.
+- [ ] Freeze and push a separate R4 protocol, extraction prompt, system prompt, bundle builder, and runner; run local checks before any R4 API request.
+- [ ] Reconfirm Free Tier, perform the R4 ping-only model pin, and record the exact response model version without sending repository content.
+- [ ] Build the R4 Medulla B bundle within its 120K onboarding cap; retain its private manifest/hash and count-only preflight.
+- [ ] Run one complete R4 Medulla B calibration and set `N`; stop without `N` if quota/infrastructure prevents task completion.
 - [ ] Clone Draupnir in the final container, record its SHA, and verify tests.
-- [ ] Fill and commit only Gemini prompt placeholders; mechanically extract and freeze the Draupnir KB.
+- [ ] Fill and commit only R4 Gemini prompt placeholders; mechanically extract and freeze the Draupnir KB.
 - [ ] Write and freeze Draupnir questions, answer key, rubric, task, and automatic check from post-March-2026 sources.
 - [ ] Freeze the harness/system prompt and run 30 baseline plus 30 v0.6 validation runs; preserve raw logs privately.
 - [ ] Recompute results from raw logs, write the public aggregate report and honesty block, then prepare the GitHub v0.6.0 release.
@@ -80,8 +88,9 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 ## Validation
 
 ```bash
-rtk node --check bench/gemini-runner-r3.mjs
-rtk node bench/gemini-runner-r3.mjs --self-test
+rtk node --check bench/gemini-runner-r4.mjs
+rtk node bench/gemini-runner-r4.mjs --self-test
+rtk node --check bench/gemini-r4-bundle.mjs
 rtk bash tests/run.sh
 rtk bash scripts/docs-check.sh
 ```
@@ -94,6 +103,7 @@ Changing the frozen GPT benchmark, adopter outreach, v0.7 work, or changing ship
 
 ## Session log
 
+- 2026-10-10 · GPT-6 / Codex · 09 · after the final R3 request-cap stop, preserved R3 and drafted a separate Gemini 3.8 Flash R4 with the selected project's observed Free-tier quotas and a lower onboarding cap; runner/builder checks, 147 tests, docs guard, and redacted secret scan pass; no R4 API request or repository-content transfer · next: push the R4 freeze, then do the ping-only pin check.
 - 2026-10-10 · GPT-6 / Codex · 09 · froze the private R3 B bundle (86/236 records) and made three calibration attempts; two ended HTTP 503 and the final attempt stopped before generation at 232,231 estimated tokens, so no calibration result or N exists; preserved all private logs, updated evidence only, and confirmed 147 tests plus docs guard green · next: owner review before a separately frozen Gemini revision; do not continue R3.
 - 2026-10-10 · GPT-6 / Codex · 09 · first B calibration preflight returned HTTP 400 `INVALID_ARGUMENT` from `countTokens`; no generation or `N`, and stopped without retry per protocol · next: owner reviews the invalid-request evidence before any new benchmark revision.
 - 2026-10-10 · GPT-6 / Codex · 09 · after owner directed continuation through release, kept R1 unchanged and drafted Gemini R2 with the required nested model resource and distinct API-error categories; local runner self-check passes · next: push R2 freeze, then calibrate.
