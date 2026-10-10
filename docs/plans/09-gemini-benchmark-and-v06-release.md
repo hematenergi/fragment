@@ -42,6 +42,7 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 - The existing Linux/arm64 image was rechecked at snapshot `01667b95454663848f193cd84e3fb055507035b0`; `npm ci` and network-disabled `npm test` passed in a clean clone (1,304 unit + 369 integration).
 - Fragment v0.6 features are implemented and merged; GitHub v0.6.0 release is not published.
 - Current release branch verification: `rtk bash tests/run.sh` passes all 147 tests and `rtk bash scripts/docs-check.sh` is GREEN. GitHub's release list still has v0.5.0 as latest; v0.6.0 is not tagged or published. Keep the release gate closed until benchmark phases have numbers.
+- Draft PR #4 (`codex/v06-benchmark-resume` → `main`) is open at commit `efc4ae3`; its initial docs-check, secrets, Ubuntu, macOS, and Windows checks all passed. Keep it draft until the benchmark phases and release report are complete.
 
 ## Work
 
@@ -66,6 +67,7 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 - [x] Build/count deterministic R4 Medulla B bundles; final 67/236-record bundle is 99,733 tokens under the 120K cap, with private manifest/hash and raw count-only records preserved.
 - [ ] Run one complete R4 Medulla B calibration and set `N`; stop without `N` if quota/infrastructure prevents task completion. **Stopped:** attempt `r4-medulla-b-calibration-01` exhausted the structured 20/day Free-tier generation-request quota at HTTP 429 after 11 successful generations; quiz/task did not complete, so no `N` exists. Follow the frozen stop rule; do not replay this attempt. Resume after quota reset only with verified headroom and a fresh attempt ID.
 - [x] Preserve the incomplete R4 calibration evidence privately and record its quota failure without changing frozen protocol/prompt artifacts.
+- [x] Open draft PR #4 for the public benchmark/release work; all five initial CI checks passed. Keep it draft until the R4 benchmark gate is satisfied.
 - [ ] Clone Draupnir in the final container, record its SHA, and verify tests.
 - [ ] Fill and commit only R4 Gemini prompt placeholders; mechanically extract and freeze the Draupnir KB.
 - [ ] Write and freeze Draupnir questions, answer key, rubric, task, and automatic check from post-March-2026 sources.
@@ -106,7 +108,7 @@ Changing the frozen GPT benchmark, adopter outreach, v0.7 work, or changing ship
 
 ## Session log
 
-- 2026-10-10 · GPT-6 / Codex · 09 · R4 Medulla B calibration `r4-medulla-b-calibration-01` stopped at HTTP 429 after 11 successful generations; quota metric is the 20/day Free-tier generation-request limit, quiz/task incomplete, no result or `N`; preserved private log and clean checkout, recorded unresolved `RetryInfo` timing without changing frozen artifacts, reran the full 147-test suite and docs guard successfully, and confirmed GitHub still lists v0.5.0 as latest · next: after quota reset, verify AI Studio headroom and resume with a fresh attempt ID; do not replay this attempt or clone Draupnir before calibration completes.
+- 2026-10-10 · GPT-6 / Codex · 09 · R4 Medulla B calibration `r4-medulla-b-calibration-01` stopped at HTTP 429 after 11 successful generations; quota metric is the 20/day Free-tier generation-request limit, quiz/task incomplete, no result or `N`; preserved private log and clean checkout, recorded unresolved `RetryInfo` timing, reran the full 147-test suite and docs guard successfully, and opened draft PR #4 at `efc4ae3` with all five initial CI checks green; GitHub still lists v0.5.0 as latest · next: after quota reset, verify AI Studio headroom and resume with a fresh attempt ID; do not replay this attempt or clone Draupnir before calibration completes.
 
 - 2026-10-10 · GPT-6 / Codex · 09 · rechecked Free Tier/no billing, verified the private Medulla Q/key/task map to snapshot `01667b9`, and count-preflighted deterministic B bundles at 73,020 / 91,818 / 99,733 tokens; final 67/236 bundle and manifest hashes are recorded, secret scan clean, no generation sent · next: run the one unscored R4 calibration; stop if quota blocks completion.
 - 2026-10-10 · GPT-6 / Codex · 09 · post-freeze R4 ping-only check succeeded (HTTP 200, `gemini-3.8-flash`, low thinking accepted, temperature omitted, reasoning usage absent); no repository content sent · next: freeze ping evidence, then prepare/count the private Medulla B bundle.
