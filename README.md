@@ -35,7 +35,7 @@ For the install workflow as an agent skill:
 npx skills add hematenergi/fragment --skill adopt-fragment
 ```
 
-[View the skill on skills.sh](https://www.skills.sh/hematenergi/fragment/adopt-fragment) · [Other agent install paths](INSTALL.md)
+[View the skill source](https://raw.githubusercontent.com/hematenergi/fragment/main/skills/adopt-fragment/SKILL.md) · [Other agent install paths](INSTALL.md)
 
 The skill guides an agent through adopting Fragment. To install the full Bash harness directly, use:
 

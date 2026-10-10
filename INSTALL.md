@@ -8,7 +8,7 @@ Install the onboarding skill with the skills CLI:
 npx skills add hematenergi/fragment --skill adopt-fragment
 ```
 
-[Open adopt-fragment on skills.sh](https://www.skills.sh/hematenergi/fragment/adopt-fragment).
+[View the adopt-fragment skill source](https://raw.githubusercontent.com/hematenergi/fragment/main/skills/adopt-fragment/SKILL.md).
 The skill guides your agent through adding the full Fragment harness while
 preserving files already in your repository.
 

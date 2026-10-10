@@ -23,16 +23,16 @@ daily request cap; the quiz and task did not finish, so there is no valid score,
 
 ## Active fragment
 
-**No active fragment.** Fragment 12 is complete: the default branch contains a
-single `adopt-fragment` skill, documented install packages, and aligned README,
-homepage, and GitHub metadata. The new direct skills.sh page works. The old
-`/hematenergi/fragment/fragment` catalogue URL still serves stale platform data;
-the repo no longer publishes that skill, and skills.sh documents no repo-side
-deletion control. `/hematenergi` is a catalogue owner page, not an automatic
-GitHub profile. Fragment 11 is complete: the homepage and GitHub README show the
-observed v0.5.0 adoption in medulla and flimapp, with its limits. Fragment 10 is
-complete and v0.6.0 remains the latest release. Benchmark plan 07 is parked
-until Free Tier quota is available; plan 04 awaits the owner's decision.
+**Fragment 13 is active.** Fix the stale skills.sh link after discovering that
+the direct slug's HTTP 200 page contains an application-level 404 and the repo
+listing still shows the old skill name. Keep installation through the CLI and
+link to the canonical GitHub skill source while the catalog is unavailable.
+Fragment 12 completed the repo-side package and presence work; its direct-page
+verification was incorrect and is corrected in that plan. Fragment 11 is
+complete: the homepage and GitHub README show the observed v0.5.0 adoption in
+medulla and flimapp, with its limits. Fragment 10 is complete and v0.6.0 remains
+the latest release. Benchmark plan 07 is parked until Free Tier quota is
+available; plan 04 awaits the owner's decision.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -52,6 +52,7 @@ until Free Tier quota is available; plan 04 awaits the owner's decision.
 | 10 | [publish v0.6.0 with benchmark pending](plans/10-v06-release-before-benchmark.md) | `done` | — |
 | 11 | [put production evidence on the public site and README](plans/11-site-production-evidence.md) | `done` | 10 |
 | 12 | [complete Fragment's public install presence](plans/12-public-presence.md) | `done` | — |
+| 13 | [replace the unavailable skills.sh link](plans/13-fix-skills-catalog-links.md) | `in-progress` | 12 |
 
 ## Blocked / waiting on a human
 
@@ -85,6 +86,8 @@ until Free Tier quota is available; plan 04 awaits the owner's decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 13 · replaced README, INSTALL.md, and homepage links with the GitHub skill source; corrected the prior HTTP-only verification; local suite passed 150 tests and docs-check passed · next: publish and verify the deployed links.
+- 2026-10-10 · GPT-6 / Codex · 13 · found the skills.sh detail URL returned HTTP 200 with an application-level 404 and that search/catalog pages still show stale data; correcting public links to point to the canonical GitHub skill source · next: verify local docs and site, then publish the link correction.
 - 2026-10-10 · GPT-6 / Codex · 12 · merged PR #8 (`95033e6`); all five CI checks passed, the single canonical skill and direct install page verified, and public metadata updated; recorded that skills.sh still serves the removed legacy slug and does not document a repo-side cleanup control · next: resume parked benchmark plan 07 when Free Tier quota is available.
 
 - 2026-10-10 · GPT-6 / Codex · 12 · closed superseded draft PR #4 after v0.6.0 shipped separately in PR #5; confirmed its Gemini benchmark work remains unscored and its branch is preserved; identified the duplicated `/fragment/fragment` skills.sh path · next: publish the distinct `adopt-fragment` skill and complete verified agent install surfaces.
