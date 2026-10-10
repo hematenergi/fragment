@@ -53,9 +53,21 @@ SHAs. The ping-only check returned HTTP 200, pinned response
 and used only the message `ping`; reasoning usage was absent. Three R4
 count-only preflights then sent deterministic Medulla onboarding bundles to
 `countTokens`; the final bundle contains 67/236 records and counted 99,733
-tokens (HTTP 200), below the 120,000 cap. No R4 generation request has been
-sent. The existing private questions/key/task map to the pinned Medulla
-snapshot and v0.5.0; final Linux/arm64 image and clean tests are recorded.
+tokens (HTTP 200), below the 120,000 cap. R4 calibration attempt
+`r4-medulla-b-calibration-01` received 11 successful generation responses,
+then HTTP 429 `RESOURCE_EXHAUSTED` on the next generation. The structured
+quota metric is `generate_content_free_tier_requests`, Free-tier daily value
+20. Twelve `countTokens` calls returned HTTP 200. Onboarding reached `READY`,
+but quiz did not finish and the task stage was not reached; no calibration
+result or `N` exists. `thoughtsTokenCount` was absent from all 11 successful
+responses. The response included `RetryInfo=41127s` and no rate-limit headers;
+that delay does not align with the documented midnight-Pacific reset at the
+request time, so no retry time is inferred. The private log is retained and
+the attempted Medulla checkout is clean. The existing private questions/key/task
+map to the pinned Medulla snapshot and v0.5.0; final Linux/arm64 image and clean
+tests are recorded. Do not replay this attempt. After the quota reset, confirm
+headroom in AI Studio and resume with a fresh attempt; keep Draupnir gated on a
+complete R4 Medulla calibration.
 
 ## Active fragment
 
@@ -67,11 +79,17 @@ frozen without a completed calibration, score, or `N`; R3's private logs and
 changed attempt workspace remain private. The pushed R4 freeze pins Gemini 3.8
 Flash; its selected-project Free-tier limits were rechecked in AI Studio at
 5 RPM / 250K input TPM / 20 RPD. The generic rate-limit banner remains
-unresolved, while all three count-only preflights succeeded. Final B bundle is
-99,733 tokens and below the frozen 120,000 cap; no R4 generation request,
-score, calibration result, or `N` exists. Private Medulla questions/key/task
-remain mapped to snapshot `01667b95454663848f193cd84e3fb055507035b0`; the
-shared Linux/arm64 image and clean Medulla test result are recorded. Do not
+unresolved. R4 calibration attempt `r4-medulla-b-calibration-01` received 11
+successful generations and then HTTP 429 for the structured 20/day
+`generate_content_free_tier_requests` quota. The quiz was incomplete, task
+was not reached, and no result or `N` exists; all 11 successful responses
+lacked `thoughtsTokenCount`. `RetryInfo=41127s` conflicts with the documented
+midnight-Pacific reset relative to the request time, so retry timing is
+unknown. The private log is retained and the attempted Medulla checkout is
+clean. Private questions/key/task remain mapped to snapshot
+`01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 image and
+clean Medulla test result are recorded. Do not replay this attempt. After the
+quota reset, confirm AI Studio headroom and resume with a fresh attempt; do not
 clone Draupnir before a complete R4 Medulla calibration.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
@@ -118,6 +136,8 @@ clone Draupnir before a complete R4 Medulla calibration.
 
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
+
+- 2026-10-10 · GPT-6 / Codex · 09 · R4 Medulla B calibration stopped on HTTP 429 after 11 successful generations; structured Gemini Free-tier generation-request quota is 20/day, quiz/task did not complete, no result or `N`, and all successful responses omitted reasoning usage; retained private log and clean checkout · next: after reset, verify AI Studio headroom and resume with a fresh attempt; do not replay this attempt or clone Draupnir before calibration completes.
 
 - 2026-10-10 · GPT-6 / Codex · 09 · after the pushed R4 ping-evidence freeze, rechecked Free Tier/no billing, verified private questions/key/task map to the pinned Medulla snapshot, and counted three deterministic B bundles; final 67/236 records, 99,733 tokens, HTTP 200, secret scan clean; no generation or task content sent · next: commit this pre-run evidence, then run one R4 Medulla B calibration and set `N` only on full completion.
 - 2026-10-10 · GPT-6 / Codex · 09 · ran the post-freeze ping-only Gemini 3.8 Flash check: HTTP 200, `modelVersion` pinned, low thinking accepted, temperature omitted, reasoning field absent; no repository content sent · next: freeze this verification record, then count the R4 Medulla B bundle.
