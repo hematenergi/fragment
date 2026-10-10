@@ -38,7 +38,7 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 
 - [x] Record owner authorization and create a distinct Gemini model-verification report without exposing the key.
 - [x] Freeze a provider-specific protocol and extraction prompt without changing the original GPT artifacts.
-- [ ] Freeze and push the exact agent system prompt, tool schemas, run-command allowlist, and per-run edit allowlist before dry run.
+- [x] Freeze and push the exact agent system prompt, tool schemas, run-command allowlist, and per-run edit allowlist before dry run; the verified freeze commit is `e05a5b9139b27f5102dad5ebc80649e05fd7d383`.
 - [x] Commit and push the new protocol, extraction prompt, and system prompt before sending repository content to Gemini.
 - [x] Reconfirm Free Tier/no billing, final container availability, and clean Medulla test results.
 - [x] Verify the private Medulla questions/key/task map to the recorded baseline snapshot and v0.5.0 procedure.
@@ -82,6 +82,7 @@ Changing the frozen GPT benchmark, adopter outreach, v0.7 work, or changing ship
 
 ## Session log
 
+- 2026-10-10 · GPT-6 / Codex · 09 · froze and pushed the Gemini runner, schemas, command/edit allowlists, and corrected system prompt at `e05a5b9`; remote SHA matches and no repo content sent · next: run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · fixed Gemini run-history carryover, onboarding budget enforcement, and per-run write fencing; runner self-check and all 147 Fragment tests pass · next: freeze and push the harness, then run the B-condition Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · rechecked AI Studio Free tier and validated the pinned image with a clean Medulla clone; `npm ci` passed and 1,304 unit + 369 integration tests passed offline · next: freeze tool schemas and command allowlist before calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · pushed the frozen Gemini protocol/prompt commit `c44b2e5` and verified the remote SHA matches; no repo content sent · next: confirm container/test state and freeze harness before calibration.

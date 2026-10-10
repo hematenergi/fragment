@@ -78,7 +78,7 @@ Use a human grader who is blind to condition and phase. Grade against the frozen
 ## 8. Freeze anchors and run record
 
 - Initial protocol, extraction prompt, and system-prompt commit (pushed 2026-10-10): `c44b2e5b4482749056f343a9c2f7b00b93f92d47` on `codex/v06-benchmark-resume`. The remote branch SHA was verified equal to the local SHA. No repository content was sent in that commit or before it.
-- Final harness/system prompt freeze commit: `[FILL BEFORE DRY RUN]`.
+- Final harness/system prompt/tool allowlist freeze commit (pushed 2026-10-10): `e05a5b9139b27f5102dad5ebc80649e05fd7d383` on `codex/v06-benchmark-resume`. The local and remote branch SHAs matched. No repository content had been sent to Gemini before this freeze.
 - Prompt metadata-only commit after final Draupnir clone: `[FILL AFTER STEP 5]`.
 - Draupnir snapshot SHA: `[FILL AFTER STEP 5]`.
 - Final image: `sha256:1dc5bcac894ca20e094cb9c71c626fc3cc350d005dbdc853aae46c040d4f45b9` (`linux/arm64`); confirmed available and used for clean Medulla verification on 2026-10-10.

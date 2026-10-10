@@ -80,6 +80,7 @@ content or benchmark run data exists.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 09 · pushed frozen Gemini harness/system prompt/tool allowlist as `e05a5b9`; local and remote SHAs match, the key stayed ignored, and no repository content has been sent · next: record the freeze anchor and run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · repaired the Gemini harness so onboarding, quiz, and task share one transcript; enforced the onboarding cap and per-run edit paths; harness self-check and all 147 repository tests pass · next: push the frozen harness/system prompt, then run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · confirmed the AI Studio key project remains Free tier; clean Medulla snapshot passed npm ci and 1,304 unit + 369 integration tests in the pinned image with test networking disabled · next: freeze benchmark harness before calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · pushed protocol/prompt commit `c44b2e5` to `codex/v06-benchmark-resume`; remote SHA matches and no repo content has been sent · next: verify container/tests and freeze harness before dry run.
