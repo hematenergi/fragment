@@ -41,6 +41,7 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 - The separate harness now carries one conversation across onboarding, quiz, and task, preflights the half-budget onboarding boundary, and restricts edits to per-run paths. It aborts if the first condition-B prompt exceeds 80% of context; the calibration safety ceiling is 10,000,000 cumulative input tokens.
 - The existing Linux/arm64 image was rechecked at snapshot `01667b95454663848f193cd84e3fb055507035b0`; `npm ci` and network-disabled `npm test` passed in a clean clone (1,304 unit + 369 integration).
 - Fragment v0.6 features are implemented and merged; GitHub v0.6.0 release is not published.
+- Current release branch verification: `rtk bash tests/run.sh` passes all 147 tests and `rtk bash scripts/docs-check.sh` is GREEN. GitHub's release list still has v0.5.0 as latest; v0.6.0 is not tagged or published. Keep the release gate closed until benchmark phases have numbers.
 
 ## Work
 
@@ -105,7 +106,7 @@ Changing the frozen GPT benchmark, adopter outreach, v0.7 work, or changing ship
 
 ## Session log
 
-- 2026-10-10 · GPT-6 / Codex · 09 · R4 Medulla B calibration `r4-medulla-b-calibration-01` stopped at HTTP 429 after 11 successful generations; quota metric is the 20/day Free-tier generation-request limit, quiz/task incomplete, no result or `N`; preserved private log and clean checkout, and recorded unresolved `RetryInfo` timing without changing frozen artifacts · next: after quota reset, verify AI Studio headroom and resume with a fresh attempt ID; do not replay this attempt or clone Draupnir before calibration completes.
+- 2026-10-10 · GPT-6 / Codex · 09 · R4 Medulla B calibration `r4-medulla-b-calibration-01` stopped at HTTP 429 after 11 successful generations; quota metric is the 20/day Free-tier generation-request limit, quiz/task incomplete, no result or `N`; preserved private log and clean checkout, recorded unresolved `RetryInfo` timing without changing frozen artifacts, reran the full 147-test suite and docs guard successfully, and confirmed GitHub still lists v0.5.0 as latest · next: after quota reset, verify AI Studio headroom and resume with a fresh attempt ID; do not replay this attempt or clone Draupnir before calibration completes.
 
 - 2026-10-10 · GPT-6 / Codex · 09 · rechecked Free Tier/no billing, verified the private Medulla Q/key/task map to snapshot `01667b9`, and count-preflighted deterministic B bundles at 73,020 / 91,818 / 99,733 tokens; final 67/236 bundle and manifest hashes are recorded, secret scan clean, no generation sent · next: run the one unscored R4 calibration; stop if quota blocks completion.
 - 2026-10-10 · GPT-6 / Codex · 09 · post-freeze R4 ping-only check succeeded (HTTP 200, `gemini-3.8-flash`, low thinking accepted, temperature omitted, reasoning usage absent); no repository content sent · next: freeze ping evidence, then prepare/count the private Medulla B bundle.
