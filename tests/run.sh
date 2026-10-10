@@ -104,6 +104,15 @@ echo "Fragment — guard tests"
 echo
 
 # ---------------------------------------------------------------------------
+echo "agent package"
+# ---------------------------------------------------------------------------
+if cmp -s "$ROOT/skills/adopt-fragment/SKILL.md" "$ROOT/plugins/adopt-fragment/skills/adopt-fragment/SKILL.md"; then
+  ok "the install skill matches its packaged plugin copy"
+else
+  bad "the install skill and packaged plugin copy drifted"
+fi
+
+# ---------------------------------------------------------------------------
 echo "lint"
 # ---------------------------------------------------------------------------
 # CI ran shellcheck and nothing else did, so a warning rode into a tagged
@@ -142,7 +151,12 @@ fi
 echo "adoption"
 # ---------------------------------------------------------------------------
 raw="$TMP/raw"; mkdir -p "$raw"; git -C "$raw" init -q .
-bash "$ROOT/install.sh" "$raw" >/dev/null 2>&1
+install_out=$(bash "$ROOT/install.sh" "$raw" 2>&1)
+if [[ "$install_out" == *"skills/adopt-fragment/SKILL.md"* ]]; then
+  ok "installer points Claude Code users to the renamed skill"
+else
+  bad "installer still points to the old skill path"
+fi
 for helper in recall.sh state-prune.sh load-context.sh; do
   if [ -x "$raw/scripts/$helper" ]; then
     ok "installer includes executable $helper"

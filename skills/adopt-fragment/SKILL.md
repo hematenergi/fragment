@@ -1,6 +1,6 @@
 ---
-name: fragment
-description: Adopt Fragment in a repo — a stack-agnostic documentation harness that keeps AI-assisted work resumable and honest across sessions, people, and different agents. Use when a repo has no durable working state, when context keeps dying with the chat session, when several people or several AI tools take turns on the same codebase, when instructions have drifted between CLAUDE.md and AGENTS.md, or when someone asks to install/apply "Fragment", a docs harness, an agent protocol, or a STATE board. Works on existing repos of any language or framework.
+name: adopt-fragment
+description: Install or update the Fragment continuity harness in an existing repository. Use when a user asks to adopt Fragment, preserve project context across AI coding sessions, set up an agent protocol or STATE board, or reconcile CLAUDE.md and AGENTS.md. Works across languages and frameworks.
 ---
 
 # Fragment
@@ -45,8 +45,10 @@ a week.** Never install the structure and skip the guard.
 3. Read any existing agent instruction file **in full**.
 4. Check the language the repo is written in. Docs, comments, commit messages.
 
-Then tell the user what you found and what you plan to do. **Wait for their
-answer before writing files.**
+Then summarize what you found and the smallest install plan. The user's request
+to install Fragment authorizes that install; proceed without waiting for another
+confirmation. Ask only for project facts or invariants that cannot be inferred,
+and keep completing independent, safe setup work while waiting.
 
 ## Rules for adopting into an existing repo
 

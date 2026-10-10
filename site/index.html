@@ -3,20 +3,20 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Fragment — Durable Project Memory for AI Coding Agents</title>
-    <meta name="description" content="Fragment v0.5.0 ran in two production repositories: one shared continuity guard, with local checks for runtime and release integrity.">
+    <title>Fragment v0.6.0 — Project Memory for AI Coding Agents</title>
+    <meta name="description" content="Fragment v0.6.0 keeps project decisions and next steps in the repo. Its benchmark is incomplete; time and token savings have not been measured.">
     <meta name="theme-color" content="#faf8f5">
     <link rel="canonical" href="https://hematenergi.github.io/fragment/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Fragment — Durable Project Memory for AI Coding Agents">
-    <meta property="og:description" content="Fragment v0.5.0 ran in two production repositories: one shared continuity guard, with local checks for runtime and release integrity.">
+    <meta property="og:title" content="Fragment v0.6.0 — Project Memory for AI Coding Agents">
+    <meta property="og:description" content="Fragment v0.6.0 keeps project decisions and next steps in the repo. Its benchmark is incomplete; time and token savings have not been measured.">
     <meta property="og:url" content="https://hematenergi.github.io/fragment/">
     <meta property="og:image" content="https://hematenergi.github.io/fragment/assets/og.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Fragment — Durable Project Memory for AI Coding Agents">
-    <meta name="twitter:description" content="Fragment v0.5.0 ran in two production repositories: one shared continuity guard, with local checks for runtime and release integrity.">
+    <meta name="twitter:title" content="Fragment v0.6.0 — Project Memory for AI Coding Agents">
+    <meta name="twitter:description" content="Fragment v0.6.0 keeps project decisions and next steps in the repo. Its benchmark is incomplete; time and token savings have not been measured.">
     <meta name="twitter:image" content="https://hematenergi.github.io/fragment/assets/og.png">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
@@ -30,7 +30,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareSourceCode",
         "name": "Fragment",
-        "description": "A continuity harness for AI coding agents. Its v0.5.0 guard was observed in two author-run production repositories, with repo-specific checks for runtime and release integrity.",
+        "description": "Fragment v0.6.0 keeps project decisions and next steps in the repo. Its benchmark is incomplete; time and token savings have not been measured.",
         "codeRepository": "https://github.com/hematenergi/fragment",
         "license": "https://opensource.org/license/mit",
         "programmingLanguage": "Bash",
@@ -76,7 +76,8 @@
             <p class="copy-status" aria-live="polite"></p>
           </div>
 
-          <div class="transcript" aria-label="The same question, forty sessions apart">
+          <div class="transcript" aria-label="Illustrative example of a question repeated across sessions">
+            <p class="transcript-label">Illustrative example</p>
             <article class="turn">
               <p class="turn-meta">Session 1 · Monday · you</p>
               <p class="turn-body">No email sign-up. Most of my users don't have one — use phone numbers.</p>
@@ -207,6 +208,10 @@
         <div class="shell">
           <h2 class="display display-sm">Hand it to the agent<br>you're already using.</h2>
           <p class="install-intro">Paste this into the coding agent that's already open on your project. It won't overwrite your files, and anything it can't find becomes a blocker instead of a guess.</p>
+
+          <p class="install-skill-copy">To install the agent skill first:</p>
+          <pre class="install-prompt"><code>npx skills add hematenergi/fragment --skill adopt-fragment</code></pre>
+          <p class="install-skill-links"><a href="https://www.skills.sh/hematenergi/fragment/adopt-fragment">View adopt-fragment on skills.sh →</a> · <a href="https://github.com/hematenergi/fragment/blob/main/INSTALL.md">Other agent install paths</a> · <a href="https://github.com/hematenergi/fragment/blob/main/examples/online-shop/START-HERE.md">Filled example</a></p>
 
           <pre class="install-prompt" id="install-prompt" tabindex="0"><code>Install Fragment v0.6.0 from https://github.com/hematenergi/fragment into this repository. Do not overwrite existing files. Fill its project state from decisions visible in the repository and this conversation, then run bash scripts/docs-check.sh. Do not invent missing decisions; record them as blockers for me.</code></pre>
 

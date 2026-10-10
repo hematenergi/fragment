@@ -1,0 +1,16 @@
+{
+  "name": "fragment",
+  "owner": {
+    "name": "hematenergi"
+  },
+  "metadata": {
+    "description": "Agent skills for adopting and using Fragment."
+  },
+  "plugins": [
+    {
+      "name": "adopt-fragment",
+      "source": "plugins/adopt-fragment",
+      "description": "Install or update the Fragment continuity harness in an existing repository."
+    }
+  ]
+}

@@ -23,11 +23,13 @@ daily request cap; the quiz and task did not finish, so there is no valid score,
 
 ## Active fragment
 
-**No fragment is active.** Fragment 11 is complete: the homepage and GitHub
-README now show the observed v0.5.0 adoption in medulla and flimapp, with its
-limits. Fragment 10 is complete and v0.6.0 remains the latest release. Benchmark
-plan 07 is parked until Free Tier quota is available; plan 04 awaits the owner's
-decision.
+**Fragment 12 is active.** Close the public install-presence gaps: fix the
+duplicated skills.sh slug, publish real agent package metadata, and connect the
+install paths from the README and homepage. Fragment 11 is complete: the
+homepage and GitHub README show the observed v0.5.0 adoption in medulla and
+flimapp, with its limits. Fragment 10 is complete and v0.6.0 remains the latest
+release. Benchmark plan 07 is parked until Free Tier quota is available; plan 04
+awaits the owner's decision.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -46,6 +48,7 @@ decision.
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
 | 10 | [publish v0.6.0 with benchmark pending](plans/10-v06-release-before-benchmark.md) | `done` | — |
 | 11 | [put production evidence on the public site and README](plans/11-site-production-evidence.md) | `done` | 10 |
+| 12 | [complete Fragment's public install presence](plans/12-public-presence.md) | `in-progress` | 11 |
 
 ## Blocked / waiting on a human
 
@@ -79,6 +82,7 @@ decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 12 · closed superseded draft PR #4 after v0.6.0 shipped separately in PR #5; confirmed its Gemini benchmark work remains unscored and its branch is preserved; identified the duplicated `/fragment/fragment` skills.sh path · next: publish the distinct `adopt-fragment` skill and complete verified agent install surfaces.
 - 2026-10-10 · GPT-6 / Codex · 11 · merged PR #6 as `7ec46f0`; all five checks passed, Pages deploy run `38058193388` succeeded, the live homepage returned HTTP 200, and the README on `main` is 93 lines · next: resume benchmark plan 07 when Free Tier quota is available; plan 04 awaits the owner.
 - 2026-10-10 · GPT-6 / Codex · 11 · added source-backed v0.5.0 production evidence to the homepage and README, shortened README from 492 to 93 lines, and passed local preview (HTTP 200), 148 tests, and docs guard · next: publish both updates and verify the live homepage.
 - 2026-10-10 · GPT-6 / Codex · 11 · verified v0.6.0 is live as the latest release and found the homepage still omitted the two-repo v0.5.0 adoption evidence · next: add it to the homepage and README.
