@@ -1,6 +1,6 @@
 # Fragment Benchmark Spec — Gemini track R2 (v0.6 item #0)
 
-**Status: draft; do not send another request until the R2 freeze commit is pushed and recorded below.** R2 is a separate benchmark revision after R1's sole data-bearing `countTokens` preflight returned HTTP 400 `INVALID_ARGUMENT` before any generation. R1 has no dry-run result or `N` and remains unchanged in `FragmentBenchmarkSpec-Gemini.md`. Do not pool R1 preflight artifacts, R2 results, or the original GPT track. This does not amend `FragmentBenchmarkSpec.md`.
+**Status: frozen on 2026-10-10.** R2 is a separate benchmark revision after R1's sole data-bearing `countTokens` preflight returned HTTP 400 `INVALID_ARGUMENT` before any generation. R1 has no dry-run result or `N` and remains unchanged in `FragmentBenchmarkSpec-Gemini.md`. Do not pool R1 preflight artifacts, R2 results, or the original GPT track. This does not amend `FragmentBenchmarkSpec.md`.
 
 ## 1. Question and completion rule
 
@@ -79,7 +79,7 @@ Use a human grader who is blind to condition and phase. Grade against the frozen
 ## 8. Freeze anchors and run record
 
 - R1 preflight-only attempt: `medulla-b-calibration-01` on 2026-10-10; `countTokens` HTTP 400 `INVALID_ARGUMENT`; no `generateContent`, run score, or `N`. Private raw log is retained outside the repository. This attempt is excluded from R2.
-- R2 protocol/harness freeze commit: `[FILL BEFORE ANY R2 REQUEST]`.
+- R2 protocol/harness freeze commit: `6ad0871326da41631df20a2acf8b5bc3e76b8fd5` (pushed to `codex/v06-benchmark-resume`; local and remote SHAs matched before any R2 request).
 - R2 derived from the separately retained and pushed R1 record at `daad118c2c905dcf2e6ea6b65272055c1373aa1b`; R1 spec and raw log remain unchanged.
 - Initial protocol, extraction prompt, and system-prompt commit (pushed 2026-10-10): `c44b2e5b4482749056f343a9c2f7b00b93f92d47` on `codex/v06-benchmark-resume`. The remote branch SHA was verified equal to the local SHA. No repository content was sent in that commit or before it.
 - Final harness/system prompt/tool allowlist freeze commit (pushed 2026-10-10): `e05a5b9139b27f5102dad5ebc80649e05fd7d383` on `codex/v06-benchmark-resume`. The local and remote branch SHAs matched. No repository content had been sent to Gemini before this freeze.
