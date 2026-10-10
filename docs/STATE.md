@@ -14,21 +14,20 @@ last-verified: 2026-10-10
 
 ## Phase
 
-**v0.5.0 is the latest release; v0.6 context features are implemented, validated,
-and merged.** Feature PR #2 merged as `5f13f7b`. The owner has directed that
-v0.6.0 ship using existing feature and test evidence, with benchmark numbers to
-follow. The frozen Gemini R4 Medulla calibration stopped after 11 successful
-responses at the Free Tier daily request limit; the quiz and task did not finish,
-so there is no valid score, `N`, or performance claim. Release notes disclose
-this limitation and the Free Tier data-use terms.
+**v0.6.0 is the latest release.** Release PR #5 merged as
+`25e7dfd37d8d9e2c113773245c71c32261db5787`; the `v0.6.0` tag points to that
+commit and the GitHub release is published. Its notes disclose that the Gemini
+R4 Medulla calibration stopped after 11 successful responses at the Free Tier
+daily request cap; the quiz and task did not finish, so there is no valid score,
+`N`, or performance claim. Benchmark numbers can follow separately.
 
 ## Active fragment
 
-**Fragment 10 is active.** Fragment 08 is complete: deterministic `/recall`,
-tags, STATE history pruning, and token-budgeted loading are implemented in the
-template and merged to `main`. Current work prepares v0.6.0 for publication
-without a performance claim; benchmark results remain a follow-up and the
-frozen protocol stays unchanged.
+**Fragment 11 is active.** Fragment 10 is complete: v0.6.0 is published with
+the available feature and test evidence. Current work adds the observed v0.5.0
+adoption in medulla and flimapp to the public homepage and shortens the GitHub
+README. The benchmark remains a separate follow-up; its frozen protocol and case
+study stay unchanged.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -45,14 +44,15 @@ frozen protocol stays unchanged.
 | 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `done` | — |
 | 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | resume after plan 08 and API access; no run data exists |
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
-| 10 | [publish v0.6.0 with benchmark pending](plans/10-v06-release-before-benchmark.md) | `in-progress` | — |
+| 10 | [publish v0.6.0 with benchmark pending](plans/10-v06-release-before-benchmark.md) | `done` | — |
+| 11 | [put production evidence on the public site and README](plans/11-site-production-evidence.md) | `in-progress` | 10 |
 
 ## Blocked / waiting on a human
 
 | What | Waiting on | Since |
 |---|---|---|
 | Whether version-bump automation (04) is wanted | owner | 2026-09-09 |
-| Benchmark API access (07) | owner — no authorized API key/path is available; current model docs are verified but runtime access is still required | 2026-10-08 |
+| Gemini benchmark follow-up (07) | R4 stopped after 11 successful responses at the Free Tier daily cap; owner chose a free-tier R3 rerun when quota is available | 2026-10-10 |
 
 ## Decisions already made — do not ask again
 
@@ -79,6 +79,8 @@ frozen protocol stays unchanged.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 11 · added source-backed v0.5.0 production evidence to the homepage and README, shortened README from 492 to 93 lines, and passed local preview (HTTP 200), 148 tests, and docs guard · next: publish both updates and verify the live homepage.
+- 2026-10-10 · GPT-6 / Codex · 11 · verified v0.6.0 is live as the latest release and found the homepage still omitted the two-repo v0.5.0 adoption evidence · next: add it to the homepage and README.
 - 2026-10-10 · GPT-6 / Codex · 10 · prepared the v0.6.0 release candidate from merged feature PR #2, updated version references and the new guard fingerprint, and documented the incomplete Gemini benchmark without a performance claim · next: pass local and PR checks, merge, tag, and publish v0.6.0; benchmark numbers follow separately.
 
 - 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.

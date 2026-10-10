@@ -440,13 +440,16 @@ CL=$(grep -m1 -E '^## [0-9]+\.[0-9]+\.[0-9]+ ' "$ROOT/CHANGELOG.md" | sed -E 's/
 [ "$CL" = "$V" ] && ok "  ... and the newest CHANGELOG entry is that same version" \
   || bad "  ... but the newest CHANGELOG entry is $CL"
 
-# Every other hand-written mention must agree. A stale install line sends people
-# to a tag that predates the fix they are reading about.
+# Historical evidence may name older releases. Check the copy-paste install
+# prompt and the manual clone command, where a stale tag would install old code.
 for f in README.md site/index.html; do
-  wrong=$(grep -oE 'v?[0-9]+\.[0-9]+\.[0-9]+' "$ROOT/$f" | sed 's/^v//' | sort -u | grep -v "^$V\$" || true)
-  [ -z "$wrong" ] && ok "  ... and $f mentions no other version" \
-    || bad "  ... but $f still mentions: $(printf '%s' "$wrong" | tr '\n' ' ')"
+  grep -Fq "Install Fragment v$V" "$ROOT/$f" \
+    && ok "  ... and $f install prompt names v$V" \
+    || bad "  ... but $f install prompt does not name v$V"
 done
+grep -Fq -- "--branch v$V" "$ROOT/README.md" \
+  && ok "  ... and README.md clone command uses v$V" \
+  || bad "  ... but README.md clone command does not use v$V"
 
 # ---------------------------------------------------------------------------
 echo; echo "portability and reporting"
