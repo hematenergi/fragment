@@ -23,13 +23,16 @@ daily request cap; the quiz and task did not finish, so there is no valid score,
 
 ## Active fragment
 
-**Fragment 12 is active.** Close the public install-presence gaps: fix the
-duplicated skills.sh slug, publish real agent package metadata, and connect the
-install paths from the README and homepage. Fragment 11 is complete: the
-homepage and GitHub README show the observed v0.5.0 adoption in medulla and
-flimapp, with its limits. Fragment 10 is complete and v0.6.0 remains the latest
-release. Benchmark plan 07 is parked until Free Tier quota is available; plan 04
-awaits the owner's decision.
+**No active fragment.** Fragment 12 is complete: the default branch contains a
+single `adopt-fragment` skill, documented install packages, and aligned README,
+homepage, and GitHub metadata. The new direct skills.sh page works. The old
+`/hematenergi/fragment/fragment` catalogue URL still serves stale platform data;
+the repo no longer publishes that skill, and skills.sh documents no repo-side
+deletion control. `/hematenergi` is a catalogue owner page, not an automatic
+GitHub profile. Fragment 11 is complete: the homepage and GitHub README show the
+observed v0.5.0 adoption in medulla and flimapp, with its limits. Fragment 10 is
+complete and v0.6.0 remains the latest release. Benchmark plan 07 is parked
+until Free Tier quota is available; plan 04 awaits the owner's decision.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -48,7 +51,7 @@ awaits the owner's decision.
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
 | 10 | [publish v0.6.0 with benchmark pending](plans/10-v06-release-before-benchmark.md) | `done` | — |
 | 11 | [put production evidence on the public site and README](plans/11-site-production-evidence.md) | `done` | 10 |
-| 12 | [complete Fragment's public install presence](plans/12-public-presence.md) | `in-progress` | 11 |
+| 12 | [complete Fragment's public install presence](plans/12-public-presence.md) | `done` | — |
 
 ## Blocked / waiting on a human
 
@@ -81,6 +84,8 @@ awaits the owner's decision.
 
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
+
+- 2026-10-10 · GPT-6 / Codex · 12 · merged PR #8 (`95033e6`); all five CI checks passed, the single canonical skill and direct install page verified, and public metadata updated; recorded that skills.sh still serves the removed legacy slug and does not document a repo-side cleanup control · next: resume parked benchmark plan 07 when Free Tier quota is available.
 
 - 2026-10-10 · GPT-6 / Codex · 12 · closed superseded draft PR #4 after v0.6.0 shipped separately in PR #5; confirmed its Gemini benchmark work remains unscored and its branch is preserved; identified the duplicated `/fragment/fragment` skills.sh path · next: publish the distinct `adopt-fragment` skill and complete verified agent install surfaces.
 - 2026-10-10 · GPT-6 / Codex · 11 · merged PR #6 as `7ec46f0`; all five checks passed, Pages deploy run `38058193388` succeeded, the live homepage returned HTTP 200, and the README on `main` is 93 lines · next: resume benchmark plan 07 when Free Tier quota is available; plan 04 awaits the owner.
