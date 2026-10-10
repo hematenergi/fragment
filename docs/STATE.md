@@ -29,11 +29,11 @@ nested `model` field and corrects API error categories. Its first B calibration
 counted 488,670 onboarding tokens, then `generateContent` returned HTTP 429
 for the Free-tier 250,000 input-token quota. No generation, dry run, score, or
 `N` resulted. R2 remains frozen; no replacement request was sent pending owner
-review of the protocol gap. A local alternative check found no configured
-provider key beyond Gemini; the installed Muse UI exposes only its ambient
-panel, and the available local Ollama model is too small for the full B prompt.
-Gemini 3.1 Flash-Lite is a possible Free-tier candidate, but its project quota
-has not been confirmed. No R3 draft or further model request exists.
+review of the protocol gap. The owner then explicitly approved a new, separate
+Gemini benchmark. AI Studio now confirms the selected Free-tier project has
+Gemini 3.1 Flash-Lite limits of 15 RPM, 250K TPM, and 500 RPD. R3 is being
+prepared with a quota-bounded B condition and separate runner; no R3 model ping
+or repository-content request has been sent.
 
 ## Active fragment
 
@@ -41,16 +41,19 @@ has not been confirmed. No R3 draft or further model request exists.
 tags, STATE history pruning, and token-budgeted loading are implemented in the
 template and this checkout; all 147 tests and the docs guard pass. Fragment 07
 remains parked for the original frozen GPT protocol. The new Gemini track is
-defined separately in `FragmentBenchmarkSpec-Gemini.md` (failed R1) and the
-frozen `FragmentBenchmarkSpec-Gemini-R2.md`. Its medulla
+defined separately in `FragmentBenchmarkSpec-Gemini.md` (failed R1), the
+frozen `FragmentBenchmarkSpec-Gemini-R2.md`, and the newly approved R3
+revision. Its medulla
 questions/key/task are drafted privately against snapshot
 `01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
 and clean Medulla test result are recorded. The R1 private condition-B
 onboarding preflight reached `countTokens` and failed with HTTP 400
 `INVALID_ARGUMENT`. The R2 B calibration preflight counted 488,670 tokens,
 then `generateContent` failed with HTTP 429 because the Free-tier input-token
-quota is 250,000. There is no generation, dry run, score, or calibrated `N`;
-R2 remains frozen and no replacement request was sent.
+quota is 250,000. There is no R2 generation, dry run, score, or calibrated
+`N`; R2 remains frozen and its failed attempt was not replayed. R3 has a
+draft protocol, extraction prompt, and separate runner; its pin check and
+calibration remain pending.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
