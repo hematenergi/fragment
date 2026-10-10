@@ -63,7 +63,7 @@ Gemini results remain indicative and separate from GPT results. Do not compare M
 
 - R1/R2/R3 records remain in their existing files and commits.
 - R4 core protocol/prompt/system/builder/runner freeze commit: `e7adaefda5c568fdc83392d7f4f06e9516bdad82` on `codex/v06-benchmark-resume`; local and remote SHAs matched before any R4 API request.
-- R4 ping response `modelVersion`: `[FILL AFTER PING]`.
+- R4 ping response `modelVersion`: `gemini-3.8-flash` (HTTP 200; pinned after the ping).
 - R4 Medulla snapshot: `01667b95454663848f193cd84e3fb055507035b0`.
 - R4 Medulla B bundle SHA and manifest: `[FILL BEFORE CALIBRATION]`.
 - Final container image: `sha256:1dc5bcac894ca20e094cb9c71c626fc3cc350d005dbdc853aae46c040d4f45b9` (`linux/arm64`).
