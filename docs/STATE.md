@@ -3,7 +3,7 @@ id: state
 title: STATE — where the work stands
 status: active
 owner: hematenergi
-last-verified: 2026-10-09
+last-verified: 2026-10-10
 ---
 
 # STATE
@@ -17,15 +17,19 @@ last-verified: 2026-10-09
 **v0.5.0 is released; v0.6 context features are implemented, validated, and merged.**
 Feature PR #2 merged as `5f13f7b`. The extraction prompt is committed and
 pushed. The frozen benchmark protocol still requires its baseline and v0.6
-validation before release; no run data exists, and benchmark work is parked
-until authorized API access is available.
+validation before release; no run data exists. A Gemini Free-tier key is now
+configured, but its metadata endpoint alone succeeded; three generation pings
+returned HTTP 503 and a later minimal retry timed out. It is a different
+model/provider from the frozen GPT-5.4 Mini candidate, so benchmark work remains
+parked.
 
 ## Active fragment
 
 **No active fragment.** Fragment 08 is complete: deterministic `/recall`, tags,
 STATE history pruning, and token-budgeted loading are implemented in the
 template and this checkout; all 147 tests and the docs guard pass. Fragment 07
-is parked pending authorized API access. Its medulla questions/key/task are
+is parked pending access to the frozen model candidate or an owner-approved
+new provider/model protocol. Its medulla questions/key/task are
 drafted privately against snapshot
 `01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container is
 built and a clean Medulla snapshot passes npm ci and npm test (1,304 unit + 369
@@ -44,7 +48,7 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 | 04 | [version written by hand](plans/04-version-written-by-hand.md) | `todo` | — |
 | 05 | [continuity without administration](plans/05-continuity-without-administration.md) | `done` | — |
 | 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `done` | — |
-| 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | resume after plan 08 and API access; no run data exists |
+| 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | frozen GPT-5.4 Mini access is unavailable; Gemini exploratory pings returned 503 / timed out; no run data exists |
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
 
 ## Blocked / waiting on a human
@@ -52,7 +56,7 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 | What | Waiting on | Since |
 |---|---|---|
 | Whether version-bump automation (04) is wanted | owner | 2026-09-09 |
-| Benchmark API access (07) | owner — no authorized API key/path is available; current model docs are verified but runtime access is still required | 2026-10-08 |
+| Benchmark API access (07) | owner — provide a working path to the frozen GPT-5.4 Mini candidate, or explicitly approve a new provider/model protocol; Gemini metadata works but generation returned 503 / timed out | 2026-10-10 |
 
 ## Decisions already made — do not ask again
 
@@ -76,6 +80,8 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 07 · one additional Gemini `ping` request timed out after 15 seconds with no HTTP response; 147 tests and docs-check pass, spec/prompt untouched, no benchmark data created · next: resolve the model/protocol gate before dry run.
+- 2026-10-10 · GPT-6 / Codex · 07 · checked the owner-configured Gemini key without exposing it: model metadata returned HTTP 200/version 3.0, all listed projects showed Free tier, and three `gemini-3.8-flash` generation pings returned HTTP 503; no repo content or benchmark run data was sent/created · next: retry only after service capacity recovers and preserve the frozen GPT-5.4 Mini pin unless the owner authorizes a new protocol.
 - 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.
 - 2026-10-09 · GPT-6 / Codex · 08 · macOS CI exposed a flaky `grep -q`/`pipefail` test helper that could report a broken pipe despite a match; changed it to drain the output, and the full local suite (147 tests) plus docs guard now pass · next: confirm CI on the fix before merging; benchmark plan 07 still awaits an authorized model API path.
 - 2026-10-09 · GPT-6 / Codex · 08 · Windows CI now passes the verified junction/file-link safety tests and the full 147-test suite; Ubuntu, macOS, docs guard, and secrets checks also pass on `07c9831` · next: merge the v0.6 feature PR; benchmark plan 07 still awaits an authorized model API path.

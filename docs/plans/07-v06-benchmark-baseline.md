@@ -2,9 +2,9 @@
 id: plan-07
 title: "07 — establish the v0.6 benchmark baseline"
 status: parked
-reason: "Owner chose to implement v0.6 features before spending on model access; resume benchmark work after plan 08 and when API access is available. No run data exists."
+reason: "v0.6 features have shipped. The frozen benchmark candidate is GPT-5.4 Mini; the owner configured a separate Gemini Free-tier key, but Gemini generation returned HTTP 503 and a later minimal retry timed out; the provider/model change is not authorized. No run data exists."
 owner: hematenergi
-last-verified: 2026-10-08
+last-verified: 2026-10-10
 depends-on: []
 ---
 
@@ -32,9 +32,9 @@ The v0.6 roadmap makes tokens-to-competent its headline. The benchmark has to me
 - The owner clarified and updated frozen §2/§6: baseline condition C uses the documented v0.5.0 procedure; validation condition C uses v0.6 with `/recall` and token budgets. The protocol now distinguishes these phases.
 - Frozen §7 remains the benchmark protocol. Medulla questions/key/task are prepared (§7.2), and the final container plus Medulla test validation are complete (§7.3). Benchmark execution is deferred until plan 08 ships the features and an authorized API path is available; no run results have informed implementation.
 - An exploratory Draupnir clone at `4e949ddd57ad0f9d590c1080bed174f5a0451c34` and container build/test were started before the owner corrected the sequence. The test process exited 0, but that checkout and image were removed; the snapshot and test are excluded from benchmark evidence.
-- Docker Desktop is available. `OPENAI_API_KEY` is not configured in the shell, so no model call or benchmark run can be made from this environment yet.
+- Docker Desktop is available. `OPENAI_API_KEY` remains unconfigured. The owner configured a separate Gemini API key in ignored `bench/.env`; model metadata lookup succeeded, three `generateContent` requests for `gemini-3.8-flash` returned HTTP 503 (high demand), and a later `ping` request timed out after 15 seconds without an HTTP response. This does not verify access to the frozen GPT-5.4 Mini candidate; no benchmark run succeeded and no repo content was sent to Gemini.
 - Official API docs checked 2026-10-08 list the exact candidate snapshot `gpt-5.4-mini-2026-03-17`, with reasoning effort `none` (default), `low`, `medium`, `high`, or `xhigh`, a 400k context window, a 128k maximum output, and an Aug 31, 2025 knowledge cutoff. The current deprecation list includes `gpt-5-mini-2025-08-07` with a Dec 11, 2026 shutdown but has no entry for `gpt-5.4-mini-2026-03-17`. The owner accepts “no announced shutdown” as satisfying the 2027+ horizon; this is eligibility evidence, not a guarantee of availability through 2027. Sources: [model page](https://developers.openai.com/api/docs/models/gpt-5.4-mini), [deprecations](https://developers.openai.com/api/docs/deprecations).
-- Static parameter evidence: the GPT-5.4 guide says `temperature`, `top_p`, and `logprobs` are supported only at reasoning effort `none`; the exact mini snapshot still needs an authenticated runtime check before pinning. The owner has no API key, so endpoint access and exact-request compatibility remain unverified and no API/model call can run yet. Source: [GPT-5.4 model guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.4).
+- Static parameter evidence: the GPT-5.4 guide says `temperature`, `top_p`, and `logprobs` are supported only at reasoning effort `none`; the exact mini snapshot still needs an authenticated runtime check before pinning. The owner has not configured an OpenAI API key, so endpoint access and exact-request compatibility for the frozen candidate remain unverified. Source: [GPT-5.4 model guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.4).
 - **Cost check, 2026-10-08:** the model page lists $0.75/M input tokens and $4.50/M output tokens (cached input is excluded by the frozen protocol). With 30 baseline + 30 validation runs, the input-only ceiling if every run reaches budget is `60 × N × $0.75 / 1,000,000`. At the spec's preliminary `N = 1–2M`, that is $45–$90 for input alone; output and separate LLM judging add cost. Actual spend may be lower because competent runs stop before N, and N is not set until the dry run. Therefore the earlier ~$20 estimate is not a safe cap at the preliminary N. A $20 input-only ceiling covers at most `N ≈ 444k` across all 60 runs, before output or grading. Source: [GPT-5.4 Mini pricing](https://developers.openai.com/api/docs/models/gpt-5.4-mini).
 - Medulla requires Node 22.13.x (CI documents 22.13.1/npm 10.9.4); Draupnir requires Node >=24. A private Linux/arm64 shared image now contains both runtimes, selected consistently per repo for every condition. Docker Desktop is v29.8.1; no Draupnir checkout is present, and cloning/testing it waits until §7.5.
 - Image ID is `sha256:1dc5bcac894ca20e094cb9c71c626fc3cc350d005dbdc853aae46c040d4f45b9`. The clean Medulla Git clone at the recorded snapshot passed `npm ci` and `npm test` (1,304 unit + 369 integration); its full log is owner-private. An archive-only test copy failed a Git metadata test and is excluded; the clean Git clone passed.
@@ -42,7 +42,7 @@ The v0.6 roadmap makes tokens-to-competent its headline. The benchmark has to me
 ## Work
 
 - [x] Write 10 medulla questions, answer key, rubric, task, and automatic pass criteria in one focused session; keep the private set outside the Fragment repository.
-- [ ] Pin `gpt-5.4-mini-2026-03-17`; verify endpoint access and supported temperature/reasoning settings. The owner accepts its lack of an announced shutdown for the 2027+ horizon; API access remains unavailable.
+- [ ] Pin `gpt-5.4-mini-2026-03-17`; verify endpoint access and supported temperature/reasoning settings. The owner accepts its lack of an announced shutdown for the 2027+ horizon. The Gemini key is a different provider/model and does not satisfy this check.
 - [x] Define and build the final Linux container; confirm the medulla merged-PR tests pass there before dry run.
 - [ ] Dry run condition B on medulla with the pinned model; set N to 1.5–2× observed cumulative input tokens. Record it as calibration, not benchmark data.
 - [ ] Clone Draupnir at the then-current snapshot in the final container, record its SHA, and verify its merged-PR test suite passes.
@@ -80,6 +80,8 @@ The three v0.6 feature implementations (tracked in plan 08), adopter outreach, a
 
 ## Session log
 
+- 2026-10-10 · GPT-6 / Codex · 07 · retried the configured Gemini model with a minimal `ping`; client timed out after 15 seconds, with no response metadata or run data; 147 tests and docs-check pass; frozen spec/prompt remain unchanged · next: resolve the model/protocol gate before dry run.
+- 2026-10-10 · GPT-6 / Codex · 07 · recorded a Gemini Free-tier metadata lookup (HTTP 200, version 3.0) and three generation HTTP 503 responses; no repo content was sent, and the frozen spec/prompt stayed unchanged · next: obtain working access to the pinned GPT-5.4 Mini candidate or explicitly authorize a new provider/model protocol; do not dry run.
 - 2026-10-08 · GPT-6 / Codex · 07 · rechecked official model, deprecation, parameter and price docs; exact snapshot/settings are statically supported but authenticated access remains unverified, and ~$20 may not cover 60 full-budget runs · next: obtain an authorized API path, then complete the §7.3 runtime check/dry run; do not change the frozen protocol.
 - 2026-10-08 · GPT-6 / Codex · 07 · parked by owner choice while v0.6 features are developed first; no benchmark results exist and the frozen protocol remains unchanged · next: resume after plan 08 and API access.
 - 2026-10-08 · GPT-6 / Codex · 07 · reread the owner's updated spec; condition C is version-specific and baseline uses v0.5.0; removed the premature Draupnir checkout/image and excluded its passing exploratory test · next: write medulla questions per §7.2, then pin the model and container before dry run.
