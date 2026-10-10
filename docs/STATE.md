@@ -22,9 +22,10 @@ its provider-specific protocol, extraction prompt, and harness are pushed. The
 first condition-B preflight transmitted Medulla onboarding content to Gemini
 `countTokens` and returned HTTP 400 `INVALID_ARGUMENT`; no `generateContent`,
 dry run, score, or `N` resulted. The frozen protocol stops on invalid requests,
-so no retry or harness/spec change has been made. The likely cause is a missing
-`model` field in the nested countTokens request; this is an untested inference
-from the private error and Google's required-field schema.
+so R1 is retained unchanged. The owner then directed work through the v0.6
+release. A separate R2 draft adds the required nested `model` field and
+corrects API error categories; it has passed its local self-check but has not
+been frozen or sent to Gemini.
 
 ## Active fragment
 
@@ -32,14 +33,15 @@ from the private error and Google's required-field schema.
 tags, STATE history pruning, and token-budgeted loading are implemented in the
 template and this checkout; all 147 tests and the docs guard pass. Fragment 07
 remains parked for the original frozen GPT protocol. The new Gemini track is
-defined separately in `FragmentBenchmarkSpec-Gemini.md`. Its medulla
+defined separately in `FragmentBenchmarkSpec-Gemini.md` (failed R1) and the
+pre-run draft `FragmentBenchmarkSpec-Gemini-R2.md`. Its medulla
 questions/key/task are drafted privately against snapshot
 `01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
 and clean Medulla test result are recorded. One private condition-B onboarding
-preflight reached `countTokens` and failed with HTTP 400 `INVALID_ARGUMENT`;
-there is no generation, dry run, score, or calibrated `N`. The likely cause—a
-missing nested request `model` field—is documented as an inference, not a
-verified fix.
+R1's private condition-B onboarding preflight reached `countTokens` and failed
+with HTTP 400 `INVALID_ARGUMENT`; there is no generation, dry run, score, or
+calibrated `N`. R2 fixes the likely missing nested request `model` field, but
+is still a draft and has not made another API request.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -87,6 +89,7 @@ One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
 - 2026-10-10 · GPT-6 / Codex · 09 · condition-B preflight sent onboarding docs to Gemini `countTokens` and received HTTP 400 `INVALID_ARGUMENT`; no generation or calibration value exists, so stopped per frozen protocol · next: owner reviews the invalid-request evidence before any new benchmark revision.
+- 2026-10-10 · GPT-6 / Codex · 09 · owner directed work through v0.6 release; retained failed Gemini R1 and started separate R2 with required nested model field and accurate API categories; local self-check passes, no R2 request sent · next: freeze/push R2 before its condition-B calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · pushed frozen Gemini harness/system prompt/tool allowlist as `e05a5b9`; local and remote SHAs match, the key stayed ignored, and no repository content has been sent · next: record the freeze anchor and run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · repaired the Gemini harness so onboarding, quiz, and task share one transcript; enforced the onboarding cap and per-run edit paths; harness self-check and all 147 repository tests pass · next: push the frozen harness/system prompt, then run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · confirmed the AI Studio key project remains Free tier; clean Medulla snapshot passed npm ci and 1,304 unit + 369 integration tests in the pinned image with test networking disabled · next: freeze benchmark harness before calibration.

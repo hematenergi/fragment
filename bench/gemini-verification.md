@@ -42,6 +42,10 @@ At 2026-10-10 17:08 WIB, the frozen runner started condition-B calibration attem
 
 **Likely cause (inference; not re-tested):** a redacted local classifier extracted “model not specified” from the private error response. The frozen `countTokens` body wraps `generateContentRequest` but does not set its `model` field; Google's REST schema marks `GenerateContentRequest.model` required. No request was sent after this diagnosis. See the official [countTokens API](https://ai.google.dev/api/tokens) and [GenerateContentRequest schema](https://ai.google.dev/api/generate-content).
 
+## R2 preflight correction (not yet frozen or API-verified)
+
+The current R2 draft adds `model: models/gemini-3.8-flash` to the shared request body and distinguishes invalid-request, authorization, rate-limit/quota, and server-error categories. `node --check` and the no-network runner self-check pass. No Gemini request has been made with R2; the revision must be pushed and its freeze SHA recorded before any further repository content is sent.
+
 ## Sources
 
 - [Model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash)

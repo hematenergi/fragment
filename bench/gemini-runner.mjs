@@ -79,11 +79,12 @@ const toolDeclarations = [
   },
 ];
 
-class InfraFailure extends Error {
-  constructor(code, status = null) {
+class RunFailure extends Error {
+  constructor(code, status = null, category = 'infrastructure-incomplete') {
     super(code);
     this.code = code;
     this.status = status;
+    this.category = category;
   }
 }
 
@@ -289,6 +290,14 @@ function appendLog(logPath, event) {
   fs.appendFileSync(logPath, `${JSON.stringify({ timestamp: new Date().toISOString(), ...event })}\n`, { mode: 0o600 });
 }
 
+function apiFailureCategory(status) {
+  if (status === 400) return 'invalid-request';
+  if ([401, 403].includes(status)) return 'authorization-stop';
+  if (status === 429) return 'rate-limit-or-quota';
+  if (status >= 500) return 'infrastructure-incomplete';
+  return 'api-rejection';
+}
+
 function gitStatus(repoRoot) {
   const status = runFile('git', ['-C', repoRoot, 'status', '--porcelain', '--untracked-files=all']);
   if (status.status !== 0) throw new Error('could not inspect prepared workspace');
@@ -313,12 +322,12 @@ function createContainer(repoRoot, depsRoot, runtime) {
     'create', '--platform=linux/arm64', '--network=none', ...mounts, '--workdir=/workspace', IMAGE,
     'bash', '-lc', 'sleep infinity',
   ]);
-  if (created.status !== 0 || !created.stdout.trim()) throw new InfraFailure('CONTAINER_CREATE_FAILED');
+  if (created.status !== 0 || !created.stdout.trim()) throw new RunFailure('CONTAINER_CREATE_FAILED');
   const id = created.stdout.trim().split(/\s+/).at(-1);
   const started = runFile('docker', ['start', id]);
   if (started.status !== 0) {
     runFile('docker', ['rm', '--force', id]);
-    throw new InfraFailure('CONTAINER_START_FAILED');
+    throw new RunFailure('CONTAINER_START_FAILED');
   }
   return id;
 }
@@ -347,7 +356,7 @@ async function apiCall(method, body, key, state, logPath, meta) {
   } catch (error) {
     const code = error.name === 'TimeoutError' || error.name === 'AbortError' ? 'REQUEST_TIMEOUT' : 'NETWORK_ERROR';
     appendLog(logPath, { type: 'api_failure', method, code, durationMs: Date.now() - startedAt, ...meta });
-    throw new InfraFailure(code);
+    throw new RunFailure(code);
   }
   const text = await response.text();
   let json;
@@ -357,12 +366,15 @@ async function apiCall(method, body, key, state, logPath, meta) {
     response: json, rateLimitHeaders: Object.fromEntries([...response.headers.entries()].filter(([name]) => /^(?:x-ratelimit-[a-z0-9-]+|ratelimit(?:-[a-z0-9-]+)?|retry-after)$/i.test(name))),
     ...meta,
   });
-  if (!response.ok) throw new InfraFailure(`HTTP_${response.status}`, response.status);
+  if (!response.ok) {
+    throw new RunFailure(`HTTP_${response.status}`, response.status, apiFailureCategory(response.status));
+  }
   return json;
 }
 
 function buildRequest(systemText, contents) {
   return {
+    model: `models/${MODEL}`,
     systemInstruction: { parts: [{ text: systemText }] },
     contents,
     tools: [{ functionDeclarations: toolDeclarations }],
@@ -383,26 +395,26 @@ async function generate(contents, state, context, budget, stage) {
   const request = buildRequest(context.systemText, contents);
   const countResponse = await apiCall('countTokens', { generateContentRequest: request }, context.apiKey, state, context.logPath, { stage });
   const estimate = countResponse.totalTokens;
-  if (!Number.isInteger(estimate) || estimate < 0) throw new InfraFailure('TOKEN_PREFLIGHT_INVALID');
-  if (estimate > MAX_CONTEXT) throw new InfraFailure('SINGLE_REQUEST_CONTEXT_LIMIT');
+  if (!Number.isInteger(estimate) || estimate < 0) throw new RunFailure('TOKEN_PREFLIGHT_INVALID', null, 'measurement-invalid');
+  if (estimate > MAX_CONTEXT) throw new RunFailure('SINGLE_REQUEST_CONTEXT_LIMIT', null, 'context-limit');
   if (stage === 'onboarding' && context.generations === 0 && estimate > Math.floor(MAX_CONTEXT * 0.8)) {
-    throw new InfraFailure('ONBOARDING_TRUNCATION_REQUIRED');
+    throw new RunFailure('ONBOARDING_TRUNCATION_REQUIRED', null, 'preflight-stop');
   }
   if (context.inputTokens + estimate > budget) return { budgetReached: true, preflightTokens: estimate };
 
   const response = await apiCall('generateContent', request, context.apiKey, state, context.logPath, { stage, preflightTokens: estimate });
   const modelVersion = response.modelVersion;
-  if (modelVersion !== MODEL) throw new InfraFailure('MODEL_VERSION_MISMATCH');
+  if (modelVersion !== MODEL) throw new RunFailure('MODEL_VERSION_MISMATCH', null, 'model-mismatch');
   const usage = response.usageMetadata;
   if (!Number.isInteger(usage?.promptTokenCount) || !Number.isInteger(usage?.candidatesTokenCount)
-      || !Number.isInteger(usage?.totalTokenCount)) throw new InfraFailure('USAGE_METADATA_MISSING');
+      || !Number.isInteger(usage?.totalTokenCount)) throw new RunFailure('USAGE_METADATA_MISSING', null, 'measurement-invalid');
   const candidate = response.candidates?.[0];
   if (!candidate?.content) {
     const finishReason = candidate?.finishReason;
     if (['SAFETY', 'RECITATION', 'BLOCKLIST', 'PROHIBITED_CONTENT', 'SPII'].includes(finishReason)) {
-      throw new InfraFailure('CONTENT_REFUSAL');
+      throw new RunFailure('CONTENT_REFUSAL', null, 'content-refusal');
     }
-    throw new InfraFailure('CANDIDATE_CONTENT_MISSING');
+    throw new RunFailure('CANDIDATE_CONTENT_MISSING', null, 'invalid-model-response');
   }
   context.inputTokens += usage.promptTokenCount;
   context.outputTokens += usage.candidatesTokenCount;
@@ -513,9 +525,10 @@ async function runBenchmark(args) {
     process.stdout.write(`${JSON.stringify(summary)}\n`);
     return summary;
   } catch (error) {
-    const code = error instanceof InfraFailure ? error.code : 'LOCAL_RUN_ERROR';
-    appendLog(logPath, { type: 'run_end', runId, status: 'infrastructure-incomplete', code, httpStatus: error.status ?? null });
-    process.stderr.write(`Run incomplete: ${code}${error.status ? ` (HTTP ${error.status})` : ''}; private log retained.\n`);
+    const code = error instanceof RunFailure ? error.code : 'LOCAL_RUN_ERROR';
+    const category = error instanceof RunFailure ? error.category : 'local-error';
+    appendLog(logPath, { type: 'run_end', runId, status: category, code, httpStatus: error.status ?? null });
+    process.stderr.write(`Run stopped: ${code}${error.status ? ` (HTTP ${error.status})` : ''}; private log retained.\n`);
     process.exitCode = 2;
   } finally {
     if (context.containerId) runFile('docker', ['rm', '--force', context.containerId]);
@@ -530,6 +543,11 @@ function selfTest() {
   assert.equal(isCredentialShapedPath('docs/secrets/api-key.md'), true);
   assert.equal(parseDotEnv('GEMINI_MODEL=gemini-3.8-flash\nGH_MODELS_TOKEN=ignored').GEMINI_MODEL, MODEL);
   assert.deepEqual(toolDeclarations.map((tool) => tool.name), ['list_dir', 'read_file', 'search_text', 'write_file', 'edit_file', 'run_command']);
+  const countTokensRequest = { generateContentRequest: buildRequest('system', [{ role: 'user', parts: [{ text: 'prompt' }] }]) };
+  assert.equal(countTokensRequest.generateContentRequest.model, `models/${MODEL}`);
+  assert.equal(apiFailureCategory(400), 'invalid-request');
+  assert.equal(apiFailureCategory(429), 'rate-limit-or-quota');
+  assert.equal(apiFailureCategory(503), 'infrastructure-incomplete');
   assert.equal(allowedCommand(['npm', 'test']), true);
   assert.equal(allowedCommand(['bash', '-lc', 'cat .env']), false);
   assert.equal(allowedCommand(['npm', 'test', '&&', 'env']), false);

@@ -18,6 +18,7 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 ## Read first
 
 - `../../FragmentBenchmarkSpec-Gemini.md` — separate frozen Gemini protocol
+- `../../FragmentBenchmarkSpec-Gemini-R2.md` — current pre-run Gemini revision; do not send data until its freeze commit is pushed
 - `../../FragmentBenchmarkSpec.md` — original frozen GPT protocol; do not edit
 - `../../bench/extract-prompt-gemini.md` — separate Draupnir extraction prompt
 - `../../bench/gemini-agent-system.md` — fixed agent instructions
@@ -28,7 +29,7 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 ## Current state
 
 - `FragmentBenchmarkSpec.md` and `bench/extract-prompt.md` remain frozen and unchanged.
-- Generic Gemini probes succeeded intermittently. The first data-bearing condition-B preflight sent Medulla onboarding material to `countTokens` and returned HTTP 400 `INVALID_ARGUMENT`; no generation, dry run, score, or calibrated `N` exists. The likely missing nested `model` field is an untested inference, not an approved repair.
+- Gemini R1's first data-bearing condition-B preflight sent Medulla onboarding material to `countTokens` and returned HTTP 400 `INVALID_ARGUMENT`; it produced no generation, dry run, score, or `N` and remains unchanged. The owner directed work through the release, so the separate R2 draft adds the required nested model resource and distinct API error categories; no R2 request has been sent.
 - Gemini 3.8 Flash stable alias and `thinkingLevel=low` are pinned in the new spec. Exact dated backend snapshot and active quota remain unconfirmed.
 - The separate harness now carries one conversation across onboarding, quiz, and task, preflights the half-budget onboarding boundary, and restricts edits to per-run paths. It aborts if the first condition-B prompt exceeds 80% of context; the calibration safety ceiling is 10,000,000 cumulative input tokens.
 - The existing Linux/arm64 image was rechecked at snapshot `01667b95454663848f193cd84e3fb055507035b0`; `npm ci` and network-disabled `npm test` passed in a clean clone (1,304 unit + 369 integration).
@@ -42,8 +43,9 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 - [x] Commit and push the new protocol, extraction prompt, and system prompt before sending repository content to Gemini.
 - [x] Reconfirm Free Tier/no billing, final container availability, and clean Medulla test results.
 - [x] Verify the private Medulla questions/key/task map to the recorded baseline snapshot and v0.5.0 procedure.
-- [ ] Run one B-condition Medulla dry run and set `N` using the frozen rule; retain as calibration only.
-- [x] Stop on the invalid countTokens request without retrying, and retain its raw record privately; new requests require review of the error before any protocol revision.
+- [x] Stop Gemini R1 on the invalid countTokens request without retrying, and retain its raw record privately.
+- [ ] Freeze and push the separate R2 protocol and harness correction before sending any further repository content.
+- [ ] Run one R2 B-condition Medulla dry run and set `N` using the frozen rule; retain as calibration only.
 - [ ] Clone Draupnir in the final container, record its SHA, and verify tests.
 - [ ] Fill and commit only Gemini prompt placeholders; mechanically extract and freeze the Draupnir KB.
 - [ ] Write and freeze Draupnir questions, answer key, rubric, task, and automatic check from post-March-2026 sources.
@@ -84,6 +86,7 @@ Changing the frozen GPT benchmark, adopter outreach, v0.7 work, or changing ship
 ## Session log
 
 - 2026-10-10 · GPT-6 / Codex · 09 · first B calibration preflight returned HTTP 400 `INVALID_ARGUMENT` from `countTokens`; no generation or `N`, and stopped without retry per protocol · next: owner reviews the invalid-request evidence before any new benchmark revision.
+- 2026-10-10 · GPT-6 / Codex · 09 · after owner directed continuation through release, kept R1 unchanged and drafted Gemini R2 with the required nested model resource and distinct API-error categories; local runner self-check passes · next: push R2 freeze, then calibrate.
 - 2026-10-10 · GPT-6 / Codex · 09 · froze and pushed the Gemini runner, schemas, command/edit allowlists, and corrected system prompt at `e05a5b9`; remote SHA matches and no repo content sent · next: run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · fixed Gemini run-history carryover, onboarding budget enforcement, and per-run write fencing; runner self-check and all 147 Fragment tests pass · next: freeze and push the harness, then run the B-condition Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · rechecked AI Studio Free tier and validated the pinned image with a clean Medulla clone; `npm ci` passed and 1,304 unit + 369 integration tests passed offline · next: freeze tool schemas and command allowlist before calibration.
