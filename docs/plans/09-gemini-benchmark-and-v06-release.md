@@ -38,7 +38,7 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 - [x] Record owner authorization and create a distinct Gemini model-verification report without exposing the key.
 - [x] Freeze a provider-specific protocol and extraction prompt without changing the original GPT artifacts.
 - [ ] Freeze the exact agent system prompt, tool schemas, and local command allowlist before dry run.
-- [ ] Commit and push the new protocol, extraction prompt, and system prompt before sending repository content to Gemini.
+- [x] Commit and push the new protocol, extraction prompt, and system prompt before sending repository content to Gemini.
 - [ ] Reconfirm Free Tier/no billing, final container availability, and clean Medulla test results.
 - [ ] Verify the private Medulla questions/key/task map to the recorded baseline snapshot and v0.5.0 procedure.
 - [ ] Run one B-condition Medulla dry run and set `N` using the frozen rule; retain as calibration only.
@@ -79,4 +79,5 @@ Changing the frozen GPT benchmark, adopter outreach, v0.7 work, or changing ship
 
 ## Session log
 
+- 2026-10-10 · GPT-6 / Codex · 09 · pushed the frozen Gemini protocol/prompt commit `c44b2e5` and verified the remote SHA matches; no repo content sent · next: confirm container/test state and freeze harness before calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · owner authorized a separate Gemini track; recorded successful generic probes, Free Tier terms, and separate protocol/prompt without touching frozen artifacts · next: validate and push protocol before sending repository content or running calibration.

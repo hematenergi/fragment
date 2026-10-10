@@ -80,6 +80,7 @@ content or benchmark run data exists.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 09 · pushed protocol/prompt commit `c44b2e5` to `codex/v06-benchmark-resume`; remote SHA matches and no repo content has been sent · next: verify container/tests and freeze harness before dry run.
 - 2026-10-10 · GPT-6 / Codex · 09 · owner authorized a separate Gemini benchmark; recorded successful generic probes, Free Tier terms, and a separate protocol/prompt without changing the frozen GPT artifacts · next: validate and push the new protocol before sending repo content or running calibration.
 - 2026-10-10 · GPT-6 / Codex · 07 · checked the owner-configured Gemini key without exposing it: model metadata returned HTTP 200/version 3.0, all listed projects showed Free tier, and three `gemini-3.8-flash` generation pings returned HTTP 503; no repo content or benchmark run data was sent/created · next: retry only after service capacity recovers and preserve the frozen GPT-5.4 Mini pin unless the owner authorizes a new protocol.
 - 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.
