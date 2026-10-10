@@ -51,9 +51,22 @@ The homepage explains Fragment through copy, transcript cards and code samples, 
 
 ## Validation
 
-- GitHub Actions PR #16: `bash tests/run.sh` passed on Ubuntu and macOS.
-- GitHub Actions PR #16: `bash scripts/docs-check.sh` passed; secrets check passed.
-- Pages deploy run `38067746710` succeeded; live homepage contains the image and accessible description.
+Commands run by GitHub Actions on PR #16:
+
+```bash
+bash tests/run.sh
+bash scripts/docs-check.sh
+```
+
+Observed results:
+
+```text
+Ubuntu: 150 tests passed
+macOS: 150 tests passed
+docs-check: passed
+secrets: passed
+Pages deploy run 38067746710: succeeded; live homepage image and accessible description verified
+```
 
 ## Out of scope
 
