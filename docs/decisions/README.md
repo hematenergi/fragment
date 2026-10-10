@@ -14,5 +14,5 @@ Fixed format: **Context · Decision · Why · Consequences · To change this.**
 
 Decisions are never deleted. A changed mind gets a new file with a new number, and the old one gets `status: superseded` plus a pointer. The trail of changed minds is the most useful part of the folder.
 
-**Next number: 0006.** Decision 0004 is reserved by the open Gemini benchmark
+**Next number: 0007.** Decision 0004 is reserved by the open Gemini benchmark
 work; decision 0005 records the owner-directed release sequence.

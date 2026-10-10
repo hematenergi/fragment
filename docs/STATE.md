@@ -23,16 +23,18 @@ daily request cap; the quiz and task did not finish, so there is no valid score,
 
 ## Active fragment
 
-**No active fragment.** Fragment 13 is complete: README, install guide, and
-homepage retain the skills CLI install command and link to the canonical skill
-source on raw.githubusercontent.com. The live homepage was verified after the
-Pages deploy. Skills.sh search/detail data remain stale and platform-controlled;
-we do not create synthetic installs. Fragment 12 completed the repo-side package
-and presence work; its direct-page verification was incorrect and is corrected
-in that plan. Fragment 11 is complete: the homepage and GitHub README show the
-observed v0.5.0 adoption in medulla and flimapp, with its limits. Fragment 10 is
-complete and v0.6.0 remains the latest release. Benchmark plan 07 is parked
-until Free Tier quota is available; plan 04 awaits the owner's decision.
+**Active: Fragment 14.** README, install guide, and homepage again link to
+Fragment's skills.sh repository listing, preserve the working `adopt-fragment`
+install command and source, and explain the stale catalog entry. The local suite
+(150 tests) and docs guard pass; publish and live-page verification remain.
+Fragment 13's source-link correction remains valid; its removal of the skills.sh
+link was reversed at the owner's request. Skills.sh ranks skills from anonymous
+install telemetry; no synthetic installs were created. Fragment 12 completed the
+repo-side package and presence work. Fragment 11 is complete: the homepage and
+GitHub README show the observed v0.5.0 adoption in medulla and flimapp, with its
+limits. Fragment 10 is complete and v0.6.0 remains the latest release. Benchmark
+plan 07 is parked until Free Tier quota is available; plan 04 awaits the owner's
+decision.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -53,6 +55,7 @@ until Free Tier quota is available; plan 04 awaits the owner's decision.
 | 11 | [put production evidence on the public site and README](plans/11-site-production-evidence.md) | `done` | 10 |
 | 12 | [complete Fragment's public install presence](plans/12-public-presence.md) | `done` | — |
 | 13 | [replace the unavailable skills.sh link](plans/13-fix-skills-catalog-links.md) | `done` | — |
+| 14 | [keep Fragment discoverable on skills.sh](plans/14-restore-skills-presence.md) | `in-progress` | — |
 
 ## Blocked / waiting on a human
 
@@ -86,6 +89,7 @@ until Free Tier quota is available; plan 04 awaits the owner's decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 14 · restored the skills.sh repository link and current install/source guidance across README, INSTALL.md, and homepage; reviewed the live all-time top ten and official telemetry rules; local validation passed · next: publish the link restoration and verify the live homepage.
 - 2026-10-10 · GPT-6 / Codex · 13 · merged PR #10 (`b8e6f38`), Pages deploy `38063624357` succeeded, live homepage HTTP 200 contains the raw GitHub skill link and no stale skills.sh link, and the source file returns HTTP 200; local suite (150 tests) and docs guard passed · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 13 · replaced README, INSTALL.md, and homepage links with the GitHub skill source; corrected the prior HTTP-only verification; local suite passed 150 tests and docs-check passed · next: publish and verify the deployed links.
 - 2026-10-10 · GPT-6 / Codex · 13 · found the skills.sh detail URL returned HTTP 200 with an application-level 404 and that search/catalog pages still show stale data; correcting public links to point to the canonical GitHub skill source · next: verify local docs and site, then publish the link correction.
