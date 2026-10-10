@@ -8,485 +8,86 @@
 <h1 align="center">Fragment</h1>
 
 <p align="center">
-  <strong>Your agent forgot why you said no.</strong><br>
-  <em>The session ends. The context doesn't.</em>
+  <strong>Project memory for AI coding agents.</strong><br>
+  Keep decisions, current state, and the next step in the repository.
 </p>
 
 <p align="center">
-  A continuity harness for vibe-coded projects: the decisions, the paths you<br>
-  ruled out, and the next move live in the repo — where the next session,<br>
-  the next teammate, and the next agent can read them.
-</p>
-
-<p align="center">
-  <a href="#try-it-on-a-project"><strong>Try it with your coding agent</strong></a> &middot;
-  <a href="#before--after">See the before / after</a> &middot;
-  <a href="CASE-STUDY.md">Read the evidence</a>
+  <a href="#install">Install</a> ·
+  <a href="#production-evidence">Production evidence</a> ·
+  <a href="CASE-STUDY.md">Full case study</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/hematenergi/fragment/actions/workflows/tests.yml"><img src="https://github.com/hematenergi/fragment/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
 </p>
 
-<p align="center">
-  <sub><strong>74 minutes</strong> to its first real catch &middot;
-  <strong>7 of 7</strong> new-contributor commits carried the handoff &middot;
-  <strong>bash + git</strong>, nothing else<br>
-  <a href="CASE-STUDY.md">The git history behind those numbers</a> &middot;
-  <a href="docs/why.md">every rule, and the failure that produced it</a></sub>
-</p>
+Fragment is a small continuity harness around your coding agent. It stores project state, decisions, lessons, and active work as ordinary files. A Bash guard checks their structure and handoff in local runs and CI.
 
----
+It works with the agent you already use. It does not run the model or decide whether your code is correct.
 
-You open a fresh session and ask the agent to pick up where you left off. It
-reads the code, infers a plan, and confidently proposes the approach you
-rejected last week — for exactly the reasons you rejected it, which it cannot
-see, because they were in a chat window that no longer exists.
+## Install
 
-Nobody did anything wrong. The reasoning happened. It just never landed
-anywhere a machine or a colleague could find it.
-
-Now add a second person. They are building with an agent too, on another
-machine, possibly a different agent, possibly not an engineer at all. Their
-context is in *their* chat window. Neither of you can see the other's, and
-neither of you will read the other's transcript — nobody reads transcripts.
-
-**Fragment makes the last five minutes of a session produce a file instead of a
-memory, and makes CI go red when it doesn't.** That file is the only thing both
-of you can see.
-
-For a non-technical builder, that continuity is ownership: what was decided,
-why it was decided, who owns the next call, and what the agent must not quietly
-decide again.
-
-For the next agent, it is a map through the project: current state, active work,
-relevant decisions and lessons, then the exact code worth reading. **Code tells
-the agent what exists. Fragment tells it why, what matters, and what happens
-next.**
-
-Fragment preserves context and decisions; tests, code review, and security
-tooling still decide whether the code is correct and safe.
-
-## Before / after
-
-Every new session starts the same way, and this is the part nobody counts: what
-you have to type before any work can begin.
-
-**Without Fragment**
-
-> Ok so — it's a small online shop. Sign-up is by phone number, not email, we
-> settled that on Monday because most of my customers don't have email. The cart
-> is finished. Don't touch the price code, we already fixed a bug in there twice.
-> We're in the middle of checkout and it's stuck because I still haven't decided
-> what a customer should see when a payment fails. Also please don't reorganise
-> anything I didn't ask you to.
-
-You type some version of that at the start of every session. You forget a piece
-of it every time — and the piece you forget is the one that breaks.
-
-**With Fragment**
-
-> Read `docs/STATE.md`.
-
-That file already says all of it, and it is current for one boring reason: the
-build goes red when a session ends without updating it.
-
-```console
-$ head -18 docs/STATE.md
-## Active fragment
-02 — Checkout · in-progress
-
-## Blocked / waiting on a human
-| What                                          | Waiting on | Since      |
-| What a customer sees when a payment fails     | Dina       | 2026-08-27 |
-
-## Decisions already made — do not ask again
-- Sign-up is by phone number, not email. Settled 2026-08-24, because most of
-  our customers do not have an email address.
-
-## Session log
-- 2026-08-27 · codex · 02 · checkout reaches the payment step; the session
-  opened by asking whether sign-up should use email, which decision 0001 had
-  already settled · next: Dina decides what a failed payment shows
-```
-
-Note the last line. The agent asked anyway — and the fix was not to scold the
-agent, it was to move that decision somewhere a fresh session reads before it
-speaks. That is the entire job.
-
-## The continuity harness
-
-Harness engineering is the work around the model: choosing the context it
-sees, the rules it follows, and the feedback that tells it the work is done.
-Fragment handles the part that usually disappears at the session boundary.
-It does not run or replace your coding agent; it gives whichever agent arrives
-next the same durable story.
-
-**Every agent already runs inside a harness. It just isn't yours.** It belongs
-to whoever built the tool, it sits behind the product where you cannot read it,
-and it changes when they ship. You cannot version it, review it, argue with it,
-or carry it to the next tool when you switch.
-
-Fragment puts a harness in your repository instead: plain files you can open,
-edit, review in a pull request, and take with you. Harness engineering stops
-being something that happens behind the tool and becomes something you do
-beside it — which is most of the distance between using an agent and owning the
-project it works on.
-
-An agent does not start by reading everything. It follows the story toward the
-code that matters:
-
-```text
-CLAUDE.md / AGENTS.md → protocol → state → active fragment
-                      → linked decisions and lessons → relevant code
-```
-
-Three files hold that path up, and one script keeps them honest:
-
-```text
-docs/AGENT-PROTOCOL.md   the rules. one file. every agent and human reads this one
-CLAUDE.md / AGENTS.md    three lines each, pointing there. never a second copy
-docs/STATE.md            the board. read first, written last
-scripts/docs-check.sh    red when any of the above stops being true
-```
-
-The guard knows about documents and nothing else. It has never read a line of
-your source, does not know your language, and has no opinion about your domain.
-Rules that are true only for your repo — a client name that must not appear, an
-internal hostname, an identifier that is public but still identifies you — go in
-`scripts/docs-check.local.sh`, which the guard sources if it exists and ignores
-if it does not. Updating the shared guard never touches them.
-
-The guard fails on: a document nobody indexed, a link that stopped resolving, a
-board that hasn't moved in a week, a fragment claiming `done` with an unticked
-box and no command recorded, a front door that quietly stopped pointing at the
-protocol, and a session that changed documents and left no trace.
-
-**The guard is what turns the files into a harness.** The folder layout is the
-cheap part; anyone can copy one. Structure that depends on everyone remembering
-decays inside a week — this repo has receipts for that, including the two
-occasions the author of the guard was caught by his own guard.
-
-## The receipts
-
-Extracted from a private repo: two people, two operating systems, two different
-AI agents, 25 commits in 18 hours.
-
-| Receipt | What happened |
-|---|---|
-| **74 minutes** | between wiring the guard into CI and it catching a real incident |
-| **3 violations** | that one file rename through the GitHub web UI caused, all three caught |
-| **7 of 7** | commits from the second contributor with the identical three-file shape — index, board, work |
-| **0** | sessions those two people had shared before that happened |
-| **both** | directions the verification rule fired in, inside 24 hours: it found the survivorship bias behind a colleague's 8.08x claim, then found the reviewer's own number was wrong the other way |
-
-**And what those 25 commits do not prove**, stated up front because a case study
-that only flatters itself is marketing: concurrency above two people is
-untested — those two took turns and never collided. The cross-OS claim is not
-visible in the git data. Nothing here shows the guard preventing a bug; it shows
-it preventing lost context and re-litigated decisions. And extracting the guard
-for publication silently weakened it in two places, which is the failure this
-project is nominally about, applied recursively.
-
-Full working: [`CASE-STUDY.md`](CASE-STUDY.md).
-
-## Try it on a project
-
-### Ask your coding agent
-
-Paste this into the agent already working on your project:
+Ask your coding agent:
 
 ```text
 Install Fragment v0.6.0 from https://github.com/hematenergi/fragment into this repository.
-Do not overwrite existing files. Fill its project state from decisions visible
-in the repository and this conversation, then run bash scripts/docs-check.sh.
-Do not invent missing decisions; record them as blockers for me.
+Preserve existing files. Use only decisions supported by this repository and our conversation.
+Run bash scripts/docs-check.sh and leave unknowns as blockers instead of guessing.
 ```
 
-### Or install it yourself
+Or install from Bash:
 
 ```bash
 git clone --depth 1 --branch v0.6.0 https://github.com/hematenergi/fragment
 bash fragment/install.sh /path/to/your/repo
-cd /path/to/your/repo && bash scripts/docs-check.sh
+cd /path/to/your/repo
+bash scripts/docs-check.sh
 ```
 
-The installer never overwrites; anything that exists is skipped for you to merge.
-To update only an unmodified guard from a recognised earlier release, use:
+The first check may fail while template values are still present. Fill in the project facts it names, then run it again. The installer preserves existing files; merge them deliberately. To upgrade a recognized, unmodified guard:
 
 ```bash
 bash fragment/install.sh --upgrade /path/to/your/repo
 ```
 
-It reports every retained file and refuses to replace a customised or unknown
-guard. Start with `--dry-run --upgrade` to preview it.
+## How it works
 
-Then the guard fails. **That is the feature** — it is the adoption checklist:
-
-```console
-$ bash scripts/docs-check.sh
-✗ 15 document(s) still carry last-verified: <YYYY-MM-DD>. Stamp them with a real date:
-✗ CLAUDE.md — still contains template placeholders. Fill them in:
-    1: # <PROJECT> — front door for Claude Code
-✗ docs/STATE.md — owner: unassigned. A load-bearing document needs a named owner
-
-FAILED — 11 problem(s), 0 warning(s)
-```
-
-Work down the list until it is green. There is no other setup.
-
-Want to see what lands before it lands: `bash install.sh --dry-run`. Running the
-installer again on a repo that already has Fragment tells you which version is
-there and never overwrites what you have changed.
-
-*Claude Code users: `skill/SKILL.md` does the adoption for you. Copy it to
-`.claude/skills/fragment/SKILL.md` and ask for it by name.*
-
-### Options
-
-The guard checks current workflow structure and evidence in the selected
-checkout destinations. Historical documentation clues are available on request.
+At the start of a session, the agent follows the repo's front door to the protocol, `docs/STATE.md`, active work, and relevant decisions or lessons. At the end, it records meaningful progress and the next move. The guard checks the required files, links, and handoff evidence so a missing update can fail the build.
 
 ```text
-bash scripts/docs-check.sh --version           which Fragment this copy came from
-bash scripts/docs-check.sh --max-warnings 5    fail if more than 5 warnings survive
-DOCS_ROOT=documentation bash scripts/docs-check.sh    documents are not in docs/
-BASE_REF=<sha> bash scripts/docs-check.sh      adds the session-ritual check (CI)
-bash scripts/docs-check.sh --inventory        optional historical date/size clues
-bash scripts/docs-check.sh --check-doc docs/contracts/payment.md
-bash scripts/docs-check.sh --handoff docs/plans/07-checkout.md
-bash scripts/docs-check.sh -- src/checkout ':!src/checkout/generated/**'
+CLAUDE.md / AGENTS.md → docs/AGENT-PROTOCOL.md → docs/STATE.md
+                       → active fragment → relevant decisions and lessons
 ```
 
-`--max-warnings` limits actionable warnings, including project-local rules.
-Inventory does not spend that budget. Daily checks cover core documents, open
-work, changed docs and selected contracts; they do not demand a retrospective
-audit of all history or a dummy fragment for an idle repository.
+Fragment's checks use Bash and Git, with no runtime database, daemon, account, or model API.
 
-Local handoff checks compare HEAD with staged, unstaged and new non-ignored work.
-`BASE_REF` selects committed work for CI; add `--worktree` for a longer local
-session. Explicit Git pathspecs scope shared work and generated exclusions.
-The default checkout handoff is STATE; repeat `--handoff` to select only the
-affected destinations from your protocol's source-role map. Body changes are
-structural evidence, not proof of truthful prose or external writes.
+## v0.6.0 tools
 
-Existing daily notes, tickets and task formats remain yours. See
-[continuity and migration](docs/continuity.md) for authority, daily rollover,
-partial updates and portable decisions. Upgrade preserves user-owned protocols
-and workflows, so review those instructions deliberately; do not stamp old dates
-or archive history just to make the guard quiet.
-For existing core filenames, `STATE_FILE`, `PROTOCOL_FILE` and `INDEX_FILE`
-select repo-relative paths and may name the same document. Describe their roles
-in the protocol and supply the values in your existing local/CI command.
+- `bash scripts/recall.sh "query"` ranks decisions and lessons using deterministic keyword matching. No model call or network access.
+- `bash scripts/state-prune.sh --keep 20` previews older STATE history for archival; add `--apply` to write the archive.
+- `bash scripts/load-context.sh --budget 12000 "query"` assembles STATE and relevant whole records under a conservative size bound for the requested token budget.
+- Decision and lesson files can use optional `tags: [topic, system]` frontmatter to improve retrieval.
 
-### Two status vocabularies, and why the guard enforces the split
+## Production evidence
 
-| Kind of file | `status:` may be |
+The v0.5.0 snapshot was observed on 2026-10-08, before v0.6.0 shipped. Two production repositories used the same byte-identical 588-line shared guard; each kept its own checks in a local extension.
+
+| Repository | Observed use |
 |---|---|
-| a fragment in `docs/plans/` | `todo` → `in-progress` → `done` \| `parked` |
-| every other document | `active`, `draft`, `superseded` |
+| **medulla** | 96 decisions, 51 lessons, and 89 plans. Its 23-line local guard checks tracked state/secret-shaped files, architecture budgets, and contract drift. |
+| **flimapp** | Its 80-line local guard checks release-ledger/app-manifest alignment, store copy/build-number alignment, and API inventory updates. |
 
-A fragment being worked on right now is **`in-progress`**, not `active`. The
-guard refuses the wrong vocabulary at the file itself and says which one it
-wanted — it does not send you to the board to fix something the board cannot
-express.
+Both repos are run by Fragment's author (n=2). This shows the shared guard fitting two different systems; it is not independent adopter validation. The case study also records earlier source-repo evidence: CI caught three documentation failures from one rename, and a second contributor followed the same handoff pattern in 7 of 7 commits.
 
-### Closing a fragment you did not finish
+**Limits:** no time or token savings have been measured, and the current benchmark is incomplete. Fragment checks documented continuity and workflow structure; it does not prove that application code is correct. See [`CASE-STUDY.md`](CASE-STUDY.md) for the evidence and its limitations.
 
-Most fragments do not end by being finished. Both ways out cost one sentence:
+## Learn more
 
-| Situation | Status | Required |
-|---|---|---|
-| Overtaken — the work happened elsewhere | `superseded` | `superseded-by:` naming it |
-| Stopped on purpose | `parked` | `reason:` saying why |
-| Finished here | `done` | every box ticked, commands pasted |
-
-`parked` used to require nothing, which made it the cheapest way to turn a red
-board green: park everything, explain nothing. A `todo` left untouched for 30
-days now warns, so the ones that were quietly overtaken surface instead of
-sitting in the queue looking like work that is still coming.
-
-## See a filled-in example
-
-Not sure what green is supposed to look like?
-[`examples/online-shop/`](examples/online-shop/) is a complete workflow snapshot
-for a small fictional shop built by two people — one who owns it and does not
-read code, one who does the technical work with an agent.
-
-It has real invariants written from things that already hurt, a board mid-phase
-with a human blocking it, one fragment `done` and one `in-progress`, a decision
-that agents re-opened twice, two lessons that cost real money, a runbook a
-non-engineer has actually followed, and its own `scripts/docs-check.local.sh`
-enforcing that no customer phone number ever lands in the repo.
-
-The application source is deliberately omitted — the artifact here is the
-workflow and its documentation. Start at its
-[`START-HERE.md`](examples/online-shop/START-HERE.md), the way a new
-teammate would.
-
-It is checked by this project's CI on every push, and a test fails if its
-vendored copy of the guard ever drifts from the canonical one. It cannot rot
-without turning the build red.
-
-## What to install, in tiers
-
-Tiered from evidence, not intent. **The Core is the part that was observed
-transferring to a second person, on a different machine, driving a different
-agent.** The rest was only ever used by the person who built it.
-
-### Core — ten minutes, and the tier to hand a new collaborator
-
-```text
-docs/AGENT-PROTOCOL.md          the rules. ~150 lines, hard cap
-CLAUDE.md / AGENTS.md           thin front doors. three lines each
-docs/STATE.md                   the board
-docs/README.md                  the index — every doc listed, or the guard fails
-scripts/docs-check.sh           the guard
-scripts/docs-check.local.sh     optional: your domain's rules, kept out of the shared one
-.github/workflows/docs.yml      runs it for whoever pushes, with whatever tool
-.gitattributes                  eol=lf for the script, merge=union for the board
-```
-
-### Fragment workflow — proven, but so far single-player
-
-```text
-docs/plans/       numbered fragments, each with its own session log
-docs/decisions/   why something is the way it is, so it is not re-decided
-docs/lessons/     Symptom → Root cause → Rule. one file per bug worth preventing
-```
-
-In the origin repo this was used heavily — by one of the two people. Take it
-when you are the one holding a plan, not as the price of entry.
-
-### The non-engineer layer — take it if anyone on the team does not read code
-
-```text
-START-HERE.md        ten minutes, written for someone who has never opened the source
-docs/GLOSSARY.md     technical terms in plain language
-docs/HOW-WE-WORK.md  the rhythm, the status labels, and who is allowed to decide what
-```
-
-This is the part with no equivalent in the spec-driven tools, and it is the
-reason the harness survives contact with a mixed team. `HOW-WE-WORK.md` carries
-a deliberate asymmetry — **stopping the system is anyone's call, at any time,
-with no permission; starting it needs more than one person** — because stopping
-something healthy costs hours and failing to stop something broken costs
-everything. A person who cannot read the code can still read that table and
-still pull the handle.
-
-Skip this tier if everyone on the team is an engineer. Do not skip it because it
-looks soft.
-
-### Optional
-
-`architecture/` · `research/` · `runbooks/` · `templates/`
-
-Strip freely. `runbooks/` goes if you operate nothing.
-
-## Next to the spec-driven tools
-
-|  | Spec Kit / BMAD / OpenSpec / Kiro | Fragment |
-|---|---|---|
-| Optimises | *before* the work — what to build | *after* the work — what was decided, and where we are |
-| Core artifact | the spec | the board |
-| Enforcement | advisory phases; drift analysis is a separate step | one bash script, red in CI, no bypass |
-| Failure it targets | the agent builds the wrong thing | session 40 re-derives what session 12 settled |
-| Non-engineer layer | — | `START-HERE.md`, glossary, an explicit who-decides-what |
-| Runtime | Python/Node CLI | `bash` + `git` |
-
-They compose. Run Spec Kit for the specs and let Fragment hold the continuity.
-
-## Why not just symlink CLAUDE.md to AGENTS.md
-
-Claude Code reads `CLAUDE.md`. Codex and most others read `AGENTS.md`. Claude
-Code still does not read `AGENTS.md` natively, and Anthropic's own documented
-workaround is `ln -s AGENTS.md CLAUDE.md`.
-
-The symlink is genuinely simpler, and it works right up until a front door needs
-something tool-specific — Claude Code's `@docs/AGENT-PROTOCOL.md` import syntax
-means nothing to Codex, and "your tool does not import files, so actually open
-them" means nothing to Claude Code. One file cannot carry both.
-
-Three lines per tool costs one extra file and keeps the rules in exactly one
-place. The guard fails a front door that stops pointing at the protocol, and
-warns when one grows past 40 lines — because rules leaking back into a front
-door is how two agents end up following two rulebooks, silently, since nobody
-diffs their instruction files.
-
-## Known limits
-
-- **Above two people, concurrency is untested.** Every session appends at the
-  same anchor in `STATE.md`. `merge=union` in `.gitattributes` makes concurrent
-  appends resolve instead of conflict, at the cost of a visibly duplicated row
-  when two people edit the same queue line. Past that, the next move is a
-  `docs/sessions/` directory of dated files.
-- **The guard verifies documents, not code.** It can tell that a fragment claims
-  `done` while a box is unticked and no command was ever recorded. It cannot
-  tell you the code works. Your test suite is still your test suite.
-- **The `status: done` checks are new** and have not survived a month of real
-  use, unlike the rest.
-
-## Language
-
-The templates are English. **Write your real documents in whatever language your
-team actually speaks.** The guard is built so that nothing depends on an English
-heading — it reads frontmatter, checkbox syntax, code fences and links, never
-prose. That constraint is not theoretical: the first version of the `done` check
-read `## Validation` and immediately produced a false positive on a repo that
-writes `## Validasi`.
-
-A glossary in a second language is a glossary nobody opens.
-
-## FAQ
-
-**Why call it a harness?**
-A harness is the system around a model that supplies context, constraints and
-feedback. Fragment is deliberately only the continuity slice: it does not run
-the model; it keeps state, decisions and handoffs discoverable and enforced for
-whichever human or agent works next.
-
-**Isn't this just documentation?**
-Documentation is what you write after the work, if there is time. This is what
-the work leaves behind whether there is time or not, because the build is red
-until it does.
-
-**My team is one person.**
-Then the second person is you in three weeks, and you will be surprised how
-little you recognise.
-
-**Can I use it with Spec Kit / BMAD / Kiro?**
-Yes, and you probably should. They decide what gets built; this remembers what
-you already decided. No overlap.
-
-**Can I use it with [ponytail](https://github.com/DietrichGebert/ponytail)?**
-Yes. Ponytail shrinks what the agent writes; Fragment holds what the team
-decided. It works on the diff, this works on the trail between sessions — they
-never touch the same file. Lean code, remembered reasons.
-
-**What if I just write good commit messages?**
-Commit messages answer *what changed*. They do not answer *what did we already
-rule out, and why* — try finding a rejected approach in `git log`.
-
-**Doesn't the ritual slow us down?**
-About ninety seconds at the end of a session, and the build fails when you skip
-them. That is the entire product.
-
-**Why "Fragment"?**
-Because a unit of work you can hand to a stranger halfway through is a fragment,
-not a task. Also because the name was picked before anyone tried to search for
-it.
-
-## Development
-
-```bash
-bash tests/run.sh
-```
-
-83 cases across Linux, macOS and Windows/Git Bash. The guard is the load-bearing
-part of this project and it does not change without a test —
-see [`CONTRIBUTING.md`](CONTRIBUTING.md). It shipped without one once, and an
-untouched install came out green while the README called it a checklist.
+- [Agent protocol](docs/AGENT-PROTOCOL.md) · [continuity and migration](docs/continuity.md)
+- [Filled-in example](examples/online-shop/START-HERE.md)
+- [Changelog](CHANGELOG.md) · [all documents](docs/README.md)
 
 ## License
 
-[MIT](LICENSE). The guard does not check it.
+[MIT](LICENSE).
