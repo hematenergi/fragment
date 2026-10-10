@@ -46,7 +46,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/10-v06-release-before-benchmark.md`](plans/10-v06-release-before-benchmark.md) | `done` — v0.6.0 published with honest benchmark-pending notes |
 | [`plans/11-site-production-evidence.md`](plans/11-site-production-evidence.md) | `done` — publish observed v0.5.0 production evidence on the homepage and README |
 | [`plans/12-public-presence.md`](plans/12-public-presence.md) | `done` — distinct skill listing, install paths, package manifests, and aligned public metadata |
-| [`plans/13-fix-skills-catalog-links.md`](plans/13-fix-skills-catalog-links.md) | `in-progress` — replace the unavailable skills.sh detail URL with the canonical GitHub skill source |
+| [`plans/13-fix-skills-catalog-links.md`](plans/13-fix-skills-catalog-links.md) | `done` — public install pages link to the canonical skill source while skills.sh catalog data is stale |
 
 ## Decisions
 

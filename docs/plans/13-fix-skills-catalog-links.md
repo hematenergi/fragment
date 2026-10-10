@@ -1,7 +1,7 @@
 ---
 id: plan-13
 title: "13 — replace the unavailable skills.sh link"
-status: in-progress
+status: done
 owner: hematenergi
 last-verified: 2026-10-10
 depends-on: [12]
@@ -31,13 +31,13 @@ The install command `npx skills add hematenergi/fragment --skill adopt-fragment`
 - [x] Replace the broken skills.sh detail link in README, INSTALL.md, and the homepage with the canonical GitHub skill source.
 - [x] Correct plan 12's live-page status and record why the prior HTTP-only verification was wrong.
 - [x] Run the repository tests and docs guard; inspect the final diff for stale public links.
-- [ ] Publish the correction and verify the deployed homepage and source links.
+- [x] Publish the correction and verify the deployed homepage and source links.
 
 ## Done when
 
-- [ ] README, install guide, and homepage retain the CLI install command and link to the canonical skill source.
-- [ ] No public repo-controlled page links to the skills.sh URL that currently renders an application-level 404.
-- [ ] Required local checks pass and published content is verified.
+- [x] README, install guide, and homepage retain the CLI install command and link to the canonical skill source.
+- [x] No public repo-controlled page links to the skills.sh URL that currently renders an application-level 404.
+- [x] Required local checks pass and published content is verified.
 
 ## Traps
 
@@ -61,5 +61,6 @@ Changing skills.sh's catalog data, creating synthetic installation telemetry, or
 
 ## Session log
 
+- 2026-10-10 · GPT-6 / Codex · 13 · merged PR #10 (`b8e6f38`), Pages deploy `38063624357` succeeded, live homepage HTTP 200 contains the raw GitHub skill link and no stale skills.sh link, and the source file returns HTTP 200; local suite (150 tests) and docs guard passed · next: resume parked benchmark plan 07 when free-tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 13 · replaced README, INSTALL.md, and homepage links with the GitHub skill source; corrected the prior HTTP-only verification; local suite passed 150 tests and docs-check passed · next: publish and verify the deployed links.
 - 2026-10-10 · GPT-6 / Codex · 13 · found a skills.sh application-level 404 behind HTTP 200; replacing the broken public detail links with the canonical GitHub source · next: validate, publish, and verify the deployed links.
