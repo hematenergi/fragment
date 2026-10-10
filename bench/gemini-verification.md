@@ -23,8 +23,8 @@ The earlier session also recorded three 503 responses and a 15-second client tim
 
 ## Cost, privacy, and lifecycle
 
-- On 2026-10-10, the AI Studio API Keys page showed the project attached to the configured key as **Free tier**, with **Set up billing** still offered. The Rate Limit page defaulted to a different project, so no RPM/TPM/RPD values can be attributed to the benchmark key's project.
-- The official rate-limit page (last updated 2026-10-09) says RPM/TPM/RPD limits vary by project and tier and must be read in AI Studio; it lists the Free tier spend-based limit as N/A. The benchmark project's active RPM/TPM/RPD are still unconfirmed, so every call is spaced by at least 15 seconds and any 429 ends that attempt. This records the official general rule separately from the unconfirmed project values.
+- On 2026-10-10, the AI Studio API Keys page showed the project attached to the configured key as **Free tier**, with **Set up billing** still offered. A later view selected that exact project, **Gemini API**, on the Rate Limit page; it still showed **Free tier** and **Set up billing**.
+- For `Gemini 3.8 Flash`, AI Studio displayed peak usage/limit over 28 days as **3/5 RPM, 46/250K TPM, and 9/20 RPD**. These are dashboard peak/limit figures, not a live remaining-quota counter. The API's R2 `QuotaFailure` independently named `generate_content_free_tier_input_token_count` with value `250000`; no rate-limit headers were returned. The official rate-limit page says limits vary by project/tier and must be read in AI Studio; it lists the Free tier spend-based limit as N/A.
 - Google's pricing page lists Gemini 3.8 Flash Free Tier input/output as free of charge and says Free Tier content may be used to improve Google products. Owner explicitly approved a separate Gemini benchmark after that disclosure.
 - Reconfirm Free Tier and no billing before each phase. Do not send credentials or unrelated private material. Do not record API keys or authorization headers.
 - Google's model card gives a March 2026 knowledge cutoff, with some domains possibly limited to January 2025. Use Draupnir source events after March 2026 for contamination-resistant questions.
@@ -42,9 +42,13 @@ At 2026-10-10 17:08 WIB, the frozen runner started condition-B calibration attem
 
 **Likely cause (inference; not re-tested):** a redacted local classifier extracted “model not specified” from the private error response. The frozen `countTokens` body wraps `generateContentRequest` but does not set its `model` field; Google's REST schema marks `GenerateContentRequest.model` required. No request was sent after this diagnosis. See the official [countTokens API](https://ai.google.dev/api/tokens) and [GenerateContentRequest schema](https://ai.google.dev/api/generate-content).
 
-## R2 preflight correction and freeze (not yet API-verified)
+## R2 freeze and calibration attempt
 
-R2 adds `model: models/gemini-3.8-flash` to the shared request body and distinguishes invalid-request, authorization, rate-limit/quota, and server-error categories. `node --check`, the no-network runner self-check, all 147 repository tests, and the docs guard pass. Freeze commit `6ad0871326da41631df20a2acf8b5bc3e76b8fd5` is pushed to `codex/v06-benchmark-resume`; local and remote SHAs matched. No Gemini request has been made with R2.
+R2 adds `model: models/gemini-3.8-flash` to the shared request body and distinguishes invalid-request, authorization, rate-limit/quota, and server-error categories. `node --check`, the no-network runner self-check, all 147 repository tests, and the docs guard passed. Freeze commit `6ad0871326da41631df20a2acf8b5bc3e76b8fd5` is pushed to `codex/v06-benchmark-resume`; local and remote SHAs matched before the attempt. The R2 spec and harness remain unchanged after it.
+
+At **2026-10-10 17:25 WIB**, R2 attempt `medulla-b-calibration-r2-01` used Medulla snapshot `01667b95454663848f193cd84e3fb055507035b0` and the pinned `gemini-3.8-flash` alias. The B onboarding `countTokens` request returned HTTP 200 and estimated **488,670 input tokens**. The following `generateContent` request returned HTTP 429 `RESOURCE_EXHAUSTED`; its structured `QuotaFailure` named metric `generate_content_free_tier_input_token_count`, value `250000`, and `RetryInfo` of 23 seconds. No rate-limit headers were returned. No generation response, `usageMetadata`, score, or calibration `N` exists. The failed attempt is not replayed; its complete private log is retained outside the repository at `~/.codex/private-benchmarks/fragment-v06-medulla/gemini-runs/medulla-b-calibration-r2-01.jsonl`.
+
+The Free-tier limit is lower than the 488,670-token B onboarding prompt. The frozen spec's 80%-of-context truncation threshold is 838,860, so it would not truncate this prompt. A repeated identical request would still exceed the API's reported 250,000 input-token quota. No replacement attempt was sent. This is a protocol gap, recorded for owner review; the frozen R2 spec was not changed.
 
 ## Sources
 
