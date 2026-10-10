@@ -48,7 +48,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/12-public-presence.md`](plans/12-public-presence.md) | `done` — distinct skill listing, install paths, package manifests, and aligned public metadata |
 | [`plans/13-fix-skills-catalog-links.md`](plans/13-fix-skills-catalog-links.md) | `done` — public install pages link to the canonical skill source while skills.sh catalog data is stale |
 | [`plans/14-restore-skills-presence.md`](plans/14-restore-skills-presence.md) | `done` — restore the skills.sh repository link and explain its stale entry |
-| [`plans/15-restore-skills-sh-fragment-slug.md`](plans/15-restore-skills-sh-fragment-slug.md) | `in-progress` — restore the `fragment` skill slug and link directly to its install page |
+| [`plans/15-restore-skills-sh-fragment-slug.md`](plans/15-restore-skills-sh-fragment-slug.md) | `done` — restore the `fragment` skill slug and verify the direct install page |
 
 ## Decisions
 

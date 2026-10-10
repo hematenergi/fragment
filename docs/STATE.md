@@ -23,11 +23,15 @@ daily request cap; the quiz and task did not finish, so there is no valid score,
 
 ## Active fragment
 
-**Fragment 15 is in progress.** Restore the canonical skills CLI name to
-`fragment` so the install path matches the skills.sh detail slug
-`/hematenergi/fragment/fragment`; keep native plugin package names unchanged.
-Fragment 14 is complete: the public pages retain Fragment's skills.sh presence.
-PR #12 is merged and the live homepage and GitHub README were verified.
+**No active fragment.** Fragment 15 is complete: PR #14 merged as
+`b3439c981261875f648e6628fa7d21d472da49f6`, restoring the single `fragment`
+skills CLI slug and adding a direct homepage install CTA. The skills CLI listed
+one skill with telemetry disabled, the live skills.sh detail page opens, and
+Pages deploy `38066187505` plus the live homepage check succeeded. Local tests
+and docs guard passed; required CI checks passed, while the Windows run was still
+in progress after merge. Fragment 14 is complete: public pages retain Fragment's
+skills.sh presence. PR #12 is merged and the live homepage and README were
+verified.
 Fragment 13's source-link correction remains valid; its removal of the skills.sh
 link was reversed at the owner's request. Skills.sh ranks skills from anonymous
 install telemetry; no synthetic installs were created. Fragment 12 completed the
@@ -57,7 +61,7 @@ decision.
 | 12 | [complete Fragment's public install presence](plans/12-public-presence.md) | `done` | — |
 | 13 | [replace the unavailable skills.sh link](plans/13-fix-skills-catalog-links.md) | `done` | — |
 | 14 | [keep Fragment discoverable on skills.sh](plans/14-restore-skills-presence.md) | `done` | — |
-| 15 | [restore the skills.sh Fragment slug](plans/15-restore-skills-sh-fragment-slug.md) | `in-progress` | — |
+| 15 | [restore the skills.sh Fragment slug](plans/15-restore-skills-sh-fragment-slug.md) | `done` | — |
 
 ## Blocked / waiting on a human
 
@@ -91,6 +95,7 @@ decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 15 · merged PR #14 as `b3439c9`; Pages run `38066187505` succeeded; live detail page and homepage verified; CLI listed one `fragment` with telemetry disabled; 150 tests, docs guard, and required CI checks passed (Windows run still in progress) · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 15 · renamed the canonical CLI skill to `fragment`, aligned install surfaces and hero CTA, and passed all 150 tests plus docs guard · next: publish, confirm the CLI sees one `fragment` skill, then inspect the live page.
 - 2026-10-10 · GPT-6 / Codex · 15 · restoring the canonical skills CLI skill slug to `fragment`, linking directly to its skills.sh detail page, and keeping plugin package IDs intact per owner direction · next: validate CLI discovery, tests, docs guard, then publish and inspect the live detail page.
 
