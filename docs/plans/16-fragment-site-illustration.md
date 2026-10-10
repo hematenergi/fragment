@@ -1,7 +1,7 @@
 ---
 id: plan-16
 title: Add an original illustration to Fragment's public install surfaces
-status: in-progress
+status: done
 owner: hematenergi
 last-verified: 2026-10-10
 depends-on: []
@@ -41,7 +41,7 @@ The homepage explains Fragment through copy, transcript cards and code samples, 
 - [x] The illustration is visible in the homepage source and has accessible alt text.
 - [x] The canonical skill links to the same image hosted with the public site source.
 - [x] The packaged plugin skill remains byte-identical to the canonical root skill.
-- [ ] The full repository suite and documentation guard pass.
+- [x] The full repository suite passes on Ubuntu and macOS, and the documentation guard passes.
 
 ## Traps
 
@@ -51,10 +51,9 @@ The homepage explains Fragment through copy, transcript cards and code samples, 
 
 ## Validation
 
-```bash
-bash tests/run.sh
-bash scripts/docs-check.sh
-```
+- GitHub Actions PR #16: `bash tests/run.sh` passed on Ubuntu and macOS.
+- GitHub Actions PR #16: `bash scripts/docs-check.sh` passed; secrets check passed.
+- Pages deploy run `38067746710` succeeded; live homepage contains the image and accessible description.
 
 ## Out of scope
 
@@ -65,3 +64,4 @@ No benchmark changes, skill slug changes, new install telemetry, or release vers
 - 2026-10-10 · GPT-6 / Codex · generated the original paper-cut handoff illustration and saved the optimized project asset · next: integrate it into the homepage and canonical skill, then review the rendered result.
 - 2026-10-10 · GPT-6 / Codex · added the responsive homepage figure and caption, linked the same artwork from the canonical skill, and confirmed the mobile preview and alt text · next: run repository validation and verify the live pages after publication.
 - 2026-10-10 · GPT-6 / Codex · CI caught that the packaged plugin copy also needs the image reference; synced it byte-for-byte with the root skill · next: rerun CI, then verify the live homepage and skills.sh page after merge.
+- 2026-10-10 · GPT-6 / Codex · PR #16 merged as `d3ed8f0`; Pages deploy succeeded and the live homepage displays the image with alt text; Ubuntu and macOS each passed 150 tests and docs-check passed; skills.sh still showed the old cached body after refresh · next: continue parked benchmark plan 07 when Free Tier quota is available.
