@@ -99,7 +99,7 @@ function parseDotEnv(text) {
     const match = /^(?:export\s+)?([A-Z0-9_]+)=(.*)$/.exec(line);
     if (!match) continue;
     const [, name] = match;
-    if (!['GEMINI_API_KEY', 'GEMINI_MODEL_R3'].includes(name)) continue;
+    if (!['GEMINI_API_KEY', 'GEMINI_MODEL_R3', 'GEMINI_MODEL_VERSION_R3'].includes(name)) continue;
     let value = match[2].trim();
     if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
       value = value.slice(1, -1);
@@ -640,7 +640,9 @@ function selfTest() {
   assert.equal(isCredentialShapedPath('.env.example'), false);
   assert.equal(isCredentialShapedPath('.env'), true);
   assert.equal(isCredentialShapedPath('docs/secrets/api-key.md'), true);
-  assert.equal(parseDotEnv('GEMINI_MODEL_R3=gemini-3.1-flash-lite\nGH_MODELS_TOKEN=ignored').GEMINI_MODEL_R3, MODEL);
+  const config = parseDotEnv('GEMINI_MODEL_R3=gemini-3.1-flash-lite\nGEMINI_MODEL_VERSION_R3=gemini-3.1-flash-lite\nGH_MODELS_TOKEN=ignored');
+  assert.equal(config.GEMINI_MODEL_R3, MODEL);
+  assert.equal(config.GEMINI_MODEL_VERSION_R3, MODEL);
   assert.deepEqual(toolDeclarations.map((tool) => tool.name), ['list_dir', 'read_file', 'search_text', 'write_file', 'edit_file', 'run_command']);
   const countTokensRequest = { generateContentRequest: buildRequest('system', [{ role: 'user', parts: [{ text: 'prompt' }] }]) };
   assert.equal(countTokensRequest.generateContentRequest.model, `models/${MODEL}`);
