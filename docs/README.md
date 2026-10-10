@@ -48,6 +48,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/12-public-presence.md`](plans/12-public-presence.md) | `done` — distinct skill listing, install paths, package manifests, and aligned public metadata |
 | [`plans/13-fix-skills-catalog-links.md`](plans/13-fix-skills-catalog-links.md) | `done` — public install pages link to the canonical skill source while skills.sh catalog data is stale |
 | [`plans/14-restore-skills-presence.md`](plans/14-restore-skills-presence.md) | `done` — restore the skills.sh repository link and explain its stale entry |
+| [`plans/15-restore-skills-sh-fragment-slug.md`](plans/15-restore-skills-sh-fragment-slug.md) | `in-progress` — restore the `fragment` skill slug and link directly to its install page |
 
 ## Decisions
 
@@ -58,7 +59,8 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`decisions/0002-continuity-evidence-and-inventory.md`](decisions/0002-continuity-evidence-and-inventory.md) | Scope, structural evidence, inventory and source authority |
 | [`decisions/0003-defer-benchmark-spend-until-v06-features.md`](decisions/0003-defer-benchmark-spend-until-v06-features.md) | Develop v0.6 features before API spending; keep the benchmark protocol frozen |
 | [`decisions/0005-release-v06-with-benchmark-pending.md`](decisions/0005-release-v06-with-benchmark-pending.md) | Publish v0.6.0 from shipped feature evidence; follow with benchmark results |
-| [`decisions/0006-keep-skills-platform-presence.md`](decisions/0006-keep-skills-platform-presence.md) | Keep Fragment linked from skills.sh while its repository listing is stale |
+| [`decisions/0006-keep-skills-platform-presence.md`](decisions/0006-keep-skills-platform-presence.md) | `superseded` — preserve the repository listing while the renamed skill was unavailable |
+| [`decisions/0007-restore-skills-sh-fragment-slug.md`](decisions/0007-restore-skills-sh-fragment-slug.md) | Restore the single `fragment` skill slug for a direct skills.sh install page |
 
 ## Lessons
 

@@ -23,10 +23,11 @@ daily request cap; the quiz and task did not finish, so there is no valid score,
 
 ## Active fragment
 
-**No active fragment.** Fragment 14 is complete: README, install guide, and
-homepage again link to Fragment's skills.sh repository listing, preserve the
-working `adopt-fragment` install command and source, and explain the stale catalog
-entry. PR #12 is merged and the live homepage and GitHub README were verified.
+**Fragment 15 is in progress.** Restore the canonical skills CLI name to
+`fragment` so the install path matches the skills.sh detail slug
+`/hematenergi/fragment/fragment`; keep native plugin package names unchanged.
+Fragment 14 is complete: the public pages retain Fragment's skills.sh presence.
+PR #12 is merged and the live homepage and GitHub README were verified.
 Fragment 13's source-link correction remains valid; its removal of the skills.sh
 link was reversed at the owner's request. Skills.sh ranks skills from anonymous
 install telemetry; no synthetic installs were created. Fragment 12 completed the
@@ -56,6 +57,7 @@ decision.
 | 12 | [complete Fragment's public install presence](plans/12-public-presence.md) | `done` | — |
 | 13 | [replace the unavailable skills.sh link](plans/13-fix-skills-catalog-links.md) | `done` | — |
 | 14 | [keep Fragment discoverable on skills.sh](plans/14-restore-skills-presence.md) | `done` | — |
+| 15 | [restore the skills.sh Fragment slug](plans/15-restore-skills-sh-fragment-slug.md) | `in-progress` | — |
 
 ## Blocked / waiting on a human
 
@@ -88,6 +90,9 @@ decision.
 
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
+
+- 2026-10-10 · GPT-6 / Codex · 15 · renamed the canonical CLI skill to `fragment`, aligned install surfaces and hero CTA, and passed all 150 tests plus docs guard · next: publish, confirm the CLI sees one `fragment` skill, then inspect the live page.
+- 2026-10-10 · GPT-6 / Codex · 15 · restoring the canonical skills CLI skill slug to `fragment`, linking directly to its skills.sh detail page, and keeping plugin package IDs intact per owner direction · next: validate CLI discovery, tests, docs guard, then publish and inspect the live detail page.
 
 - 2026-10-10 · GPT-6 / Codex · 14 · merged PR #12 (`2b1f068`), Pages deploy `38065113487` succeeded, and live homepage plus GitHub README show the restored skills.sh link and stale-catalog note · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 14 · restored the skills.sh repository link and current install/source guidance across README, INSTALL.md, and homepage; reviewed the live all-time top ten and official telemetry rules; local validation passed · next: publish the link restoration and verify the live homepage.

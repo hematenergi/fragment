@@ -106,7 +106,7 @@ echo
 # ---------------------------------------------------------------------------
 echo "agent package"
 # ---------------------------------------------------------------------------
-if cmp -s "$ROOT/skills/adopt-fragment/SKILL.md" "$ROOT/plugins/adopt-fragment/skills/adopt-fragment/SKILL.md"; then
+if cmp -s "$ROOT/skills/fragment/SKILL.md" "$ROOT/plugins/adopt-fragment/skills/fragment/SKILL.md"; then
   ok "the install skill matches its packaged plugin copy"
 else
   bad "the install skill and packaged plugin copy drifted"
@@ -152,8 +152,8 @@ echo "adoption"
 # ---------------------------------------------------------------------------
 raw="$TMP/raw"; mkdir -p "$raw"; git -C "$raw" init -q .
 install_out=$(bash "$ROOT/install.sh" "$raw" 2>&1)
-if [[ "$install_out" == *"skills/adopt-fragment/SKILL.md"* ]]; then
-  ok "installer points Claude Code users to the renamed skill"
+if [[ "$install_out" == *"skills/fragment/SKILL.md"* ]]; then
+  ok "installer points Claude Code users to the Fragment skill"
 else
   bad "installer still points to the old skill path"
 fi

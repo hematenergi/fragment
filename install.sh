@@ -163,4 +163,4 @@ echo "and AGENTS.md, which must end up pointing at docs/AGENT-PROTOCOL.md."
 echo
 echo "Optional, for Claude Code users: copy the adoption skill so an agent can do"
 echo "the above for you —"
-echo "  mkdir -p .claude/skills/adopt-fragment && cp ${SRC%/template}/skills/adopt-fragment/SKILL.md .claude/skills/adopt-fragment/"
+echo "  mkdir -p .claude/skills/fragment && cp ${SRC%/template}/skills/fragment/SKILL.md .claude/skills/fragment/"

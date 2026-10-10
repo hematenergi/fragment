@@ -1,5 +1,5 @@
 ---
-name: adopt-fragment
+name: fragment
 description: Install or update the Fragment continuity harness in an existing repository. Use when a user asks to adopt Fragment, preserve project context across AI coding sessions, set up an agent protocol or STATE board, or reconcile CLAUDE.md and AGENTS.md. Works across languages and frameworks.
 ---
 
