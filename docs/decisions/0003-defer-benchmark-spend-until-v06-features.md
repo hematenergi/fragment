@@ -1,9 +1,10 @@
 ---
 id: decision-0003
 title: "0003 — develop v0.6 features before benchmark API spending"
-status: active
+status: superseded
+superseded-by: decision 0004 — separate Gemini benchmark protocol
 owner: hematenergi
-last-verified: 2026-10-08
+last-verified: 2026-10-10
 tags: [benchmark, sequencing, v0.6, api-access]
 ---
 

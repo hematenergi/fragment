@@ -3,7 +3,7 @@ id: plans-index
 title: Fragments — how they work, and the phase gates
 status: active
 owner: hematenergi
-last-verified: 2026-09-09
+last-verified: 2026-10-10
 ---
 
 # Fragments
@@ -40,3 +40,4 @@ Phases do not advance on dates — they advance when a gate passes. **A gate tha
 | Phase | Fragments | Gate to advance |
 |---|---|---|
 | <name> | | <A condition someone else can check without asking you> |
+| v0.6 benchmark/release | 09 | Two separate 30-run Gemini phases are reproducibly reported and v0.6.0 is published |

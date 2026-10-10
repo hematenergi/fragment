@@ -16,24 +16,24 @@ last-verified: 2026-10-10
 
 **v0.5.0 is released; v0.6 context features are implemented, validated, and merged.**
 Feature PR #2 merged as `5f13f7b`. The extraction prompt is committed and
-pushed. The frozen benchmark protocol still requires its baseline and v0.6
-validation before release; no run data exists. A Gemini Free-tier key is now
-configured, but its metadata endpoint alone succeeded; three generation pings
-returned HTTP 503 and a later minimal retry timed out. It is a different
-model/provider from the frozen GPT-5.4 Mini candidate, so benchmark work remains
-parked.
+pushed. The original GPT benchmark remains frozen. The owner authorized a
+separate Gemini Free-tier benchmark after its data-use terms were disclosed;
+its provider-specific protocol and extraction prompt are now recorded. Generic
+probes have succeeded, but service availability is intermittent. No repository
+content has been sent and no benchmark run data exists.
 
 ## Active fragment
 
-**No active fragment.** Fragment 08 is complete: deterministic `/recall`, tags,
-STATE history pruning, and token-budgeted loading are implemented in the
+**Fragment 09 is active.** Fragment 08 is complete: deterministic `/recall`,
+tags, STATE history pruning, and token-budgeted loading are implemented in the
 template and this checkout; all 147 tests and the docs guard pass. Fragment 07
-is parked pending access to the frozen model candidate or an owner-approved
-new provider/model protocol. Its medulla questions/key/task are
-drafted privately against snapshot
-`01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container is
-built and a clean Medulla snapshot passes npm ci and npm test (1,304 unit + 369
-integration). No benchmark run data exists; the benchmark protocol is unchanged.
+remains parked for the original frozen GPT protocol. The new Gemini track is
+defined separately in `FragmentBenchmarkSpec-Gemini.md`. Its medulla
+questions/key/task are drafted privately against snapshot
+`01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
+and clean Medulla test result are recorded from the earlier run and must be
+confirmed in the final environment before dry run. No Gemini repository
+content or benchmark run data exists.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -48,15 +48,15 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 | 04 | [version written by hand](plans/04-version-written-by-hand.md) | `todo` | — |
 | 05 | [continuity without administration](plans/05-continuity-without-administration.md) | `done` | — |
 | 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `done` | — |
-| 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | frozen GPT-5.4 Mini access is unavailable; Gemini exploratory pings returned 503 / timed out; no run data exists |
+| 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | original frozen GPT-5.4 Mini access is unavailable; the separate Gemini track is plan 09 |
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
+| 09 | [run the Gemini benchmark and release v0.6](plans/09-gemini-benchmark-and-v06-release.md) | `in-progress` | confirm final environment, then calibrate the Gemini benchmark |
 
 ## Blocked / waiting on a human
 
 | What | Waiting on | Since |
 |---|---|---|
 | Whether version-bump automation (04) is wanted | owner | 2026-09-09 |
-| Benchmark API access (07) | owner — provide a working path to the frozen GPT-5.4 Mini candidate, or explicitly approve a new provider/model protocol; Gemini metadata works but generation returned 503 / timed out | 2026-10-10 |
 
 ## Decisions already made — do not ask again
 
@@ -80,7 +80,7 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
-- 2026-10-10 · GPT-6 / Codex · 07 · one additional Gemini `ping` request timed out after 15 seconds with no HTTP response; 147 tests and docs-check pass, spec/prompt untouched, no benchmark data created · next: resolve the model/protocol gate before dry run.
+- 2026-10-10 · GPT-6 / Codex · 09 · owner authorized a separate Gemini benchmark; recorded successful generic probes, Free Tier terms, and a separate protocol/prompt without changing the frozen GPT artifacts · next: validate and push the new protocol before sending repo content or running calibration.
 - 2026-10-10 · GPT-6 / Codex · 07 · checked the owner-configured Gemini key without exposing it: model metadata returned HTTP 200/version 3.0, all listed projects showed Free tier, and three `gemini-3.8-flash` generation pings returned HTTP 503; no repo content or benchmark run data was sent/created · next: retry only after service capacity recovers and preserve the frozen GPT-5.4 Mini pin unless the owner authorizes a new protocol.
 - 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.
 - 2026-10-09 · GPT-6 / Codex · 08 · macOS CI exposed a flaky `grep -q`/`pipefail` test helper that could report a broken pipe despite a match; changed it to drain the output, and the full local suite (147 tests) plus docs guard now pass · next: confirm CI on the fix before merging; benchmark plan 07 still awaits an authorized model API path.

@@ -3,7 +3,7 @@ id: docs-index
 title: Document index
 status: active
 owner: hematenergi
-last-verified: 2026-10-08
+last-verified: 2026-10-10
 ---
 
 # Document index
@@ -41,8 +41,9 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/04-version-written-by-hand.md`](plans/04-version-written-by-hand.md) | `todo` — seven places, one command |
 | [`plans/05-continuity-without-administration.md`](plans/05-continuity-without-administration.md) | `done` — inventory, scoped handoff and source authority |
 | [`plans/06-freeze-benchmark-extraction-prompt.md`](plans/06-freeze-benchmark-extraction-prompt.md) | `done` — frozen extraction prompt committed and pushed before benchmark questions |
-| [`plans/07-v06-benchmark-baseline.md`](plans/07-v06-benchmark-baseline.md) | `parked` — benchmark work resumes after v0.6 features and API access |
+| [`plans/07-v06-benchmark-baseline.md`](plans/07-v06-benchmark-baseline.md) | `parked` — original GPT benchmark remains unchanged; alternate Gemini work has its own plan |
 | [`plans/08-v06-context-features.md`](plans/08-v06-context-features.md) | `done` — deterministic retrieval, STATE pruning, and token-budgeted loading |
+| [`plans/09-gemini-benchmark-and-v06-release.md`](plans/09-gemini-benchmark-and-v06-release.md) | `in-progress` — separate Gemini benchmark, then v0.6.0 release |
 
 ## Decisions
 
@@ -51,7 +52,8 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`decisions/README.md`](decisions/README.md) | Decision format and the next number |
 | [`decisions/0001-one-canonical-guard-vendored-copies.md`](decisions/0001-one-canonical-guard-vendored-copies.md) | Three copies of the guard, checked by a test, never symlinked |
 | [`decisions/0002-continuity-evidence-and-inventory.md`](decisions/0002-continuity-evidence-and-inventory.md) | Scope, structural evidence, inventory and source authority |
-| [`decisions/0003-defer-benchmark-spend-until-v06-features.md`](decisions/0003-defer-benchmark-spend-until-v06-features.md) | Develop v0.6 features before API spending; keep the benchmark protocol frozen |
+| [`decisions/0003-defer-benchmark-spend-until-v06-features.md`](decisions/0003-defer-benchmark-spend-until-v06-features.md) | `superseded` — developed v0.6 before benchmark spending |
+| [`decisions/0004-separate-gemini-benchmark.md`](decisions/0004-separate-gemini-benchmark.md) | Use an explicitly authorized, Free Tier Gemini benchmark with a separate protocol |
 
 ## Lessons
 
