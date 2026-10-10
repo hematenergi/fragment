@@ -50,8 +50,12 @@ limits of 5 RPM, 250K input TPM, and 20 RPD. Separate R4 artifacts pin Gemini
 pushed at `e7adaefda5c568fdc83392d7f4f06e9516bdad82` with matching local/remote
 SHAs. The ping-only check returned HTTP 200, pinned response
 `modelVersion=gemini-3.8-flash`, accepted thinking low with temperature omitted,
-and used only the message `ping`; reasoning usage was absent. No repository
-content has been sent.
+and used only the message `ping`; reasoning usage was absent. Three R4
+count-only preflights then sent deterministic Medulla onboarding bundles to
+`countTokens`; the final bundle contains 67/236 records and counted 99,733
+tokens (HTTP 200), below the 120,000 cap. No R4 generation request has been
+sent. The existing private questions/key/task map to the pinned Medulla
+snapshot and v0.5.0; final Linux/arm64 image and clean tests are recorded.
 
 ## Active fragment
 
@@ -61,13 +65,14 @@ template and this checkout; all 147 tests and the docs guard pass. Fragment 07
 remains parked for the original frozen GPT protocol. R1, R2, and R3 remain
 frozen without a completed calibration, score, or `N`; R3's private logs and
 changed attempt workspace remain private. The pushed R4 freeze pins Gemini 3.8
-Flash; its selected-project Free-tier limits are verified in AI Studio at
-5 RPM / 250K input TPM / 20 RPD. The ping-only check succeeded with the pinned
-model version; no R4 repository content has been sent. The
-private Medulla questions/key/task remain mapped to snapshot
-`01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
-and clean Medulla test result are recorded. Do not clone Draupnir before a
-complete R4 Medulla calibration.
+Flash; its selected-project Free-tier limits were rechecked in AI Studio at
+5 RPM / 250K input TPM / 20 RPD. The generic rate-limit banner remains
+unresolved, while all three count-only preflights succeeded. Final B bundle is
+99,733 tokens and below the frozen 120,000 cap; no R4 generation request,
+score, calibration result, or `N` exists. Private Medulla questions/key/task
+remain mapped to snapshot `01667b95454663848f193cd84e3fb055507035b0`; the
+shared Linux/arm64 image and clean Medulla test result are recorded. Do not
+clone Draupnir before a complete R4 Medulla calibration.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -114,6 +119,7 @@ complete R4 Medulla calibration.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 09 · after the pushed R4 ping-evidence freeze, rechecked Free Tier/no billing, verified private questions/key/task map to the pinned Medulla snapshot, and counted three deterministic B bundles; final 67/236 records, 99,733 tokens, HTTP 200, secret scan clean; no generation or task content sent · next: commit this pre-run evidence, then run one R4 Medulla B calibration and set `N` only on full completion.
 - 2026-10-10 · GPT-6 / Codex · 09 · ran the post-freeze ping-only Gemini 3.8 Flash check: HTTP 200, `modelVersion` pinned, low thinking accepted, temperature omitted, reasoning field absent; no repository content sent · next: freeze this verification record, then count the R4 Medulla B bundle.
 - 2026-10-10 · GPT-6 / Codex · 09 · drafted and pushed separate Gemini 3.8 Flash R4 protocol/harness at `e7adaef`; remote SHA matched; runner/builder checks, 147 tests, docs guard, and redacted secret scan passed; frozen GPT/R1/R2/R3 files unchanged, no repository-content transfer · next: run the ping-only pin check.
 - 2026-10-10 · GPT-6 / Codex · 09 · froze the private R3 Medulla B bundle and made three fresh calibration attempts; two received HTTP 503 and the final countTokens preflight was 232,231, so the runner stopped before generation at its request cap; no complete task, result, or N; 147 tests and docs guard green · next: owner review before any separately frozen Gemini revision; R3 stays unchanged.

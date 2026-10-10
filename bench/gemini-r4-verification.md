@@ -4,9 +4,9 @@
 
 - R4 core protocol/prompt/system/builder/runner freeze: `e7adaefda5c568fdc83392d7f4f06e9516bdad82` on `codex/v06-benchmark-resume`.
 - Local and remote branch SHAs matched after the push.
-- Only the post-freeze, ping-only model check has run; no repository-content transfer has occurred.
+- After the post-freeze ping, three count-only Medulla onboarding preflights ran; no generation request has used repository content.
 - R3 remains unchanged; R4 is a separate revision.
-- R4 repository-content requests: none.
+- R4 repository-content requests: `countTokens` only; questions, answer key, and task have not been sent.
 
 ## Local freeze validation
 
@@ -41,12 +41,18 @@
 - The earlier generic AI Studio rate-limit banner was not explained, but this Gemini 3.8 Flash ping succeeded while the project remained Free Tier. Do not infer future capacity from this one call.
 - Authorization header and API key: not logged or recorded.
 
+### Recheck before Medulla calibration — 2026-10-10 19:20 WIB
+
+- AI Studio still showed Free Tier and “Set up billing”; no billing setup was enabled.
+- The generic “You have reached a rate limit” banner remained visible. The model table labels its values as peak usage over 28 days; Gemini 3.8 Flash showed 3/5 RPM, 46K/250K input TPM, and 9/20 RPD. These are not current remaining-quota counters. Treat the banner and available capacity as unresolved; stop on any API quota error.
+
 ## Medulla condition-B calibration
 
-- Pending count-only bundle preflight; no calibration request has been sent.
-- Use a separately built R4 bundle with a 120,000-token onboarding ceiling and a 220,000-token per-request ceiling.
-- Store bundle, manifest, raw request/response logs, and private task material outside the public repository with owner-only permissions.
-- No calibration result or `N` exists until one full task-completing run has valid usage metadata for every generation.
+- Verified the existing private 10-question set and answer key against Medulla snapshot `01667b95454663848f193cd84e3fb055507035b0` and v0.5.0; the standalone task file is linked to the answer-key artifact. Private files remain outside the repo with owner-only file permissions.
+- The existing Linux/arm64 image is present. The recorded clean run on this exact snapshot passed `npm ci` and network-disabled `npm test` (1,304 unit + 369 integration tests).
+- Final R4 bundle: 67/236 tracked records; 169 oldest whole records omitted; bundle SHA-256 `e9cfcb2b202dfde00868357608cf1bfb008922a80dd401dcf0bc7a3275598c5f`; private manifest SHA-256 `780cf46b8f90f8c7d901a6124da055ce4fef1d1dd9634ac169f4ccfb4b8c2ea4`; count-only `countTokens` result 99,733 (HTTP 200), below the 120,000 onboarding cap. The bundle and manifest are stored outside the public repo with mode 0600.
+- Count-only preparation history: 46 records / 73,020 tokens (HTTP 200); 59 / 91,818 (HTTP 200); final 67 / 99,733 (HTTP 200). Each request used the frozen R4 system prompt and Gemini 3.8 Flash; no questions, answer key, or task were sent. Redacted secret scan of the final bundle and system prompt found no leaks.
+- No calibration `generateContent` request has been sent. No calibration result, score, or `N` exists.
 
 ## Sources
 

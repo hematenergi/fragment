@@ -65,7 +65,7 @@ Gemini results remain indicative and separate from GPT results. Do not compare M
 - R4 core protocol/prompt/system/builder/runner freeze commit: `e7adaefda5c568fdc83392d7f4f06e9516bdad82` on `codex/v06-benchmark-resume`; local and remote SHAs matched before any R4 API request.
 - R4 ping response `modelVersion`: `gemini-3.8-flash` (HTTP 200; pinned after the ping).
 - R4 Medulla snapshot: `01667b95454663848f193cd84e3fb055507035b0`.
-- R4 Medulla B bundle SHA and manifest: `[FILL BEFORE CALIBRATION]`.
+- R4 Medulla B final bundle: SHA-256 `e9cfcb2b202dfde00868357608cf1bfb008922a80dd401dcf0bc7a3275598c5f`; private manifest SHA-256 `780cf46b8f90f8c7d901a6124da055ce4fef1d1dd9634ac169f4ccfb4b8c2ea4`; snapshot `01667b95454663848f193cd84e3fb055507035b0`; 67/236 records included, 169 oldest whole records omitted; `countTokens` returned 99,733 (HTTP 200), below the 120,000 onboarding cap.
 - Final container image: `sha256:1dc5bcac894ca20e094cb9c71c626fc3cc350d005dbdc853aae46c040d4f45b9` (`linux/arm64`).
 - Draupnir SHA: `[FILL AFTER CALIBRATION]`.
 - `N`: `[FILL ONLY AFTER COMPLETED R4 CALIBRATION]`.
