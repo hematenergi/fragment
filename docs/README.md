@@ -44,7 +44,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/07-v06-benchmark-baseline.md`](plans/07-v06-benchmark-baseline.md) | `parked` — benchmark work resumes after v0.6 features and API access |
 | [`plans/08-v06-context-features.md`](plans/08-v06-context-features.md) | `done` — deterministic retrieval, STATE pruning, and token-budgeted loading |
 | [`plans/10-v06-release-before-benchmark.md`](plans/10-v06-release-before-benchmark.md) | `done` — v0.6.0 published with honest benchmark-pending notes |
-| [`plans/11-site-production-evidence.md`](plans/11-site-production-evidence.md) | `in-progress` — publish observed v0.5.0 production evidence on the homepage and README |
+| [`plans/11-site-production-evidence.md`](plans/11-site-production-evidence.md) | `done` — publish observed v0.5.0 production evidence on the homepage and README |
 
 ## Decisions
 
