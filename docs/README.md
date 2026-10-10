@@ -3,7 +3,7 @@ id: docs-index
 title: Document index
 status: active
 owner: hematenergi
-last-verified: 2026-10-08
+last-verified: 2026-10-10
 ---
 
 # Document index
@@ -43,6 +43,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/06-freeze-benchmark-extraction-prompt.md`](plans/06-freeze-benchmark-extraction-prompt.md) | `done` — frozen extraction prompt committed and pushed before benchmark questions |
 | [`plans/07-v06-benchmark-baseline.md`](plans/07-v06-benchmark-baseline.md) | `parked` — benchmark work resumes after v0.6 features and API access |
 | [`plans/08-v06-context-features.md`](plans/08-v06-context-features.md) | `done` — deterministic retrieval, STATE pruning, and token-budgeted loading |
+| [`plans/10-v06-release-before-benchmark.md`](plans/10-v06-release-before-benchmark.md) | `in-progress` — publish v0.6.0 with honest benchmark-pending notes |
 
 ## Decisions
 
@@ -52,6 +53,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`decisions/0001-one-canonical-guard-vendored-copies.md`](decisions/0001-one-canonical-guard-vendored-copies.md) | Three copies of the guard, checked by a test, never symlinked |
 | [`decisions/0002-continuity-evidence-and-inventory.md`](decisions/0002-continuity-evidence-and-inventory.md) | Scope, structural evidence, inventory and source authority |
 | [`decisions/0003-defer-benchmark-spend-until-v06-features.md`](decisions/0003-defer-benchmark-spend-until-v06-features.md) | Develop v0.6 features before API spending; keep the benchmark protocol frozen |
+| [`decisions/0005-release-v06-with-benchmark-pending.md`](decisions/0005-release-v06-with-benchmark-pending.md) | Publish v0.6.0 from shipped feature evidence; follow with benchmark results |
 
 ## Lessons
 

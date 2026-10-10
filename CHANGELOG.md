@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.0 — 2026-10-10
+
 ### Added
 
 - Deterministic context tools: `recall.sh` ranks decisions and lessons by tags,
@@ -21,6 +23,15 @@
   403 and failed every PR while passing on push. Adopters: `install.sh` never
   overwrites an existing workflow, so add the two-line `permissions` block to
   your `.github/workflows/docs.yml` by hand. Found adopting Fragment in Kidney.
+
+### Benchmark status
+
+The Gemini benchmark is incomplete in this release. Its R4 Medulla calibration
+stopped at the Free Tier daily request limit after 11 successful responses; the
+quiz and task did not complete, so there is no valid score or tokens-to-competent
+result. This release makes no benchmark-improvement claim. Follow-up benchmark
+results will be published separately. Gemini Free Tier content may be used by
+Google to improve its products.
 
 ## 0.5.0 — 2026-09-09
 

@@ -3,7 +3,7 @@ id: decisions-index
 title: Decisions — why something is the way it is
 status: active
 owner: hematenergi
-last-verified: 2026-10-08
+last-verified: 2026-10-10
 ---
 
 # Decisions
@@ -14,4 +14,5 @@ Fixed format: **Context · Decision · Why · Consequences · To change this.**
 
 Decisions are never deleted. A changed mind gets a new file with a new number, and the old one gets `status: superseded` plus a pointer. The trail of changed minds is the most useful part of the folder.
 
-**Next number: 0004.**
+**Next number: 0006.** Decision 0004 is reserved by the open Gemini benchmark
+work; decision 0005 records the owner-directed release sequence.

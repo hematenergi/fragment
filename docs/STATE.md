@@ -3,7 +3,7 @@ id: state
 title: STATE — where the work stands
 status: active
 owner: hematenergi
-last-verified: 2026-10-09
+last-verified: 2026-10-10
 ---
 
 # STATE
@@ -14,22 +14,21 @@ last-verified: 2026-10-09
 
 ## Phase
 
-**v0.5.0 is released; v0.6 context features are implemented, validated, and merged.**
-Feature PR #2 merged as `5f13f7b`. The extraction prompt is committed and
-pushed. The frozen benchmark protocol still requires its baseline and v0.6
-validation before release; no run data exists, and benchmark work is parked
-until authorized API access is available.
+**v0.5.0 is the latest release; v0.6 context features are implemented, validated,
+and merged.** Feature PR #2 merged as `5f13f7b`. The owner has directed that
+v0.6.0 ship using existing feature and test evidence, with benchmark numbers to
+follow. The frozen Gemini R4 Medulla calibration stopped after 11 successful
+responses at the Free Tier daily request limit; the quiz and task did not finish,
+so there is no valid score, `N`, or performance claim. Release notes disclose
+this limitation and the Free Tier data-use terms.
 
 ## Active fragment
 
-**No active fragment.** Fragment 08 is complete: deterministic `/recall`, tags,
-STATE history pruning, and token-budgeted loading are implemented in the
-template and this checkout; all 147 tests and the docs guard pass. Fragment 07
-is parked pending authorized API access. Its medulla questions/key/task are
-drafted privately against snapshot
-`01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container is
-built and a clean Medulla snapshot passes npm ci and npm test (1,304 unit + 369
-integration). No benchmark run data exists; the benchmark protocol is unchanged.
+**Fragment 10 is active.** Fragment 08 is complete: deterministic `/recall`,
+tags, STATE history pruning, and token-budgeted loading are implemented in the
+template and merged to `main`. Current work prepares v0.6.0 for publication
+without a performance claim; benchmark results remain a follow-up and the
+frozen protocol stays unchanged.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -46,6 +45,7 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 | 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `done` | — |
 | 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | resume after plan 08 and API access; no run data exists |
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
+| 10 | [publish v0.6.0 with benchmark pending](plans/10-v06-release-before-benchmark.md) | `in-progress` | — |
 
 ## Blocked / waiting on a human
 
@@ -68,6 +68,9 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
   [decision 0002](decisions/0002-continuity-evidence-and-inventory.md). Source
   authority and update destinations live in the existing protocol; an external
   daily is optional and CI cannot certify a write it did not observe.
+- **v0.6.0 may ship before benchmark completion.** See
+  [decision 0005](decisions/0005-release-v06-with-benchmark-pending.md). Do not
+  present the incomplete R4 calibration as a score or performance claim.
 
 ---
 
@@ -75,6 +78,8 @@ integration). No benchmark run data exists; the benchmark protocol is unchanged.
 
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
+
+- 2026-10-10 · GPT-6 / Codex · 10 · prepared the v0.6.0 release candidate from merged feature PR #2, updated version references and the new guard fingerprint, and documented the incomplete Gemini benchmark without a performance claim · next: pass local and PR checks, merge, tag, and publish v0.6.0; benchmark numbers follow separately.
 
 - 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.
 - 2026-10-09 · GPT-6 / Codex · 08 · macOS CI exposed a flaky `grep -q`/`pipefail` test helper that could report a broken pipe despite a match; changed it to drain the output, and the full local suite (147 tests) plus docs guard now pass · next: confirm CI on the fix before merging; benchmark plan 07 still awaits an authorized model API path.
