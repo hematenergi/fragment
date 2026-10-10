@@ -23,7 +23,9 @@ daily request cap; the quiz and task did not finish, so there is no valid score,
 
 ## Active fragment
 
-**No active fragment.** Fragment 15 is complete: PR #14 merged as
+**Fragment 16 is in progress:** adding one original illustration to the
+homepage and canonical skill source. See
+[plan 16](plans/16-fragment-site-illustration.md). Fragment 15 is complete: PR #14 merged as
 `b3439c981261875f648e6628fa7d21d472da49f6`, restoring the single `fragment`
 skills CLI slug and adding a direct homepage install CTA. The skills CLI listed
 one skill with telemetry disabled, the live skills.sh detail page opens, and
@@ -62,6 +64,7 @@ decision.
 | 13 | [replace the unavailable skills.sh link](plans/13-fix-skills-catalog-links.md) | `done` | — |
 | 14 | [keep Fragment discoverable on skills.sh](plans/14-restore-skills-presence.md) | `done` | — |
 | 15 | [restore the skills.sh Fragment slug](plans/15-restore-skills-sh-fragment-slug.md) | `done` | — |
+| 16 | [add an original illustration to Fragment's public install surfaces](plans/16-fragment-site-illustration.md) | `in-progress` | — |
 
 ## Blocked / waiting on a human
 
@@ -95,6 +98,7 @@ decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 16 · generated a 1536×1024 illustration, integrated it into the responsive homepage, and synced both skill copies after CI caught their byte-identity rule · next: rerun CI and verify the live pages after publication.
 - 2026-10-10 · GPT-6 / Codex · 15 · merged PR #14 as `b3439c9`; Pages run `38066187505` succeeded; live detail page and homepage verified; CLI listed one `fragment` with telemetry disabled; 150 tests, docs guard, and required CI checks passed (Windows run still in progress) · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 15 · renamed the canonical CLI skill to `fragment`, aligned install surfaces and hero CTA, and passed all 150 tests plus docs guard · next: publish, confirm the CLI sees one `fragment` skill, then inspect the live page.
 - 2026-10-10 · GPT-6 / Codex · 15 · restoring the canonical skills CLI skill slug to `fragment`, linking directly to its skills.sh detail page, and keeping plugin package IDs intact per owner direction · next: validate CLI discovery, tests, docs guard, then publish and inspect the live detail page.

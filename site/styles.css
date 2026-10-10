@@ -262,6 +262,32 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 .turn-good .turn-meta { color: #a49b8f; }
 
+.continuity-art {
+  width: var(--shell);
+  margin: clamp(36px, 6vw, 76px) auto 0;
+  padding: 8px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+}
+.continuity-art img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+}
+.continuity-art figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 14px 4px 6px;
+  color: var(--muted);
+  font: 500 11px/1.5 var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
 /* ---------- Tombol ---------- */
 
 .button {

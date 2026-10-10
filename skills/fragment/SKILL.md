@@ -5,6 +5,8 @@ description: Install or update the Fragment continuity harness in an existing re
 
 # Fragment
 
+![An open project folder carries a decision across the gap into a new coding session.](https://raw.githubusercontent.com/hematenergi/fragment/main/site/assets/fragment-context-handoff.jpg)
+
 Install a documentation harness so work survives the end of a session.
 
 **Touches no source code.** No language, framework, or package manager is
