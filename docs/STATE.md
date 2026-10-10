@@ -35,8 +35,10 @@ Gemini 3.1 Flash-Lite limits of 15 RPM, 250K TPM, and 500 RPD. R3 protocol,
 prompt, and runner were pushed at c2671ac5a873af1ca046054ffee2e8e3f6dbf018
 and the remote SHA matched. A single ping-only pin check returned HTTP 200 and
 pinned modelVersion gemini-3.1-flash-lite with thinking low. The 236-record
-Medulla B bundle is assembled locally; a count-only preparation amendment is
-being validated and pushed before any R3 repository content is sent.
+Medulla B bundle is assembled locally. The deterministic builder and
+count-only preflight amendment are pushed at
+7ba4fdc140cd917a16721d5ff5d8ea5357849400 with matching remote SHA; no R3
+repository content has been sent yet.
 
 ## Active fragment
 
@@ -56,7 +58,7 @@ then `generateContent` failed with HTTP 429 because the Free-tier input-token
 quota is 250,000. There is no R2 generation, dry run, score, or calibrated
 `N`; R2 remains frozen and its failed attempt was not replayed. R3 has a
 frozen core protocol, extraction prompt, and separate runner; the ping-only pin
-check succeeded. The quota-aware bundle/counting amendment, capped B preflight,
+check succeeded. The quota-aware builder/counting amendment is pushed. The capped B preflight
 and calibration remain pending.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
