@@ -37,8 +37,11 @@ and the remote SHA matched. A single ping-only pin check returned HTTP 200 and
 pinned modelVersion gemini-3.1-flash-lite with thinking low. The 236-record
 Medulla B bundle is assembled locally. The deterministic builder and
 count-only preflight amendment are pushed at
-7ba4fdc140cd917a16721d5ff5d8ea5357849400 with matching remote SHA; no R3
-repository content has been sent yet.
+7ba4fdc140cd917a16721d5ff5d8ea5357849400. A parser allowlist fix for the
+non-secret model-version pin was pushed at
+998fe25b7345951aa4155c35cd1cee6a6bfd0e00; both remote SHAs matched. One
+count-only invocation stopped locally before network because of that parser
+bug; no R3 repository content has been sent.
 
 ## Active fragment
 
