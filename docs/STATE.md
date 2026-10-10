@@ -45,9 +45,10 @@ countTokens estimate was 232,231 and the runner stopped before generation at
 the 230,000-token request cap. One successful run-03 response lacked reasoning
 usage. No attempt completed the task, so there is no calibration result, score,
 or `N`; R3 remains frozen. AI Studio currently shows Gemini 3.8 Flash Free-tier
-limits of 5 RPM, 250K input TPM, and 20 RPD. A separate R4 protocol/harness
-draft uses Gemini 3.8 Flash and lower 220K request / 120K B-onboarding caps; it
-is not yet frozen and no R4 ping or repository-content request has been sent.
+limits of 5 RPM, 250K input TPM, and 20 RPD. Separate R4 artifacts pin Gemini
+3.8 Flash with 220K request / 120K B-onboarding caps; the core freeze was
+pushed at `e7adaefda5c568fdc83392d7f4f06e9516bdad82` with matching local/remote
+SHAs. No R4 ping or repository-content request has been sent.
 
 ## Active fragment
 
@@ -56,11 +57,11 @@ tags, STATE history pruning, and token-budgeted loading are implemented in the
 template and this checkout; all 147 tests and the docs guard pass. Fragment 07
 remains parked for the original frozen GPT protocol. R1, R2, and R3 remain
 frozen without a completed calibration, score, or `N`; R3's private logs and
-changed attempt workspace remain private. The current R4 draft pins Gemini 3.8
+changed attempt workspace remain private. The pushed R4 freeze pins Gemini 3.8
 Flash; its selected-project Free-tier limits are verified in AI Studio at
 5 RPM / 250K input TPM / 20 RPD. R4 has distinct prompt/system/harness files
-and lower bundle/request caps, but is not frozen and no R4 API call has been
-sent. The private Medulla questions/key/task remain mapped to snapshot
+and lower bundle/request caps, but no ping or R4 API call has been sent. The
+private Medulla questions/key/task remain mapped to snapshot
 `01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
 and clean Medulla test result are recorded. Do not clone Draupnir before a
 complete R4 Medulla calibration.
@@ -110,7 +111,7 @@ complete R4 Medulla calibration.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
-- 2026-10-10 · GPT-6 / Codex · 09 · drafted separate Gemini 3.8 Flash R4 protocol/harness using the selected project's observed 5 RPM / 250K input TPM / 20 RPD Free-tier limits and lower B/request caps; runner/builder checks, 147 tests, docs guard, and redacted secret scan passed; frozen GPT/R1/R2/R3 files unchanged, no R4 API call or repository-content transfer · next: push the R4 freeze, then run the ping-only pin check.
+- 2026-10-10 · GPT-6 / Codex · 09 · drafted and pushed separate Gemini 3.8 Flash R4 protocol/harness at `e7adaef`; remote SHA matched; runner/builder checks, 147 tests, docs guard, and redacted secret scan passed; frozen GPT/R1/R2/R3 files unchanged, no R4 API call or repository-content transfer · next: run the ping-only pin check.
 - 2026-10-10 · GPT-6 / Codex · 09 · froze the private R3 Medulla B bundle and made three fresh calibration attempts; two received HTTP 503 and the final countTokens preflight was 232,231, so the runner stopped before generation at its request cap; no complete task, result, or N; 147 tests and docs guard green · next: owner review before any separately frozen Gemini revision; R3 stays unchanged.
 - 2026-10-10 · GPT-6 / Codex · 09 · condition-B preflight sent onboarding docs to Gemini `countTokens` and received HTTP 400 `INVALID_ARGUMENT`; no generation or calibration value exists, so stopped per frozen protocol · next: owner reviews the invalid-request evidence before any new benchmark revision.
 - 2026-10-10 · GPT-6 / Codex · 09 · owner directed work through v0.6 release; retained failed Gemini R1 and started separate R2 with required nested model field and accurate API categories; local self-check passes, no R2 request sent · next: freeze/push R2 before its condition-B calibration.

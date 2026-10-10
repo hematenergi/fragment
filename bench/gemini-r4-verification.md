@@ -2,7 +2,9 @@
 
 ## Freeze
 
-- Status: freeze candidate; no R4 API request may be sent until all protocol, prompt, system text, bundle builder, and runner files are pushed together.
+- R4 core protocol/prompt/system/builder/runner freeze: `e7adaefda5c568fdc83392d7f4f06e9516bdad82` on `codex/v06-benchmark-resume`.
+- Local and remote branch SHAs matched after the push.
+- No R4 API request or repository-content transfer has occurred yet.
 - R3 remains unchanged; R4 is a separate revision.
 - R4 repository-content requests: none before freeze and ping verification.
 

@@ -1,6 +1,6 @@
 # Fragment Benchmark Spec — Gemini R4 Free Tier
 
-**Status: new protocol; freeze before the R4 ping or any R4 repository-content request.** R4 is a separate benchmark revision after three incomplete R3 Medulla calibration attempts. Keep R1, R2, R3, and the frozen GPT track unchanged; do not pool their partial usage with R4.
+**Status: protocol frozen at core commit `e7adaefda5c568fdc83392d7f4f06e9516bdad82` before the R4 ping or any R4 repository-content request.** R4 is a separate benchmark revision after three incomplete R3 Medulla calibration attempts. Keep R1, R2, R3, and the frozen GPT track unchanged; do not pool their partial usage with R4.
 
 ## 1. Inherited protocol and R3 evidence
 
@@ -62,7 +62,7 @@ Gemini results remain indicative and separate from GPT results. Do not compare M
 ## 8. Freeze anchors
 
 - R1/R2/R3 records remain in their existing files and commits.
-- R4 freeze commit: `[FILL AFTER PUSH, BEFORE PIN CHECK]`.
+- R4 core protocol/prompt/system/builder/runner freeze commit: `e7adaefda5c568fdc83392d7f4f06e9516bdad82` on `codex/v06-benchmark-resume`; local and remote SHAs matched before any R4 API request.
 - R4 ping response `modelVersion`: `[FILL AFTER PING]`.
 - R4 Medulla snapshot: `01667b95454663848f193cd84e3fb055507035b0`.
 - R4 Medulla B bundle SHA and manifest: `[FILL BEFORE CALIBRATION]`.
