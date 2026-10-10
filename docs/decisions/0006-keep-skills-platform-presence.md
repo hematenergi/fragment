@@ -1,12 +1,15 @@
 ---
 id: decision-0006
 title: Keep Fragment's skills.sh presence while its catalog is stale
-status: active
+status: superseded
+superseded-by: decision-0007
 owner: hematenergi
 last-verified: 2026-10-10
 ---
 
 # Keep Fragment's skills.sh presence while its catalog is stale
+
+**Superseded by [decision 0007](0007-restore-skills-sh-fragment-slug.md).**
 
 ## Context
 

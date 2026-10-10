@@ -5,13 +5,10 @@
 Install the onboarding skill with the skills CLI:
 
 ```bash
-npx skills add hematenergi/fragment --skill adopt-fragment
+npx skills add hematenergi/fragment --skill fragment
 ```
 
-[Fragment on skills.sh](https://www.skills.sh/hematenergi/fragment) · [View the adopt-fragment skill source](https://raw.githubusercontent.com/hematenergi/fragment/main/skills/adopt-fragment/SKILL.md).
-
-The skills.sh repository listing still shows the older `fragment` entry; the
-install command above selects the current `adopt-fragment` skill.
+[Install Fragment on skills.sh](https://www.skills.sh/hematenergi/fragment/fragment) · [View the Fragment skill source](https://raw.githubusercontent.com/hematenergi/fragment/main/skills/fragment/SKILL.md).
 The skill guides your agent through adding the full Fragment harness while
 preserving files already in your repository.
 
