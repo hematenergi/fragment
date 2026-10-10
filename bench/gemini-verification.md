@@ -34,6 +34,12 @@ The earlier session also recorded three 503 responses and a 15-second client tim
 
 Verified 2026-10-10, 16:37 WIB using the existing `linux/arm64` image `sha256:1dc5bcac894ca20e094cb9c71c626fc3cc350d005dbdc853aae46c040d4f45b9`. A clean clone of Medulla snapshot `01667b95454663848f193cd84e3fb055507035b0` was checked out detached; Git reported no changes. `npm ci` exited 0 in the pinned image. `npm test` then exited 0 with container networking disabled: 1,304 unit tests and 369 integration tests passed, none failed or skipped. The image remains available; the test container was ephemeral and removed. This was environment validation, not a benchmark run, and no model call received repository content.
 
+The preceding “no model call” statement is scoped to the environment-check timestamp; the later `countTokens` transmission is recorded below.
+
+## First data-bearing preflight
+
+At 2026-10-10 17:08 WIB, the frozen runner started condition-B calibration attempt `medulla-b-calibration-01` from a clean workspace at the recorded Medulla snapshot. The first `countTokens` request carried the onboarding material and returned HTTP 400 with API status `INVALID_ARGUMENT`. No `generateContent` request was made; there is no dry-run result or `N`. The private log retains the request/response, without authorization headers or key material. The attempt stopped and was not retried, per the frozen invalid-request rule. The run wrapper labeled the end state `infrastructure-incomplete`; the public record keeps the API status distinct from any model outcome.
+
 ## Sources
 
 - [Model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash)

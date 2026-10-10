@@ -18,9 +18,11 @@ last-verified: 2026-10-10
 Feature PR #2 merged as `5f13f7b`. The extraction prompt is committed and
 pushed. The original GPT benchmark remains frozen. The owner authorized a
 separate Gemini Free-tier benchmark after its data-use terms were disclosed;
-its provider-specific protocol and extraction prompt are now recorded. Generic
-probes have succeeded, but service availability is intermittent. No repository
-content has been sent and no benchmark run data exists.
+its provider-specific protocol, extraction prompt, and harness are pushed. The
+first condition-B preflight transmitted Medulla onboarding content to Gemini
+`countTokens` and returned HTTP 400 `INVALID_ARGUMENT`; no `generateContent`,
+dry run, score, or `N` resulted. The frozen protocol stops on invalid requests,
+so no retry or harness/spec change has been made.
 
 ## Active fragment
 
@@ -31,9 +33,9 @@ remains parked for the original frozen GPT protocol. The new Gemini track is
 defined separately in `FragmentBenchmarkSpec-Gemini.md`. Its medulla
 questions/key/task are drafted privately against snapshot
 `01667b95454663848f193cd84e3fb055507035b0`; the shared Linux/arm64 container
-and clean Medulla test result are recorded from the earlier run and must be
-confirmed in the final environment before dry run. No Gemini repository
-content or benchmark run data exists.
+and clean Medulla test result are recorded. One private condition-B onboarding
+preflight reached `countTokens` and failed with HTTP 400 `INVALID_ARGUMENT`;
+there is no generation, dry run, score, or calibrated `N`.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -80,6 +82,7 @@ content or benchmark run data exists.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 09 · condition-B preflight sent onboarding docs to Gemini `countTokens` and received HTTP 400 `INVALID_ARGUMENT`; no generation or calibration value exists, so stopped per frozen protocol · next: owner reviews the invalid-request evidence before any new benchmark revision.
 - 2026-10-10 · GPT-6 / Codex · 09 · pushed frozen Gemini harness/system prompt/tool allowlist as `e05a5b9`; local and remote SHAs match, the key stayed ignored, and no repository content has been sent · next: record the freeze anchor and run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · repaired the Gemini harness so onboarding, quiz, and task share one transcript; enforced the onboarding cap and per-run edit paths; harness self-check and all 147 repository tests pass · next: push the frozen harness/system prompt, then run the condition-B Medulla calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · confirmed the AI Studio key project remains Free tier; clean Medulla snapshot passed npm ci and 1,304 unit + 369 integration tests in the pinned image with test networking disabled · next: freeze benchmark harness before calibration.
