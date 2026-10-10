@@ -1,7 +1,7 @@
 ---
 id: plan-14
 title: "14 — keep Fragment discoverable on skills.sh"
-status: in-progress
+status: done
 owner: hematenergi
 last-verified: 2026-10-10
 depends-on: [13]
@@ -32,14 +32,14 @@ As of 2026-10-10, `https://www.skills.sh/hematenergi/fragment` returns a reposit
 - [x] Keep the working install command and canonical source link beside it; explain that the catalog entry is stale.
 - [x] Check the live top ten and the official leaderboard telemetry documentation; report organic discovery steps without manufacturing installs.
 - [x] Run the repository suite and docs guard; inspect the final diff.
-- [ ] Publish the public-page changes and verify the live homepage and README.
+- [x] Publish the public-page changes and verify the live homepage and README.
 
 ## Done when
 
 - [x] All three public install surfaces link to the Fragment repository listing on skills.sh and preserve the current install path.
 - [x] The stale catalog state is described accurately, with no link to the unavailable `adopt-fragment` detail route.
 - [x] Local validation passes.
-- [ ] The merged homepage and README show the restored skills.sh link and stale-catalog note.
+- [x] The merged homepage and README show the restored skills.sh link and stale-catalog note.
 
 ## Traps
 
@@ -64,4 +64,5 @@ Changing skills.sh catalog data, generating install telemetry, splitting the ski
 
 ## Session log
 
+- 2026-10-10 · GPT-6 / Codex · 14 · merged PR #12 (`2b1f068`), Pages deploy `38065113487` succeeded, and live homepage plus GitHub README show the restored skills.sh link and stale-catalog note · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 14 · restored the skills.sh repository link and current install/source guidance across README, INSTALL.md, and homepage; reviewed the live all-time top ten and official telemetry rules; 150 tests and docs guard passed · next: publish the link restoration and verify the live homepage.
