@@ -30,17 +30,18 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 - `FragmentBenchmarkSpec.md` and `bench/extract-prompt.md` remain frozen and unchanged.
 - The Gemini model endpoint has returned successful generic probes, but availability is intermittent (503s/timeouts). No repo content has been sent and no dry run or scored run exists.
 - Gemini 3.8 Flash stable alias and `thinkingLevel=low` are pinned in the new spec. Exact dated backend snapshot and active quota remain unconfirmed.
-- The shared Linux/arm64 image and clean Medulla tests passed previously at snapshot `01667b95454663848f193cd84e3fb055507035b0`; the current final environment still needs confirmation before dry run.
+- The separate harness now carries one conversation across onboarding, quiz, and task, preflights the half-budget onboarding boundary, and restricts edits to per-run paths. It aborts if the first condition-B prompt exceeds 80% of context; the calibration safety ceiling is 10,000,000 cumulative input tokens.
+- The existing Linux/arm64 image was rechecked at snapshot `01667b95454663848f193cd84e3fb055507035b0`; `npm ci` and network-disabled `npm test` passed in a clean clone (1,304 unit + 369 integration).
 - Fragment v0.6 features are implemented and merged; GitHub v0.6.0 release is not published.
 
 ## Work
 
 - [x] Record owner authorization and create a distinct Gemini model-verification report without exposing the key.
 - [x] Freeze a provider-specific protocol and extraction prompt without changing the original GPT artifacts.
-- [ ] Freeze the exact agent system prompt, tool schemas, and local command allowlist before dry run.
+- [ ] Freeze and push the exact agent system prompt, tool schemas, run-command allowlist, and per-run edit allowlist before dry run.
 - [x] Commit and push the new protocol, extraction prompt, and system prompt before sending repository content to Gemini.
-- [ ] Reconfirm Free Tier/no billing, final container availability, and clean Medulla test results.
-- [ ] Verify the private Medulla questions/key/task map to the recorded baseline snapshot and v0.5.0 procedure.
+- [x] Reconfirm Free Tier/no billing, final container availability, and clean Medulla test results.
+- [x] Verify the private Medulla questions/key/task map to the recorded baseline snapshot and v0.5.0 procedure.
 - [ ] Run one B-condition Medulla dry run and set `N` using the frozen rule; retain as calibration only.
 - [ ] Clone Draupnir in the final container, record its SHA, and verify tests.
 - [ ] Fill and commit only Gemini prompt placeholders; mechanically extract and freeze the Draupnir KB.
@@ -67,6 +68,8 @@ The original benchmark remains frozen to a GPT model whose API access is unavail
 ## Validation
 
 ```bash
+rtk node --check bench/gemini-runner.mjs
+rtk node bench/gemini-runner.mjs --self-test
 rtk bash tests/run.sh
 rtk bash scripts/docs-check.sh
 ```
@@ -79,5 +82,7 @@ Changing the frozen GPT benchmark, adopter outreach, v0.7 work, or changing ship
 
 ## Session log
 
+- 2026-10-10 · GPT-6 / Codex · 09 · fixed Gemini run-history carryover, onboarding budget enforcement, and per-run write fencing; runner self-check and all 147 Fragment tests pass · next: freeze and push the harness, then run the B-condition Medulla calibration.
+- 2026-10-10 · GPT-6 / Codex · 09 · rechecked AI Studio Free tier and validated the pinned image with a clean Medulla clone; `npm ci` passed and 1,304 unit + 369 integration tests passed offline · next: freeze tool schemas and command allowlist before calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · pushed the frozen Gemini protocol/prompt commit `c44b2e5` and verified the remote SHA matches; no repo content sent · next: confirm container/test state and freeze harness before calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · owner authorized a separate Gemini track; recorded successful generic probes, Free Tier terms, and separate protocol/prompt without touching frozen artifacts · next: validate and push protocol before sending repository content or running calibration.

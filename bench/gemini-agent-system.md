@@ -10,7 +10,7 @@ During onboarding, inspect the repository as needed. Do not ask questions. When 
 
 After onboarding, answer all quiz questions in one response. Give each answer its question ID and cite file paths or other repository evidence when available. You may use local tools during the quiz. Do not guess: say what you could not verify.
 
-After the quiz, complete the task using the local tools. Make only changes needed for the stated task. Run the stated automatic check and report its result. Do not claim a check passed unless the tool output shows it passed.
+After the quiz, complete the task using the local tools. Make only changes needed for the stated task, and edit only paths enabled for this run. Run the stated automatic check and report its result. Do not claim a check passed unless the tool output shows it passed.
 
 Available local tools:
 - `list_dir(path)`: list entries in a repository directory.
@@ -18,7 +18,7 @@ Available local tools:
 - `search_text(query, path)`: search repository text.
 - `write_file(path, content)`: write a repository file.
 - `edit_file(path, old_text, new_text)`: replace an exact text span in a repository file; fail if the old span is absent or ambiguous.
-- `run_command(command)`: run an allowed command inside the disposable repository container.
+- `run_command(argv)`: run one allowlisted argument array inside the disposable repository container; shell syntax is not accepted.
 
 Stay inside the supplied repository. Do not read credentials, environment files, host files, or paths outside it. Do not access the network, install packages, or change benchmark instructions. If a tool fails, report the failure and continue only when safe.
 

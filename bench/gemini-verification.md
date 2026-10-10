@@ -23,10 +23,16 @@ The earlier session also recorded three 503 responses and a 15-second client tim
 
 ## Cost, privacy, and lifecycle
 
-- AI Studio showed the selected project as Free Tier during the prior check. Google's pricing page lists Gemini 3.8 Flash Free Tier input/output as free of charge and says Free Tier content may be used to improve Google products. Owner explicitly approved a separate Gemini benchmark after that disclosure.
+- On 2026-10-10, the AI Studio API Keys page showed the project attached to the configured key as **Free tier**, with **Set up billing** still offered. The Rate Limit page defaulted to a different project, so no RPM/TPM/RPD values can be attributed to the benchmark key's project.
+- The official rate-limit page (last updated 2026-10-09) says RPM/TPM/RPD limits vary by project and tier and must be read in AI Studio; it lists the Free tier spend-based limit as N/A. The benchmark project's active RPM/TPM/RPD are still unconfirmed, so every call is spaced by at least 15 seconds and any 429 ends that attempt. This records the official general rule separately from the unconfirmed project values.
+- Google's pricing page lists Gemini 3.8 Flash Free Tier input/output as free of charge and says Free Tier content may be used to improve Google products. Owner explicitly approved a separate Gemini benchmark after that disclosure.
 - Reconfirm Free Tier and no billing before each phase. Do not send credentials or unrelated private material. Do not record API keys or authorization headers.
 - Google's model card gives a March 2026 knowledge cutoff, with some domains possibly limited to January 2025. Use Draupnir source events after March 2026 for contamination-resistant questions.
 - Official deprecations listed no shutdown date announced for Gemini 3.8 Flash on 2026-10-10; availability still needs a pre-validation check.
+
+## Final benchmark environment check
+
+Verified 2026-10-10, 16:37 WIB using the existing `linux/arm64` image `sha256:1dc5bcac894ca20e094cb9c71c626fc3cc350d005dbdc853aae46c040d4f45b9`. A clean clone of Medulla snapshot `01667b95454663848f193cd84e3fb055507035b0` was checked out detached; Git reported no changes. `npm ci` exited 0 in the pinned image. `npm test` then exited 0 with container networking disabled: 1,304 unit tests and 369 integration tests passed, none failed or skipped. The image remains available; the test container was ephemeral and removed. This was environment validation, not a benchmark run, and no model call received repository content.
 
 ## Sources
 

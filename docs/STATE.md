@@ -80,6 +80,8 @@ content or benchmark run data exists.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-10 · GPT-6 / Codex · 09 · repaired the Gemini harness so onboarding, quiz, and task share one transcript; enforced the onboarding cap and per-run edit paths; harness self-check and all 147 repository tests pass · next: push the frozen harness/system prompt, then run the condition-B Medulla calibration.
+- 2026-10-10 · GPT-6 / Codex · 09 · confirmed the AI Studio key project remains Free tier; clean Medulla snapshot passed npm ci and 1,304 unit + 369 integration tests in the pinned image with test networking disabled · next: freeze benchmark harness before calibration.
 - 2026-10-10 · GPT-6 / Codex · 09 · pushed protocol/prompt commit `c44b2e5` to `codex/v06-benchmark-resume`; remote SHA matches and no repo content has been sent · next: verify container/tests and freeze harness before dry run.
 - 2026-10-10 · GPT-6 / Codex · 09 · owner authorized a separate Gemini benchmark; recorded successful generic probes, Free Tier terms, and a separate protocol/prompt without changing the frozen GPT artifacts · next: validate and push the new protocol before sending repo content or running calibration.
 - 2026-10-10 · GPT-6 / Codex · 07 · checked the owner-configured Gemini key without exposing it: model metadata returned HTTP 200/version 3.0, all listed projects showed Free tier, and three `gemini-3.8-flash` generation pings returned HTTP 503; no repo content or benchmark run data was sent/created · next: retry only after service capacity recovers and preserve the frozen GPT-5.4 Mini pin unless the owner authorizes a new protocol.
