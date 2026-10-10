@@ -219,6 +219,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
 /* ---------- Transkrip: inti hero ---------- */
 
 .transcript { display: grid; gap: 14px; }
+.transcript-label {
+  margin: 0;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
 .turn {
   padding: 18px 20px;
@@ -462,6 +469,9 @@ section + section { border-top: 1px solid var(--rule); }
   font-size: clamp(17px, 1.5vw, 19px);
   color: var(--ink-2);
 }
+
+.install-skill-copy { margin: 0 0 10px; color: var(--ink-2); }
+.install-skill-links { margin: -8px 0 28px; }
 
 .install-prompt {
   margin: 0 0 24px;

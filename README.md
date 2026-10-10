@@ -14,6 +14,7 @@
 
 <p align="center">
   <a href="#install">Install</a> ·
+  <a href="INSTALL.md">Agent install guide</a> ·
   <a href="#production-evidence">Production evidence</a> ·
   <a href="CASE-STUDY.md">Full case study</a>
 </p>
@@ -27,6 +28,16 @@ Fragment is a small continuity harness around your coding agent. It stores proje
 It works with the agent you already use. It does not run the model or decide whether your code is correct.
 
 ## Install
+
+For the install workflow as an agent skill:
+
+```bash
+npx skills add hematenergi/fragment --skill adopt-fragment
+```
+
+[View the skill on skills.sh](https://www.skills.sh/hematenergi/fragment/adopt-fragment) · [Other agent install paths](INSTALL.md)
+
+The skill guides an agent through adopting Fragment. To install the full Bash harness directly, use:
 
 Ask your coding agent:
 
@@ -85,7 +96,7 @@ Both repos are run by Fragment's author (n=2). This shows the shared guard fitti
 ## Learn more
 
 - [Agent protocol](docs/AGENT-PROTOCOL.md) · [continuity and migration](docs/continuity.md)
-- [Filled-in example](examples/online-shop/START-HERE.md)
+- [Filled-in example](examples/online-shop/START-HERE.md) · [agent install guide](INSTALL.md)
 - [Changelog](CHANGELOG.md) · [all documents](docs/README.md)
 
 ## License

@@ -1,0 +1,6 @@
+{
+  "name": "adopt-fragment",
+  "version": "0.6.0",
+  "description": "Install or update the Fragment continuity harness in an existing repository.",
+  "skills": "./skills/"
+}

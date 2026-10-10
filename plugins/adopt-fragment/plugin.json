@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "adopt-fragment",
+  "version": "0.6.0",
+  "description": "Install or update the Fragment continuity harness in an existing repository.",
+  "author": {
+    "name": "hematenergi",
+    "url": "https://github.com/hematenergi"
+  },
+  "homepage": "https://hematenergi.github.io/fragment/",
+  "repository": "https://github.com/hematenergi/fragment",
+  "license": "MIT",
+  "keywords": ["agent-skills", "project-memory", "continuity"]
+}

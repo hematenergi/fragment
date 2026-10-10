@@ -1,0 +1,20 @@
+{
+  "name": "fragment",
+  "interface": {
+    "displayName": "Fragment"
+  },
+  "plugins": [
+    {
+      "name": "adopt-fragment",
+      "source": {
+        "source": "local",
+        "path": "./plugins/adopt-fragment"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

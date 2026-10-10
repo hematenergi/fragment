@@ -1,0 +1,17 @@
+{
+  "name": "fragment",
+  "owner": {
+    "name": "hematenergi"
+  },
+  "plugins": [
+    {
+      "name": "adopt-fragment",
+      "source": "./plugins/adopt-fragment",
+      "description": "Install or update the Fragment continuity harness in an existing repository.",
+      "version": "0.6.0",
+      "author": {
+        "name": "hematenergi"
+      }
+    }
+  ]
+}
