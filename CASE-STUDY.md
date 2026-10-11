@@ -1,12 +1,19 @@
 # Case study — the repo this was extracted from
 
-Fragment was not designed and then tried. It was extracted from a private repo
-after it had already survived a hard week. This page is what the git history of
-that repo actually shows, so you can judge the claim rather than take it.
+**The result:** in all seven of their commits, a second contributor followed
+the same three-file handoff without reminders or a shared chat. Seventy-four
+minutes after the guard went into CI, an ordinary rename broke three document
+rules; CI caught all three within minutes.
 
-The repo is private and not mine alone to publish, so what follows is commit
-SHAs, timestamps and shapes — not contents. Everything here is reproducible
-from `git log` by anyone with access.
+This supports a narrow claim: repo-based handoffs can carry work between
+contributors, and a guard can catch missing documentation updates. It does not
+show time or token savings, application-code correctness, or adoption beyond
+two people. Section 6 adds evidence from two production repos, both run by the
+author.
+
+Fragment was extracted after this practice survived a hard week. The source repo
+is private, so the evidence below is commit SHAs, timestamps, and change shapes
+— not project contents. Anyone with access can reproduce it from `git log`.
 
 **The setting.** Two people. One on macOS driving Claude Code, one on Windows
 driving Codex. They had never worked in the same session. 25 commits over 18

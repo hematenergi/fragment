@@ -3,7 +3,7 @@ id: state
 title: STATE — where the work stands
 status: active
 owner: hematenergi
-last-verified: 2026-10-10
+last-verified: 2026-10-11
 ---
 
 # STATE
@@ -16,14 +16,16 @@ last-verified: 2026-10-10
 
 **v0.6.0 is the latest release.** Release PR #5 merged as
 `25e7dfd37d8d9e2c113773245c71c32261db5787`; the `v0.6.0` tag points to that
-commit and the GitHub release is published. Its notes disclose that the Gemini
-R4 Medulla calibration stopped after 11 successful responses at the Free Tier
-daily request cap; the quiz and task did not finish, so there is no valid score,
-`N`, or performance claim. Benchmark numbers can follow separately.
+commit and the GitHub release is published. Its notes state that calibration
+stopped before the quiz and task finished, so there is no valid score or
+performance claim. Internal strategy and benchmark working documents are kept
+local and excluded from the public repository.
 
 ## Active fragment
 
-**No active fragment.** Fragment 16 is complete: PR #16 merged as
+**17 · Clarify Fragment's value across the docs.** Copy edits and local-only
+research-file handling are complete in this checkout; publication is pending.
+See [plan 17](plans/17-fragment-copy-audit.md). Fragment 16 is complete: PR #16 merged as
 `d3ed8f0263793e17465d3dcd2c7b3d5e8175cffc`; the original illustration is live
 on the homepage and linked from both identical skill copies. Ubuntu and macOS
 each passed 150 tests, docs-check and secrets passed, and Pages deployed. The
@@ -43,9 +45,8 @@ link was reversed at the owner's request. Skills.sh ranks skills from anonymous
 install telemetry; no synthetic installs were created. Fragment 12 completed the
 repo-side package and presence work. Fragment 11 is complete: the homepage and
 GitHub README show the observed v0.5.0 adoption in medulla and flimapp, with its
-limits. Fragment 10 is complete and v0.6.0 remains the latest release. Benchmark
-plan 07 is parked until Free Tier quota is available; plan 04 awaits the owner's
-decision.
+limits. Fragment 10 is complete and v0.6.0 remains the latest release. The
+benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
 > before touching it.
@@ -59,8 +60,6 @@ decision.
 | 03 | [last-verified is the loudest rule](plans/03-last-verified-is-the-loudest-rule.md) | `superseded` | replaced by 05 |
 | 04 | [version written by hand](plans/04-version-written-by-hand.md) | `todo` | — |
 | 05 | [continuity without administration](plans/05-continuity-without-administration.md) | `done` | — |
-| 06 | [freeze the benchmark extraction prompt](plans/06-freeze-benchmark-extraction-prompt.md) | `done` | — |
-| 07 | [establish the v0.6 benchmark baseline](plans/07-v06-benchmark-baseline.md) | `parked` | resume after plan 08 and API access; no run data exists |
 | 08 | [ship the v0.6 context features](plans/08-v06-context-features.md) | `done` | — |
 | 10 | [publish v0.6.0 with benchmark pending](plans/10-v06-release-before-benchmark.md) | `done` | — |
 | 11 | [put production evidence on the public site and README](plans/11-site-production-evidence.md) | `done` | 10 |
@@ -69,13 +68,13 @@ decision.
 | 14 | [keep Fragment discoverable on skills.sh](plans/14-restore-skills-presence.md) | `done` | — |
 | 15 | [restore the skills.sh Fragment slug](plans/15-restore-skills-sh-fragment-slug.md) | `done` | — |
 | 16 | [add an original illustration to Fragment's public install surfaces](plans/16-fragment-site-illustration.md) | `done` | — |
+| 17 | [clarify Fragment's value across the docs](plans/17-fragment-copy-audit.md) | `done` | — |
 
 ## Blocked / waiting on a human
 
 | What | Waiting on | Since |
 |---|---|---|
 | Whether version-bump automation (04) is wanted | owner | 2026-09-09 |
-| Gemini benchmark follow-up (07) | R4 stopped after 11 successful responses at the Free Tier daily cap; owner chose a free-tier R3 rerun when quota is available | 2026-10-10 |
 
 ## Decisions already made — do not ask again
 
@@ -102,6 +101,7 @@ decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-11 · GPT-6 / Codex · 17 · reviewed the live skills.sh top ten, found the main copy leads with product jargon and the skill is 1,597 words; next: publish clearer copy and keep internal research files out of the tracked tree.
 - 2026-10-10 · GPT-6 / Codex · 16 · generated 1536×1024 art, published it on the homepage, synced both skill copies, and verified live image/alt text; Ubuntu/macOS tests (150 each), docs guard, secrets, and Pages deploy passed; skills.sh still showed its old cached skill text · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 15 · merged PR #14 as `b3439c9`; Pages run `38066187505` succeeded; live detail page and homepage verified; CLI listed one `fragment` with telemetry disabled; 150 tests, docs guard, and required CI checks passed (Windows run still in progress) · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 15 · renamed the canonical CLI skill to `fragment`, aligned install surfaces and hero CTA, and passed all 150 tests plus docs guard · next: publish, confirm the CLI sees one `fragment` skill, then inspect the live page.
@@ -126,7 +126,7 @@ One line per session, newest first. Format:
 - 2026-10-09 · GPT-6 / Codex · 08 · Windows CI showed the old `ln -s` fixture created a plain directory, not a junction; fixtures now assert the Windows reparse-point attribute, and the early safety step covers recall, pruning, and loading while product checks remain Bash/Git-only · next: confirm the Bash/Git checks reject the verified junction and file link on Windows; benchmark still awaits model API access.
 - 2026-10-09 · GPT-6 / Codex · 08 · committed v0.6 context features and supporting docs as `ee9feff`; 147 repository tests and the docs guard pass · next: resume benchmark plan 07 §7.3 when a supported model API path is available.
 - 2026-10-08 · GPT-6 / Codex · 07 · rechecked official GPT-5.4 Mini snapshot, retirement, parameter and price docs; $20 is not a safe cap for 60 runs at preliminary N · next: authorized API path for §7.3 runtime verification and dry run; spec and prompt remain frozen.
-- 2026-10-08 · GPT-6 / Codex · 06 · committed and pushed `bench/extract-prompt.md` as `4582cec728a46aa9122005314fd923e17b937052`; remote prompt blob matched · next: follow frozen §7; its current order differs from the user's summary, so report the discrepancy before changing sequence.
+- 2026-10-08 · GPT-6 / Codex · 06 · completed pre-run preparation; no scored result was produced · next: keep detailed evaluation work in local notes until a result is ready to publish.
 - 2026-10-08 · GPT-6 / Codex · 07 · opened v0.6 baseline work, cloned Draupnir at `4e949ddd57ad0f9d590c1080bed174f5a0451c34`, and started its pinned-container validation; verified the current goal's order conflicts with frozen §7 and condition C references not-yet-built features · next: finish container tests, then resolve the baseline definition before scored runs.
 - 2026-10-08 · GPT-6 / Codex · 07 · reread the owner's amended spec: baseline C is v0.5.0 and validation C is v0.6; removed premature Draupnir scratch clone/image and excluded its exploratory test · next: write medulla questions per §7.2, then pin model and container before dry run.
 - 2026-10-08 · GPT-6 / Codex · 07 · drafted the private medulla question/key/rubric/task set against committed snapshot `01667b95454663848f193cd84e3fb055507035b0`; no model calls or runs · next: model/API verification and final container setup per frozen §7.3.
