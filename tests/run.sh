@@ -388,19 +388,19 @@ printf '%s\n' "$out" | grep -q 'too old to carry a version' \
   || bad "  ... unversioned copy was not recognised"
 
 # Upgrade from a clean, recognised guard. Give a disposable copy of the
-# installer the next version number: the target remains a real 0.6.1 install,
+# installer the next version number: the target remains a real 0.6.2 install,
 # so this proves the same checksum gate an actual later release will use.
 upgrader="$TMP/upgrader"; mkdir -p "$upgrader"
 cp "$ROOT/install.sh" "$upgrader/install.sh"
 cp -R "$ROOT/template" "$upgrader/template"
-perl -pi -e 's/^FRAGMENT_VERSION="0\.6\.1"$/FRAGMENT_VERSION="0.7.0"/ or die "missing version stamp" if /^FRAGMENT_VERSION=/' \
+perl -pi -e 's/^FRAGMENT_VERSION="0\.6\.2"$/FRAGMENT_VERSION="0.7.0"/ or die "missing version stamp" if /^FRAGMENT_VERSION=/' \
   "$upgrader/template/scripts/docs-check.sh"
 printf '\n# simulated next pruning-helper release\n' >> "$upgrader/template/scripts/state-prune.sh"
 # This simulation recognises the source guard as its preceding version. Real
 # release fingerprints in install.sh remain immutable; never update a released
 # checksum merely because the development worktree changes.
 read -r test_sum test_bytes _ < <(cksum "$ROOT/template/scripts/docs-check.sh")
-perl -pi -e 's/0\.6\.1:[0-9]+:[0-9]+/0.6.1:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.6\.1:/' "$upgrader/install.sh"
+perl -pi -e 's/0\.6\.2:[0-9]+:[0-9]+/0.6.2:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.6\.2:/' "$upgrader/install.sh"
 
 d="$TMP/upgrade-dry"; mkdir -p "$d"; git -C "$d" init -q .
 bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
@@ -434,7 +434,7 @@ printf '\n# team-specific guard rule\n' >> "$d/scripts/docs-check.sh"
 before=$(cksum "$d/scripts/docs-check.sh")
 out=$( bash "$upgrader/install.sh" --upgrade "$d" 2>&1 ); c=$?
 after=$(cksum "$d/scripts/docs-check.sh")
-[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.6.1' \
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.6.2' \
   && [ "$before" = "$after" ] \
   && ok "--upgrade never overwrites a customised guard" \
   || bad "--upgrade overwrote or failed to name a customised guard"

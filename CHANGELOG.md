@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+## 0.6.2 — 2026-10-11
+
+### Fixed
+
+- Automatic STATE pruning now finds dated entries across all sections, even
+  when handoff sections follow the session log.
+- If dated history alone cannot meet the budget, rows linked to plans whose
+  matching frontmatter status is `done` or `superseded` can be archived, then
+  `parked` rows if needed. Active, missing and mismatched plans stay hot; all
+  removed text remains in the linked archive.
+- Keep the newest dated record hot while older history and terminal plan rows
+  can satisfy the 12,000-byte budget.
+- Rebase relative Markdown links in archived entries so links remain connected
+  in the vault graph.
+
+### Benchmark status
+
+The benchmark remains incomplete. There is no valid score or
+tokens-to-competent result, and this release makes no performance claim.
+
 ## 0.6.1 — 2026-10-11
 
 ### Fixed

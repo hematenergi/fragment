@@ -84,10 +84,14 @@ The guard inspects checkout files for structure; committed evidence comes from
 Git objects, so an unstaged handoff cannot satisfy CI.
 
 After a successful local close check, Fragment automatically keeps STATE within
-12,000 UTF-8 bytes. It archives the oldest dated session records, preserves the
-full text in `docs/_attic/`, and links that archive from hot STATE. This explicit
-Markdown edge keeps cold history discoverable in Obsidian Graph View and other
-link-based readers. CI, inventory and failed checks do not mutate adopter files.
+12,000 UTF-8 bytes. It archives dated records across all sections, then table
+rows whose `done` or `superseded` status matches the linked plan's frontmatter,
+then matching `parked` rows if needed. It preserves the full text in
+`docs/_attic/` and links that archive from hot STATE. The newest dated record
+stays hot while the other candidates can meet the budget. Relative Markdown
+links are rebased for the archive location, so they remain navigable in Obsidian
+Graph View and other link-based readers. CI, inventory and failed checks do not
+mutate adopter files.
 
 ```bash
 bash scripts/docs-check.sh
