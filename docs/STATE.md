@@ -108,6 +108,7 @@ Archived session history: [open archive](_attic/STATE-session-archive.md)
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-11 · GPT-6 / Codex · 18 · first CI run exposed a fixture inheriting `CI=true`; local-close simulations now clear runner flags while CI comparison remains separately tested · next: rerun all checks, then publish v0.6.1.
 - 2026-10-11 · GPT-6 / Codex · 18 · implemented automatic 12,000-byte STATE pruning with a linked, recoverable archive; 167 tests, ShellCheck, docs guard and Gitleaks pass on macOS · next: open PR, wait for every OS check, then publish v0.6.1.
 - 2026-10-11 · GPT-6 / Codex · 17 · merged PR #18 (`ae5f20f`), publishing clearer copy and removing internal research Markdown from the current public tree; docs-check, secrets, and Ubuntu passed while macOS/Windows continued after merge.
 - 2026-10-11 · GPT-6 / Codex · 17 · reviewed the live skills.sh top ten, found the main copy leads with product jargon and the skill is 1,597 words; next: publish clearer copy and keep internal research files out of the tracked tree.

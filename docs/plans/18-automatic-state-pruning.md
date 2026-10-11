@@ -68,4 +68,5 @@ Changing the frozen benchmark or its results, scoring document-link importance, 
 
 ## Session log
 
+- 2026-10-11 · GPT-6 / Codex · 18 · first CI run exposed a fixture inheriting `CI=true`; local-close simulations now clear runner flags while CI comparison remains separately tested · next: rerun all checks, then publish v0.6.1.
 - 2026-10-11 · GPT-6 / Codex · 18 · implemented automatic 12,000-byte STATE pruning with a linked, recoverable archive; 167 tests, ShellCheck, docs guard and Gitleaks pass on macOS · next: open PR, wait for all OS checks, then publish v0.6.1.

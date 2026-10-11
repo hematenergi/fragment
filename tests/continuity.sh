@@ -2,7 +2,8 @@
 # Sourced by run.sh: regression scenarios from the mature-adopter proposal.
 # shellcheck disable=SC2154,SC2034
 cfixture() { d="$TMP/continuity-$1"; cp -R "$base" "$d"; }
-session() { OUT=$(cd "$d" && bash scripts/docs-check.sh "$@" 2>&1); CODE=$?; }
+# These cases model a local close check even when the suite itself runs in CI.
+session() { OUT=$(cd "$d" && CI='' GITHUB_ACTIONS='' bash scripts/docs-check.sh "$@" 2>&1); CODE=$?; }
 verdict() {
   if [ "$CODE" -eq "$1" ] && has "$3"; then ok "$2"; else bad "$2 (exit $CODE)"; dump 12; fi
 }
