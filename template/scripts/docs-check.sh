@@ -23,7 +23,7 @@ set -uo pipefail
 # Stamped so an installed copy can say where it came from. Without this a repo
 # that adopted Fragment has no way to answer "which version is this?", and
 # neither does anyone helping them.
-FRAGMENT_VERSION="0.6.1"
+FRAGMENT_VERSION="0.6.2"
 
 for arg in "$@"; do
   case "$arg" in
@@ -593,7 +593,7 @@ if [ "$INVENTORY" != 1 ] && [ "$HAVE_GIT" = 1 ] \
   if [ "$state_bytes" -gt 12000 ]; then
     if checkout_path scripts/state-prune.sh && [ -f scripts/state-prune.sh ] && [ ! -L scripts/state-prune.sh ]; then
       read -r prune_sum prune_bytes _ < <(cksum scripts/state-prune.sh)
-      if [ "$prune_sum:$prune_bytes" = "4157441008:11277" ]; then
+      if [ "$prune_sum:$prune_bytes" = "4079550849:20033" ]; then
         prune_output=$(DOCS_ROOT="$DOCS" STATE_FILE="$STATE" \
           bash scripts/state-prune.sh --budget 12000 --apply 2>&1)
         prune_status=$?
@@ -603,7 +603,7 @@ if [ "$INVENTORY" != 1 ] && [ "$HAVE_GIT" = 1 ] \
           err "automatic STATE pruning could not complete: $prune_output"
         fi
       else
-        err 'automatic STATE pruning skipped: scripts/state-prune.sh is customized or from an unrecognized release; merge the v0.6.1 helper deliberately'
+        err 'automatic STATE pruning skipped: scripts/state-prune.sh is customized or from an unrecognized release; merge the v0.6.2 helper deliberately'
       fi
     else
       err 'automatic STATE pruning unavailable: scripts/state-prune.sh is missing or linked outside the checkout; run the Fragment installer upgrade'

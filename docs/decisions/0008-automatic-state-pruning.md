@@ -1,13 +1,18 @@
 ---
 id: decision-0008
 title: Automatic STATE pruning at local close
-status: active
+status: superseded
+superseded-by: decision-0009
 owner: hematenergi
 last-verified: 2026-10-11
 tags: [state, pruning, archive, continuity]
 ---
 
 # Automatic STATE pruning at local close
+
+**Superseded by [decision 0009](0009-prune-state-across-sections.md),** which
+keeps this trigger and budget but covers dated entries throughout STATE and
+explicitly terminal plan rows.
 
 ## Context
 

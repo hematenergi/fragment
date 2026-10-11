@@ -96,3 +96,9 @@
 <!-- session-record:4279461228 290 -->
 - 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.
 
+<!-- session-record:3919304885 204 -->
+- 2026-10-10 · GPT-6 / Codex · 11 · verified v0.6.0 is live as the latest release and found the homepage still omitted the two-repo v0.5.0 adoption evidence · next: add it to the homepage and README.
+
+<!-- session-record:850897408 341 -->
+- 2026-10-10 · GPT-6 / Codex · 10 · prepared the v0.6.0 release candidate from merged feature PR #2, updated version references and the new guard fingerprint, and documented the incomplete Gemini benchmark without a performance claim · next: pass local and PR checks, merge, tag, and publish v0.6.0; benchmark numbers follow separately.
+

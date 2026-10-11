@@ -55,7 +55,7 @@ commands after it.
 Ask your coding agent:
 
 ```text
-Install Fragment v0.6.1 from https://github.com/hematenergi/fragment into this repository.
+Install Fragment v0.6.2 from https://github.com/hematenergi/fragment into this repository.
 Preserve existing files. Use only decisions supported by this repository and our conversation.
 Run bash scripts/docs-check.sh and leave unknowns as blockers instead of guessing.
 ```
@@ -63,7 +63,7 @@ Run bash scripts/docs-check.sh and leave unknowns as blockers instead of guessin
 Or install from Bash:
 
 ```bash
-git clone --depth 1 --branch v0.6.1 https://github.com/hematenergi/fragment
+git clone --depth 1 --branch v0.6.2 https://github.com/hematenergi/fragment
 bash fragment/install.sh /path/to/your/repo
 cd /path/to/your/repo
 bash scripts/docs-check.sh
@@ -89,7 +89,7 @@ CLAUDE.md / AGENTS.md → docs/AGENT-PROTOCOL.md → docs/STATE.md
 
 Fragment's checks use Bash and Git, with no runtime database, daemon, account, or model API.
 
-## Pick up the right context (v0.6.1)
+## Pick up the right context (v0.6.2)
 
 - Find relevant prior decisions and lessons with `bash scripts/recall.sh "query"`.
   It uses deterministic keyword matching—no model call or network access.

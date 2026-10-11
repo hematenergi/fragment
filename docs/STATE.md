@@ -14,19 +14,19 @@ last-verified: 2026-10-11
 
 ## Phase
 
-**v0.6.1 is the latest release.** PR #20 merged as
-`e97dad758a523b3cffe5864472629e311027a282`; tag `v0.6.1` points to that commit
-and the GitHub release is published. It adds automatic, date-ordered STATE
-archival at a 12,000-byte limit while preserving a link to the full history.
-The benchmark remains unscored, with no performance claim. Internal strategy
-and benchmark working documents remain local and excluded from the public repo.
+**v0.6.1 is the latest published release.** Fragment 19 prepares v0.6.2 to fix
+the Medulla adopter case: prune dated history across sections, then archive
+`done`/`superseded` rows and only needed `parked` rows. The 12,000-byte budget
+and linked history remain; the benchmark is unscored. Internal strategy and
+benchmark working documents remain local and excluded from the public repo.
 
 ## Active fragment
 
-**No active fragment. Fragment 18 is complete:** PR #20 merged as
-`e97dad758a523b3cffe5864472629e311027a282`; v0.6.1 is published and the Pages
-deploy succeeded. Ubuntu, macOS, Windows, docs-check and secrets checks all
-passed before merge. See [plan 18](plans/18-automatic-state-pruning.md).
+**Fragment 19 is in progress:** v0.6.1 failed on Medulla's multi-section STATE;
+the regression now passes in a disposable fixture and copied Medulla STATE.
+See [plan 19](plans/19-adopter-safe-state-pruning.md). Fragment 18 is complete:
+PR #20 merged as `e97dad758a523b3cffe5864472629e311027a282`; v0.6.1 is published
+and its Pages deploy succeeded. See [plan 18](plans/18-automatic-state-pruning.md).
 Fragment 17 is complete: PR #18 merged as
 `ae5f20f2d23d1bf9095f29de87a36e426bc6f1cb`; the public copy updates are live,
 and the internal research files are absent from the current tree. Docs-check,
@@ -76,6 +76,7 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 | 16 | [add an original illustration to Fragment's public install surfaces](plans/16-fragment-site-illustration.md) | `done` | — |
 | 17 | [clarify Fragment's value across the docs](plans/17-fragment-copy-audit.md) | `done` | — |
 | 18 | [make STATE pruning automatic and budget-driven](plans/18-automatic-state-pruning.md) | `done` | — |
+| 19 | [make automatic STATE pruning work for adopters](plans/19-adopter-safe-state-pruning.md) | `in-progress` | 18 |
 
 ## Blocked / waiting on a human
 
@@ -102,11 +103,15 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
   present the incomplete R4 calibration as a score or performance claim.
 - **STATE history pruning runs automatically after a successful local guard check.**
   See [decision 0008](decisions/0008-automatic-state-pruning.md).
+- **STATE pruning now spans sections and uses corroborated terminal plan rows.**
+  See [decision 0009](decisions/0009-prune-state-across-sections.md).
 
 ---
 
 ## Session log
 Archived session history: [open archive](_attic/STATE-session-archive.md)
+
+- 2026-10-11 · GPT-6 / Codex · 19 · fixed pruning across all sections and explicit terminal plan rows; Medulla copy reached 11,930 bytes from 52,780 without editing its repo · next: finish release checks and publish v0.6.2.
 
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
@@ -128,5 +133,3 @@ One line per session, newest first. Format:
 - 2026-10-10 · GPT-6 / Codex · 12 · closed superseded draft PR #4 after v0.6.0 shipped separately in PR #5; confirmed its Gemini benchmark work remains unscored and its branch is preserved; identified the duplicated `/fragment/fragment` skills.sh path · next: publish the distinct `adopt-fragment` skill and complete verified agent install surfaces.
 - 2026-10-10 · GPT-6 / Codex · 11 · merged PR #6 as `7ec46f0`; all five checks passed, Pages deploy run `38058193388` succeeded, the live homepage returned HTTP 200, and the README on `main` is 93 lines · next: resume benchmark plan 07 when Free Tier quota is available; plan 04 awaits the owner.
 - 2026-10-10 · GPT-6 / Codex · 11 · added source-backed v0.5.0 production evidence to the homepage and README, shortened README from 492 to 93 lines, and passed local preview (HTTP 200), 148 tests, and docs guard · next: publish both updates and verify the live homepage.
-- 2026-10-10 · GPT-6 / Codex · 11 · verified v0.6.0 is live as the latest release and found the homepage still omitted the two-repo v0.5.0 adoption evidence · next: add it to the homepage and README.
-- 2026-10-10 · GPT-6 / Codex · 10 · prepared the v0.6.0 release candidate from merged feature PR #2, updated version references and the new guard fingerprint, and documented the incomplete Gemini benchmark without a performance claim · next: pass local and PR checks, merge, tag, and publish v0.6.0; benchmark numbers follow separately.

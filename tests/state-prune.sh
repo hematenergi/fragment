@@ -171,4 +171,113 @@ grep -q 'oldest' "$REPO/docs/_attic/auto.md" || { printf 'FAIL: oldest record wa
 grep -Fq 'Archived session history: [open archive](_attic/auto.md)' "$REPO/docs/STATE-auto.md" || { printf 'FAIL: automatic archive is not linked from hot STATE\n'; exit 1; }
 printf '  ok    automatic budget pruning archives oldest dates and keeps the archive linked\n'
 
+# Adopter regression: session entries can live before later STATE sections,
+# and explicit terminal plan rows can be archived after dated history is spent.
+mkdir -p "$REPO/docs/plans"
+cat > "$REPO/docs/plans/01-done.md" <<'PLAN'
+---
+id: plan-done
+title: Done plan
+status: "done"
+owner: test
+last-verified: 2026-10-01
+---
+PLAN
+cat > "$REPO/docs/plans/02-parked.md" <<'PLAN'
+---
+id: plan-parked
+title: Parked plan
+status: parked
+reason: waiting on owner
+owner: test
+last-verified: 2026-10-02
+---
+PLAN
+cat > "$REPO/docs/plans/03-todo.md" <<'PLAN'
+---
+id: plan-todo
+title: Open plan
+status: todo
+owner: test
+last-verified: 2026-10-03
+---
+PLAN
+cat > "$REPO/docs/plans/04-mismatch.md" <<'PLAN'
+---
+id: plan-mismatch
+title: Status mismatch
+status: todo
+owner: test
+last-verified: 2026-10-04
+---
+PLAN
+cat > "$REPO/docs/STATE-adopter.md" <<'STATE'
+---
+id: state-adopter
+title: Adopter-shaped STATE
+status: active
+owner: test
+last-verified: 2026-10-08
+---
+
+# STATE
+
+## Snapshot
+
+Keep this active summary hot.
+
+## Session log
+
+- 2026-10-08 · agent · newest session stays hot
+- 2026-10-01 · agent · oldest session moves · xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  wrapped session evidence stays with its record
+  related plan: [open](plans/03-todo.md)
+  repository guide: [README](../README.md#install)
+
+## Handoff
+
+This section follows the session log and must remain in place.
+
+| # | Fragment | Status | Details |
+|---|---|---|---|
+| 01 | [Done](plans/01-done.md) | `done` | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx |
+| 02 | [Parked](plans/02-parked.md) | `parked` | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx |
+| 03 | [Open](plans/03-todo.md) | `todo` | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx |
+| 04 | [Mismatch](plans/04-mismatch.md) | `done` | this row contradicts its linked plan |
+STATE
+out=$(cd "$REPO" && STATE_FILE='docs/STATE-adopter.md' STATE_ARCHIVE_FILE='docs/_attic/adopter.md' \
+  bash scripts/state-prune.sh --budget 1400 --apply 2>&1) || {
+  printf 'FAIL: adopter-shaped STATE could not be pruned\n%s\n' "$out"; exit 1;
+}
+adopter_size=$(wc -c < "$REPO/docs/STATE-adopter.md" | tr -d '[:space:]')
+[ "$adopter_size" -le 1400 ] || { printf 'FAIL: adopter STATE remains over budget (%s)\n' "$adopter_size"; exit 1; }
+grep -q 'newest session stays hot' "$REPO/docs/STATE-adopter.md" || { printf 'FAIL: newest session was removed\n'; exit 1; }
+grep -q 'wrapped session evidence stays with its record' "$REPO/docs/_attic/adopter.md" || { printf 'FAIL: wrapped session evidence was lost\n'; exit 1; }
+grep -Fq '](../plans/03-todo.md)' "$REPO/docs/_attic/adopter.md" || { printf 'FAIL: archived session link no longer resolves\n'; exit 1; }
+grep -Fq '](../../README.md#install)' "$REPO/docs/_attic/adopter.md" || { printf 'FAIL: archived parent link or anchor no longer resolves\n'; exit 1; }
+grep -q 'This section follows the session log' "$REPO/docs/STATE-adopter.md" || { printf 'FAIL: fixed section after session log was lost\n'; exit 1; }
+grep -q 'plans/03-todo.md' "$REPO/docs/STATE-adopter.md" || { printf 'FAIL: active plan row was archived\n'; exit 1; }
+grep -q 'plans/04-mismatch.md' "$REPO/docs/STATE-adopter.md" || { printf 'FAIL: mismatched plan status was archived\n'; exit 1; }
+! grep -q 'plans/01-done.md' "$REPO/docs/STATE-adopter.md" || { printf 'FAIL: done plan row remains hot\n'; exit 1; }
+grep -q 'plans/02-parked.md' "$REPO/docs/STATE-adopter.md" || { printf 'FAIL: parked plan was pruned before needed\n'; exit 1; }
+grep -q 'plans/01-done.md' "$REPO/docs/_attic/adopter.md" || { printf 'FAIL: done plan row is missing from archive\n'; exit 1; }
+grep -Fq '](../plans/01-done.md)' "$REPO/docs/_attic/adopter.md" || { printf 'FAIL: archived plan row link no longer resolves\n'; exit 1; }
+! grep -q 'plans/02-parked.md' "$REPO/docs/_attic/adopter.md" || { printf 'FAIL: parked plan was archived while the budget could be met without it\n'; exit 1; }
+out=$(cd "$REPO" && STATE_FILE='docs/STATE-adopter.md' STATE_ARCHIVE_FILE='docs/_attic/adopter.md' \
+  bash scripts/state-prune.sh --budget 900 --apply 2>&1) || {
+  printf 'FAIL: parked-row fallback could not meet the tighter budget\n%s\n' "$out"; exit 1;
+}
+adopter_size=$(wc -c < "$REPO/docs/STATE-adopter.md" | tr -d '[:space:]')
+[ "$adopter_size" -le 900 ] || { printf 'FAIL: tighter adopter budget remains over limit (%s)\n' "$adopter_size"; exit 1; }
+! grep -q 'plans/02-parked.md' "$REPO/docs/STATE-adopter.md" || { printf 'FAIL: parked plan row was not archived when needed\n'; exit 1; }
+grep -q 'plans/02-parked.md' "$REPO/docs/_attic/adopter.md" || { printf 'FAIL: parked plan row is missing from fallback archive\n'; exit 1; }
+before_adopter_state=$(cksum "$REPO/docs/STATE-adopter.md")
+before_adopter_archive=$(cksum "$REPO/docs/_attic/adopter.md")
+out=$(cd "$REPO" && STATE_FILE='docs/STATE-adopter.md' STATE_ARCHIVE_FILE='docs/_attic/adopter.md' \
+  bash scripts/state-prune.sh --budget 900 --apply 2>&1)
+[ "$(cksum "$REPO/docs/STATE-adopter.md")" = "$before_adopter_state" ] \
+  && [ "$(cksum "$REPO/docs/_attic/adopter.md")" = "$before_adopter_archive" ] \
+  || { printf 'FAIL: adopter pruning changed files on a no-op rerun\n'; exit 1; }
+printf '  ok    adopter STATE prunes across sections, keeps parked rows until needed, and preserves active rows\n'
+
 printf 'GREEN — state-prune tests passed\n'

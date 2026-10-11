@@ -120,8 +120,10 @@ gitleaks detect --no-banner      # what CI runs; .gitleaks.toml explains the one
 ```
 
 After a successful local close check, `docs-check.sh` automatically keeps STATE
-within 12,000 UTF-8 bytes by archiving the oldest dated session entries. It
-preserves their full text in `docs/_attic/` and links that archive from STATE.
-CI comparisons, inventory runs and failed checks do not write adopter files.
+within 12,000 UTF-8 bytes. It archives dated entries throughout the document,
+then rows whose linked plan and status cell both confirm `done` or
+`superseded`, then `parked` rows if needed. It preserves the full text in
+`docs/_attic/` and links that archive from STATE. CI comparisons, inventory
+runs and failed checks do not write adopter files.
 The standalone `state-prune.sh` remains available for a deliberate preview or
 one-off maintenance; agents do not need a routine prune step.
