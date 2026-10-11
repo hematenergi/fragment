@@ -112,8 +112,6 @@ A new tool does **not** get a copy of the rules. Create its convention file, wri
 bash scripts/docs-check.sh
 bash scripts/docs-check.sh --inventory
 bash scripts/recall.sh "keywords"
-bash scripts/state-prune.sh --keep 20             # preview STATE history pruning
-bash scripts/state-prune.sh --keep 20 --apply     # archive older records
 bash scripts/load-context.sh --budget 12000 "keywords"
 ```
 
@@ -121,10 +119,12 @@ bash scripts/load-context.sh --budget 12000 "keywords"
 body matches. Ranking is a search aid, not an authority decision; read the
 source record. Legacy records without `tags` remain searchable.
 
-`state-prune.sh` previews by default. With `--apply`, it moves older dated
-session entries from the final level-two section to `docs/_attic/`, keeping the
-newest 20 unless `--keep` sets another positive count. The archive preserves the
-records; it is excluded from active indexing and checks.
+After a successful local close check, `docs-check.sh` automatically keeps STATE
+within 12,000 UTF-8 bytes by archiving the oldest dated session entries. It
+keeps the full records in `docs/_attic/` and adds a Markdown link from STATE so
+the cold history remains reachable. CI comparisons, inventory runs and failed
+checks do not write adopter files. The standalone `state-prune.sh` remains
+available for an explicit preview or one-off maintenance.
 
 `load-context.sh` always includes STATE first, then whole ranked decision/lesson
 files that fit. `--budget` is a conservative UTF-8 byte upper bound on the

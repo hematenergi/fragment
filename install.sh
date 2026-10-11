@@ -4,7 +4,7 @@
 #
 #   bash install.sh [target-repo]     (default: current directory)
 #   bash install.sh --dry-run [dir]   show what would be written, touch nothing
-#   bash install.sh --upgrade [dir]   update an unmodified known guard
+#   bash install.sh --upgrade [dir]   update unmodified known guard/prune helper
 #   bash install.sh --version
 set -uo pipefail
 
@@ -56,8 +56,19 @@ known_guard() {
     0.2.0:3601293120:18195|\
     0.3.0:3524956158:21571|\
     0.4.0:3777372876:21571|\
+    0.6.1:3699922095:28023|\
     0.6.0:1244829712:26463|\
     0.5.0:3804662719:26463) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+helper_fingerprint() (
+  read -r checksum bytes _ < <(cksum "$1")
+  printf '%s:%s\n' "$checksum" "$bytes"
+)
+known_prune_helper() {
+  case "$1" in
+    1713071390:8061|4157441008:11277) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -83,7 +94,7 @@ if [ -f "$DST/scripts/docs-check.sh" ]; then
     echo "  Fragment $existing is already installed here; this is $FRAGMENT_VERSION."
   fi
   if [ "$UPGRADE" = 1 ]; then
-    echo "  --upgrade only replaces an unmodified, recognised guard. Every other file"
+    echo "  --upgrade replaces only unmodified, recognised guard and pruning-helper copies. Every other file"
     echo "  stays yours and is named below for a manual merge."
   else
     echo "  Existing files are never overwritten — anything listed as 'skip' below"
@@ -93,10 +104,21 @@ if [ -f "$DST/scripts/docs-check.sh" ]; then
 fi
 
 copied=0; skipped=0; upgraded=0; retained=0
+helper_added=0; helper_upgraded=0
 while IFS= read -r f; do
   rel="${f#"$SRC"/}"
   out="$DST/$rel"
-  if [ "$UPGRADE" = 1 ] && [ "$rel" != scripts/docs-check.sh ] && [ ! -e "$out" ]; then
+  if [ "$UPGRADE" = 1 ] && [ "$rel" = scripts/state-prune.sh ] && [ ! -e "$out" ]; then
+    if [ "$DRY" = 1 ]; then
+      printf '  would add %s  (required for automatic STATE pruning)\n' "$rel"
+    else
+      mkdir -p "$(dirname "$out")"
+      cp "$f" "$out"; chmod +x "$out" 2>/dev/null || true
+      printf '  added   %s  (required for automatic STATE pruning)\n' "$rel"
+    fi
+    helper_added=$((helper_added+1)); continue
+  fi
+  if [ "$UPGRADE" = 1 ] && [ "$rel" != scripts/docs-check.sh ] && [ "$rel" != scripts/state-prune.sh ] && [ ! -e "$out" ]; then
     printf '  absent  %s  (not added by --upgrade)\n' "$rel"
     skipped=$((skipped+1)); continue
   fi
@@ -119,6 +141,22 @@ while IFS= read -r f; do
       fi
       printf '  keep    %s  (customised or unknown Fragment %s — merge by hand)\n' "$rel" "$installed"; retained=$((retained+1)); continue
     fi
+    if [ "$UPGRADE" = 1 ] && [ "$rel" = scripts/state-prune.sh ]; then
+      if cmp -s "$out" "$f"; then
+        printf '  current %s  (automatic STATE pruning helper)\n' "$rel"; retained=$((retained+1)); continue
+      fi
+      fingerprint=$(helper_fingerprint "$out")
+      if known_prune_helper "$fingerprint"; then
+        if [ "$DRY" = 1 ]; then
+          printf '  would upgrade %s  (recognised automatic STATE pruning helper)\n' "$rel"
+        else
+          cp "$f" "$out"; chmod +x "$out" 2>/dev/null || true
+          printf '  upgraded %s  (recognised automatic STATE pruning helper)\n' "$rel"
+        fi
+        helper_upgraded=$((helper_upgraded+1)); continue
+      fi
+      printf '  keep    %s  (customised or unknown helper — merge by hand)\n' "$rel"; retained=$((retained+1)); continue
+    fi
     if [ "$UPGRADE" = 1 ]; then
       printf '  keep    %s  (existing file — merge by hand)\n' "$rel"; retained=$((retained+1)); continue
     fi
@@ -136,7 +174,7 @@ done < <(find "$SRC" -type f)
 echo
 if [ "$DRY" = 1 ]; then
   if [ "$UPGRADE" = 1 ]; then
-    echo "$copied would be written, $upgraded guard would be upgraded, $retained kept. Nothing was changed."
+    echo "$copied would be written, $upgraded guard would be upgraded, $helper_upgraded helper(s) would be upgraded, $helper_added helper(s) would be added, $retained kept. Nothing was changed."
     echo "Run without --dry-run to install or upgrade."
   else
     echo "$copied would be written, $skipped already exist. Nothing was changed."
@@ -145,7 +183,7 @@ if [ "$DRY" = 1 ]; then
   exit 0
 fi
 if [ "$UPGRADE" = 1 ]; then
-  echo "$copied copied, $upgraded guard upgraded, $retained kept."
+  echo "$copied copied, $upgraded guard upgraded, $helper_upgraded helper(s) upgraded, $helper_added helper(s) added, $retained kept."
 else
   echo "$copied copied, $skipped skipped."
 fi

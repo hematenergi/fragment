@@ -3,7 +3,7 @@ id: agent-protocol
 title: Agent Protocol — the working contract
 status: active
 owner: hematenergi
-last-verified: 2026-09-09
+last-verified: 2026-10-11
 ---
 
 # Agent Protocol
@@ -113,10 +113,15 @@ the truth of all prose or any external write.
 
 ```bash
 bash scripts/recall.sh "keywords"   # find related decisions and lessons
-bash scripts/state-prune.sh --keep 20             # preview STATE pruning
-bash scripts/state-prune.sh --keep 20 --apply     # archive older session history
 bash scripts/load-context.sh --budget 12000 "keywords"
 bash tests/run.sh                # the suite, including shellcheck
 bash scripts/docs-check.sh       # the guard, pointed at this repo
 gitleaks detect --no-banner      # what CI runs; .gitleaks.toml explains the one allowlist
 ```
+
+After a successful local close check, `docs-check.sh` automatically keeps STATE
+within 12,000 UTF-8 bytes by archiving the oldest dated session entries. It
+preserves their full text in `docs/_attic/` and links that archive from STATE.
+CI comparisons, inventory runs and failed checks do not write adopter files.
+The standalone `state-prune.sh` remains available for a deliberate preview or
+one-off maintenance; agents do not need a routine prune step.
