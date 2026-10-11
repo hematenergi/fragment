@@ -14,16 +14,19 @@ last-verified: 2026-10-11
 
 ## Phase
 
-**v0.6.0 is the latest release.** Release PR #5 merged as
-`25e7dfd37d8d9e2c113773245c71c32261db5787`; the `v0.6.0` tag points to that
-commit and the GitHub release is published. Its notes state that calibration
-stopped before the quiz and task finished, so there is no valid score or
-performance claim. Internal strategy and benchmark working documents are kept
-local and excluded from the public repository.
+**v0.6.1 is the latest release.** PR #20 merged as
+`e97dad758a523b3cffe5864472629e311027a282`; tag `v0.6.1` points to that commit
+and the GitHub release is published. It adds automatic, date-ordered STATE
+archival at a 12,000-byte limit while preserving a link to the full history.
+The benchmark remains unscored, with no performance claim. Internal strategy
+and benchmark working documents remain local and excluded from the public repo.
 
 ## Active fragment
 
-**Fragment 18 is active:** [automatic STATE pruning](plans/18-automatic-state-pruning.md).
+**No active fragment. Fragment 18 is complete:** PR #20 merged as
+`e97dad758a523b3cffe5864472629e311027a282`; v0.6.1 is published and the Pages
+deploy succeeded. Ubuntu, macOS, Windows, docs-check and secrets checks all
+passed before merge. See [plan 18](plans/18-automatic-state-pruning.md).
 Fragment 17 is complete: PR #18 merged as
 `ae5f20f2d23d1bf9095f29de87a36e426bc6f1cb`; the public copy updates are live,
 and the internal research files are absent from the current tree. Docs-check,
@@ -48,7 +51,7 @@ link was reversed at the owner's request. Skills.sh ranks skills from anonymous
 install telemetry; no synthetic installs were created. Fragment 12 completed the
 repo-side package and presence work. Fragment 11 is complete: the homepage and
 GitHub README show the observed v0.5.0 adoption in medulla and flimapp, with its
-limits. Fragment 10 is complete and v0.6.0 remains the latest release. The
+limits. Fragment 10 established v0.6.0 before benchmark completion. The
 benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 
 > At most **one** active fragment. If something is here and it is not yours, ask
@@ -72,7 +75,7 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 | 15 | [restore the skills.sh Fragment slug](plans/15-restore-skills-sh-fragment-slug.md) | `done` | — |
 | 16 | [add an original illustration to Fragment's public install surfaces](plans/16-fragment-site-illustration.md) | `done` | — |
 | 17 | [clarify Fragment's value across the docs](plans/17-fragment-copy-audit.md) | `done` | — |
-| 18 | [make STATE pruning automatic and budget-driven](plans/18-automatic-state-pruning.md) | `in-progress` | — |
+| 18 | [make STATE pruning automatic and budget-driven](plans/18-automatic-state-pruning.md) | `done` | — |
 
 ## Blocked / waiting on a human
 
@@ -108,7 +111,7 @@ Archived session history: [open archive](_attic/STATE-session-archive.md)
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
-- 2026-10-11 · GPT-6 / Codex · 18 · first CI run exposed a fixture inheriting `CI=true`; local-close simulations now clear runner flags while CI comparison remains separately tested · next: rerun all checks, then publish v0.6.1.
+- 2026-10-11 · GPT-6 / Codex · 18 · merged PR #20 as `e97dad7`, published v0.6.1 with no benchmark claim, and verified Pages deploy; five pre-merge CI checks passed · next: resume benchmark measurement separately.
 - 2026-10-11 · GPT-6 / Codex · 18 · implemented automatic 12,000-byte STATE pruning with a linked, recoverable archive; 167 tests, ShellCheck, docs guard and Gitleaks pass on macOS · next: open PR, wait for every OS check, then publish v0.6.1.
 - 2026-10-11 · GPT-6 / Codex · 17 · merged PR #18 (`ae5f20f`), publishing clearer copy and removing internal research Markdown from the current public tree; docs-check, secrets, and Ubuntu passed while macOS/Windows continued after merge.
 - 2026-10-11 · GPT-6 / Codex · 17 · reviewed the live skills.sh top ten, found the main copy leads with product jargon and the skill is 1,597 words; next: publish clearer copy and keep internal research files out of the tracked tree.
@@ -127,4 +130,3 @@ One line per session, newest first. Format:
 - 2026-10-10 · GPT-6 / Codex · 11 · added source-backed v0.5.0 production evidence to the homepage and README, shortened README from 492 to 93 lines, and passed local preview (HTTP 200), 148 tests, and docs guard · next: publish both updates and verify the live homepage.
 - 2026-10-10 · GPT-6 / Codex · 11 · verified v0.6.0 is live as the latest release and found the homepage still omitted the two-repo v0.5.0 adoption evidence · next: add it to the homepage and README.
 - 2026-10-10 · GPT-6 / Codex · 10 · prepared the v0.6.0 release candidate from merged feature PR #2, updated version references and the new guard fingerprint, and documented the incomplete Gemini benchmark without a performance claim · next: pass local and PR checks, merge, tag, and publish v0.6.0; benchmark numbers follow separately.
-- 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.

@@ -93,3 +93,6 @@
   ran only in CI, so nothing local could catch it; the suite runs it now, and
   skips visibly when it is absent · **Next:** the staleness defect above.
 
+<!-- session-record:4279461228 290 -->
+- 2026-10-10 · GPT-6 / Codex · 08 · merged the v0.6 context features via PR #2 (`5f13f7b`); commit `4ea6587` passed Windows, macOS, Ubuntu, docs guard, and secrets checks, and local tests pass (147) · next: resume benchmark plan 07 §7.3 when an authorized model API path is available.
+

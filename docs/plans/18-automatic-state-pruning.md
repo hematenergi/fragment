@@ -1,7 +1,7 @@
 ---
 id: plan-18
 title: "18 — make STATE pruning automatic and budget-driven"
-status: in-progress
+status: done
 owner: hematenergi
 last-verified: 2026-10-11
 depends-on: [08]
@@ -24,7 +24,8 @@ v0.6.0 shipped a manual preview/apply tool, but adopters can forget to run it an
 
 ## Current state
 
-`state-prune.sh` is opt-in, keeps the first N records in the final section, and has no size threshold. `docs-check.sh` does not invoke it. v0.6.0 `--upgrade` replaces only a recognized guard and leaves other helper scripts untouched.
+v0.6.1 shipped the automatic budget trigger, date-ordered archive selection,
+linked cold history, and safe helper-upgrade path described in decision 0008.
 
 ## Work
 
@@ -36,12 +37,12 @@ v0.6.0 shipped a manual preview/apply tool, but adopters can forget to run it an
 
 ## Done when
 
-- [ ] A successful local `docs-check.sh` run archives the oldest dated records only when STATE exceeds 12,000 UTF-8 bytes.
-- [ ] The hot STATE remains at or below the bound when removable dated history can bring it under; otherwise no source file changes and the guard reports why.
-- [ ] Each record remains in the archive, and STATE contains a working Markdown link to it.
-- [ ] `--inventory`, CI comparisons, and a failed guard do not mutate adopter files.
-- [ ] A v0.6.0 install can safely receive the new guard and helper while local customizations stay untouched.
-- [ ] The full repository suite, cross-platform CI, docs guard and release workflow pass on the published v0.6.1 commit.
+- [x] A successful local `docs-check.sh` run archives the oldest dated records only when STATE exceeds 12,000 UTF-8 bytes.
+- [x] The hot STATE remains at or below the bound when removable dated history can bring it under; otherwise no source file changes and the guard reports why.
+- [x] Each record remains in the archive, and STATE contains a working Markdown link to it.
+- [x] `--inventory`, CI comparisons, and a failed guard do not mutate adopter files.
+- [x] A v0.6.0 install can safely receive the new guard and helper while local customizations stay untouched.
+- [x] The full repository suite, cross-platform CI, docs guard and release workflow pass on the published v0.6.1 commit.
 
 ## Traps
 
@@ -60,7 +61,8 @@ rtk git diff --check
 
 Local validation on macOS (2026-10-11): `bash tests/run.sh` passed all 167
 tests; ShellCheck passed; `bash scripts/docs-check.sh` was green; and Gitleaks
-found no leaks. Cross-platform CI and publication remain pending.
+found no leaks. PR #20 passed Ubuntu, macOS and Windows tests, docs-check and
+secrets. GitHub release v0.6.1 and Pages deploy succeeded.
 
 ## Out of scope
 
@@ -68,5 +70,5 @@ Changing the frozen benchmark or its results, scoring document-link importance, 
 
 ## Session log
 
-- 2026-10-11 · GPT-6 / Codex · 18 · first CI run exposed a fixture inheriting `CI=true`; local-close simulations now clear runner flags while CI comparison remains separately tested · next: rerun all checks, then publish v0.6.1.
+- 2026-10-11 · GPT-6 / Codex · 18 · PR #20 merged; v0.6.1 released, Pages deployed, and all five PR checks passed · next: resume benchmark measurement separately.
 - 2026-10-11 · GPT-6 / Codex · 18 · implemented automatic 12,000-byte STATE pruning with a linked, recoverable archive; 167 tests, ShellCheck, docs guard and Gitleaks pass on macOS · next: open PR, wait for all OS checks, then publish v0.6.1.
