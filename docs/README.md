@@ -50,7 +50,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/16-fragment-site-illustration.md`](plans/16-fragment-site-illustration.md) | `done` — add an original illustration to the homepage and canonical skill source |
 | [`plans/17-fragment-copy-audit.md`](plans/17-fragment-copy-audit.md) | `done` — make Fragment's value clearer and keep internal research notes local |
 | [`plans/18-automatic-state-pruning.md`](plans/18-automatic-state-pruning.md) | `done` — make STATE pruning automatic and budget-driven |
-| [`plans/19-adopter-safe-state-pruning.md`](plans/19-adopter-safe-state-pruning.md) | `in-progress` — make automatic STATE pruning work for adopters |
+| [`plans/19-adopter-safe-state-pruning.md`](plans/19-adopter-safe-state-pruning.md) | `done` — make automatic STATE pruning work for adopters |
 
 ## Decisions
 
