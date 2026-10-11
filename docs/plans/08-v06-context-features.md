@@ -13,12 +13,10 @@ depends-on: []
 
 ## Why this is needed
 
-The Northstar identifies context bloat as Fragment's main product problem. A new session needs a cheap way to find relevant decisions, keep the hot STATE small, and load cold context within a stated budget. These features can be developed while benchmark API access is unavailable.
+Fragment's v0.6 scope is to help a new session find relevant decisions, keep the hot STATE small, and load cold context within a stated budget.
 
 ## Read first
 
-- `../../FragmentNorthstar.md:84` — the v0.6 feature definitions
-- `../../FragmentBenchmarkSpec.md` — frozen baseline and validation procedures
 - `../decisions/0003-defer-benchmark-spend-until-v06-features.md` — sequencing decision
 - `../../template/docs/AGENT-PROTOCOL.md` — shipped user workflow contract
 - `../../scripts/docs-check.sh` — structure and install integration
@@ -28,7 +26,7 @@ The Northstar identifies context bloat as Fragment's main product problem. A new
 - Fragment v0.5.0 is released. The template and this checkout now contain deterministic `recall.sh`, `state-prune.sh`, and `load-context.sh` commands.
 - The installer copies the `template/` tree without overwriting existing adopter files. Product commands keep the Bash/Git-only runtime contract.
 - New decision/lesson guidance uses optional inline YAML tags; all seven existing repo records now have tags, while retrieval still supports untagged legacy records.
-- Benchmark fragment 07 is parked. No model calls or benchmark results exist.
+- Performance results are not included in this implementation record.
 - The command tests cover matching and empty retrieval, legacy and tagged records, malformed/empty STATE history, archive safety, and exact/insufficient loading budgets. Symlinked paths are rejected before retrieval or writes.
 - `tests/run.sh` passes all 147 cases, including shellcheck and installed-template parity; `scripts/docs-check.sh` is green. The Unreleased changelog describes all three commands and tag guidance.
 
@@ -80,7 +78,7 @@ git diff --check — PASS
 
 ## Out of scope
 
-Benchmark model calls/runs (plan 07), adopter outreach, v0.7 features, and the v0.6 GitHub release. The release follows only after feature validation and benchmark work.
+Performance measurement, adopter outreach, v0.7 features, and the v0.6 GitHub release.
 
 ## Session log
 

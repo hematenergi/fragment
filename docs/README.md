@@ -3,7 +3,7 @@ id: docs-index
 title: Document index
 status: active
 owner: hematenergi
-last-verified: 2026-10-10
+last-verified: 2026-10-11
 ---
 
 # Document index
@@ -40,8 +40,6 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/03-last-verified-is-the-loudest-rule.md`](plans/03-last-verified-is-the-loudest-rule.md) | `superseded` — 05 moves review to relevant claims when used |
 | [`plans/04-version-written-by-hand.md`](plans/04-version-written-by-hand.md) | `todo` — seven places, one command |
 | [`plans/05-continuity-without-administration.md`](plans/05-continuity-without-administration.md) | `done` — inventory, scoped handoff and source authority |
-| [`plans/06-freeze-benchmark-extraction-prompt.md`](plans/06-freeze-benchmark-extraction-prompt.md) | `done` — frozen extraction prompt committed and pushed before benchmark questions |
-| [`plans/07-v06-benchmark-baseline.md`](plans/07-v06-benchmark-baseline.md) | `parked` — benchmark work resumes after v0.6 features and API access |
 | [`plans/08-v06-context-features.md`](plans/08-v06-context-features.md) | `done` — deterministic retrieval, STATE pruning, and token-budgeted loading |
 | [`plans/10-v06-release-before-benchmark.md`](plans/10-v06-release-before-benchmark.md) | `done` — v0.6.0 published with honest benchmark-pending notes |
 | [`plans/11-site-production-evidence.md`](plans/11-site-production-evidence.md) | `done` — publish observed v0.5.0 production evidence on the homepage and README |
@@ -50,6 +48,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/14-restore-skills-presence.md`](plans/14-restore-skills-presence.md) | `done` — restore the skills.sh repository link and explain its stale entry |
 | [`plans/15-restore-skills-sh-fragment-slug.md`](plans/15-restore-skills-sh-fragment-slug.md) | `done` — restore the `fragment` skill slug and verify the direct install page |
 | [`plans/16-fragment-site-illustration.md`](plans/16-fragment-site-illustration.md) | `done` — add an original illustration to the homepage and canonical skill source |
+| [`plans/17-fragment-copy-audit.md`](plans/17-fragment-copy-audit.md) | `done` — make Fragment's value clearer and keep internal research notes local |
 
 ## Decisions
 

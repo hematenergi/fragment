@@ -15,7 +15,7 @@
 <p align="center">
   <a href="#install">Install</a> ·
   <a href="INSTALL.md">Agent install guide</a> ·
-  <a href="#production-evidence">Production evidence</a> ·
+  <a href="#evidence-and-limits">Evidence and limits</a> ·
   <a href="CASE-STUDY.md">Full case study</a>
 </p>
 
@@ -23,13 +23,20 @@
   <a href="https://github.com/hematenergi/fragment/actions/workflows/tests.yml"><img src="https://github.com/hematenergi/fragment/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
 </p>
 
-Fragment is a small continuity harness around your coding agent. It stores project state, decisions, lessons, and active work as ordinary files. A Bash guard checks their structure and handoff in local runs and CI.
+Your next coding session should not have to reconstruct decisions or ask where
+the work stopped. Fragment keeps project decisions, lessons, current state, and
+the next action in files committed with the repo. The next agent can read them;
+a Bash guard checks the handoff locally and in CI.
 
-It works with the agent you already use. It does not run the model or decide whether your code is correct.
+Fragment works with the coding agent you already use and runs on Bash and Git.
+It needs no model API, database, daemon, or account. The guard checks documented
+handoffs, not whether your code or decisions are correct.
 
 ## Install
 
-For the install workflow as an agent skill:
+### Guided install
+
+Install the skill to have your coding agent adopt Fragment in the current repo:
 
 ```bash
 npx skills add hematenergi/fragment --skill fragment
@@ -37,7 +44,13 @@ npx skills add hematenergi/fragment --skill fragment
 
 [Install Fragment on skills.sh](https://www.skills.sh/hematenergi/fragment/fragment) · [View the skill source](https://raw.githubusercontent.com/hematenergi/fragment/main/skills/fragment/SKILL.md) · [Other agent install paths](INSTALL.md)
 
-The skill guides an agent through adopting Fragment. To install the full Bash harness directly, use:
+The skill inspects the repository, preserves existing files, and guides the
+adoption.
+
+### Install the full harness directly
+
+Use the prompt below to have your agent install the harness, or use the Bash
+commands after it.
 
 Ask your coding agent:
 
@@ -64,7 +77,10 @@ bash fragment/install.sh --upgrade /path/to/your/repo
 
 ## How it works
 
-At the start of a session, the agent follows the repo's front door to the protocol, `docs/STATE.md`, active work, and relevant decisions or lessons. At the end, it records meaningful progress and the next move. The guard checks the required files, links, and handoff evidence so a missing update can fail the build.
+At the start of a session, the agent reads the repo's protocol and `docs/STATE.md`,
+then opens only the relevant work and decisions. At the end, it records what
+changed and what comes next. The guard catches missing files, broken links, and
+missing handoff updates.
 
 ```text
 CLAUDE.md / AGENTS.md → docs/AGENT-PROTOCOL.md → docs/STATE.md
@@ -73,14 +89,17 @@ CLAUDE.md / AGENTS.md → docs/AGENT-PROTOCOL.md → docs/STATE.md
 
 Fragment's checks use Bash and Git, with no runtime database, daemon, account, or model API.
 
-## v0.6.0 tools
+## Pick up the right context (v0.6.0)
 
-- `bash scripts/recall.sh "query"` ranks decisions and lessons using deterministic keyword matching. No model call or network access.
-- `bash scripts/state-prune.sh --keep 20` previews older STATE history for archival; add `--apply` to write the archive.
-- `bash scripts/load-context.sh --budget 12000 "query"` assembles STATE and relevant whole records under a conservative size bound for the requested token budget.
-- Decision and lesson files can use optional `tags: [topic, system]` frontmatter to improve retrieval.
+- Find relevant prior decisions and lessons with `bash scripts/recall.sh "query"`.
+  It uses deterministic keyword matching—no model call or network access.
+- Preview old STATE history for archival with
+  `bash scripts/state-prune.sh --keep 20`; add `--apply` to write the archive.
+- Load STATE and relevant whole records within an explicit budget with
+  `bash scripts/load-context.sh --budget 12000 "query"`.
+- Optional `tags: [topic, system]` frontmatter improves retrieval.
 
-## Production evidence
+## Evidence and limits
 
 The v0.5.0 snapshot was observed on 2026-10-08, before v0.6.0 shipped. Two production repositories used the same byte-identical 588-line shared guard; each kept its own checks in a local extension.
 

@@ -1,26 +1,28 @@
 # Install Fragment
 
+Fragment keeps decisions, current state, and the next step in your repository so
+the next coding agent can pick up the work. Choose the install path that fits
+your agent.
+
 ## Agent skill
 
-Install the onboarding skill with the skills CLI:
+For agents supported by the skills CLI, install the onboarding skill:
 
 ```bash
 npx skills add hematenergi/fragment --skill fragment
 ```
 
-[Install Fragment on skills.sh](https://www.skills.sh/hematenergi/fragment/fragment) · [View the Fragment skill source](https://raw.githubusercontent.com/hematenergi/fragment/main/skills/fragment/SKILL.md).
-The skill guides your agent through adding the full Fragment harness while
-preserving files already in your repository.
+[Open Fragment on skills.sh](https://www.skills.sh/hematenergi/fragment/fragment) · [View the skill source](https://raw.githubusercontent.com/hematenergi/fragment/main/skills/fragment/SKILL.md)
+
+The skill inspects the repository and guides your agent through installing the
+full harness without overwriting existing files.
 
 ## Native plugin packages
 
-The repository includes package manifests for Codex, Claude Code, Cursor, and
-Kimi Code. These install from Fragment's GitHub repository; they are not claims
-of inclusion in a vendor-curated global marketplace.
+These packages install from this GitHub repository. They are not listings in a
+vendor-curated marketplace.
 
 ### Codex
-
-Add Fragment's repo marketplace in Codex:
 
 ```bash
 codex plugin marketplace add hematenergi/fragment \
@@ -28,7 +30,8 @@ codex plugin marketplace add hematenergi/fragment \
   --sparse plugins/adopt-fragment
 ```
 
-Then open the Plugins Directory and install **adopt-fragment** from **Fragment**.
+Then open the Plugins Directory and install **adopt-fragment** from
+**Fragment**.
 
 ### Claude Code
 
@@ -41,25 +44,17 @@ Then open the Plugins Directory and install **adopt-fragment** from **Fragment**
 
 Open **Customize → Plugins → From GitHub Repository**, enter
 `https://github.com/hematenergi/fragment`, then install **adopt-fragment**.
-For a team marketplace, a Team or Enterprise admin can import the same
-repository from the Cursor dashboard.
+For a team marketplace, a Team or Enterprise admin can import the repository
+from the Cursor dashboard.
 
 ### Kimi Code
-
-In Kimi Code, install the repository path from its plugin manager:
 
 ```text
 /plugins install https://github.com/hematenergi/fragment/tree/main/plugins/adopt-fragment
 /reload
 ```
 
-## Other skill-compatible agents
+## Install the full harness directly
 
-For GitHub Copilot, Cline, OpenCode, and other agents supported by the skills
-CLI, use the `npx skills add` command above. Fragment packages this onboarding
-workflow as an Agent Skill for these tools.
-
-## Full harness
-
-The agent skill is an onboarding workflow. To install the full Bash and Git
-harness directly, follow the [README install instructions](README.md#install).
+Use the [README's Bash install instructions](README.md#install) if you want to
+install Fragment without the onboarding skill.
