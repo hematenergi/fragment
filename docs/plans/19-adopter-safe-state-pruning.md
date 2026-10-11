@@ -1,7 +1,7 @@
 ---
 id: plan-19
 title: "19 — make automatic STATE pruning work for adopters"
-status: in-progress
+status: done
 owner: hematenergi
 last-verified: 2026-10-11
 depends-on: [18]
@@ -27,22 +27,22 @@ stays visible.
 
 ## Current state
 
-v0.6.1 searches only after the final level-two heading and cannot archive
-terminal plan rows. A copy of Medulla's current STATE and plan frontmatter is
-52,780 bytes and remains unchanged in its checkout.
+v0.6.2 fixes the multi-section history scan and archives terminal plan rows
+only when their exact status matches linked plan frontmatter. The implementation
+is released; the Medulla checkout remains unchanged.
 
 ## Work
 
-- [ ] Add an adopter-shaped regression for dated entries before later sections, terminal plan rows, and active or mismatched rows.
-- [ ] Archive dated history globally, then `done`/`superseded` and only then needed `parked` rows, preserving the newest dated entry when possible.
-- [ ] Keep all three pruning helper copies and installer checks in sync.
-- [ ] Document the deterministic rules and prepare a patch release.
+- [x] Add an adopter-shaped regression for dated entries before later sections, terminal plan rows, and active or mismatched rows.
+- [x] Archive dated history globally, then `done`/`superseded` and only then needed `parked` rows, preserving the newest dated entry when possible.
+- [x] Keep all three pruning helper copies and installer checks in sync.
+- [x] Document the deterministic rules and prepare a patch release.
 
 ## Done when
 
-- [ ] The adopter-shaped fixture stays at or below 12,000 bytes with archived content and working relative links preserved and active rows retained.
-- [ ] A disposable copy of Medulla's STATE reaches the byte budget without editing Medulla.
-- [ ] Full tests, ShellCheck, docs guard, CI and the v0.6.2 release pass.
+- [x] The adopter-shaped fixture stays at or below 12,000 bytes with archived content and working relative links preserved and active rows retained.
+- [x] A disposable copy of Medulla's STATE reaches the byte budget without editing Medulla: 52,780 → 11,930 bytes.
+- [x] Full tests, ShellCheck, docs guard, CI and the v0.6.2 release pass. PR #21 merged as `62b7402729a17d2f00cab58762afa67bd7dbe86a`; all five required checks passed, including Windows in 18m35s.
 
 ## Traps
 
@@ -65,4 +65,4 @@ The benchmark, manual edits to adopter repositories, and changes to the 12,000-b
 
 ## Session log
 
-- 2026-10-11 · GPT-6 / Codex · 19 · reproduced the Medulla-shaped failure and made the new regression pass locally; next: finish release checks and publish v0.6.2.
+- 2026-10-11 · GPT-6 / Codex · 19 · merged PR #21 as `62b7402` and published [v0.6.2](https://github.com/hematenergi/fragment/releases/tag/v0.6.2); all five required checks passed, and disposable Medulla STATE reached 11,930 bytes without modifying Medulla · next: benchmark remains unscored.
