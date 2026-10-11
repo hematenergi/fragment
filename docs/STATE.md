@@ -23,8 +23,10 @@ local and excluded from the public repository.
 
 ## Active fragment
 
-**17 · Clarify Fragment's value across the docs.** Copy edits and local-only
-research-file handling are complete in this checkout; publication is pending.
+**No active fragment.** Fragment 17 is complete: PR #18 merged as
+`ae5f20f2d23d1bf9095f29de87a36e426bc6f1cb`; the public copy updates are live,
+and the internal research files are absent from the current tree. Docs-check,
+secrets, and Ubuntu passed; macOS and Windows were still running after merge.
 See [plan 17](plans/17-fragment-copy-audit.md). Fragment 16 is complete: PR #16 merged as
 `d3ed8f0263793e17465d3dcd2c7b3d5e8175cffc`; the original illustration is live
 on the homepage and linked from both identical skill copies. Ubuntu and macOS
@@ -101,6 +103,7 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 One line per session, newest first. Format:
 `date · agent · fragment · what changed · what is next`.
 
+- 2026-10-11 · GPT-6 / Codex · 17 · merged PR #18 (`ae5f20f`), publishing clearer copy and removing internal research Markdown from the current public tree; docs-check, secrets, and Ubuntu passed while macOS/Windows continued after merge.
 - 2026-10-11 · GPT-6 / Codex · 17 · reviewed the live skills.sh top ten, found the main copy leads with product jargon and the skill is 1,597 words; next: publish clearer copy and keep internal research files out of the tracked tree.
 - 2026-10-10 · GPT-6 / Codex · 16 · generated 1536×1024 art, published it on the homepage, synced both skill copies, and verified live image/alt text; Ubuntu/macOS tests (150 each), docs guard, secrets, and Pages deploy passed; skills.sh still showed its old cached skill text · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 15 · merged PR #14 as `b3439c9`; Pages run `38066187505` succeeded; live detail page and homepage verified; CLI listed one `fragment` with telemetry disabled; 150 tests, docs guard, and required CI checks passed (Windows run still in progress) · next: resume parked benchmark plan 07 when Free Tier quota is available.
