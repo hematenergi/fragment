@@ -55,7 +55,7 @@ commands after it.
 Ask your coding agent:
 
 ```text
-Install Fragment v0.6.0 from https://github.com/hematenergi/fragment into this repository.
+Install Fragment v0.6.1 from https://github.com/hematenergi/fragment into this repository.
 Preserve existing files. Use only decisions supported by this repository and our conversation.
 Run bash scripts/docs-check.sh and leave unknowns as blockers instead of guessing.
 ```
@@ -63,13 +63,13 @@ Run bash scripts/docs-check.sh and leave unknowns as blockers instead of guessin
 Or install from Bash:
 
 ```bash
-git clone --depth 1 --branch v0.6.0 https://github.com/hematenergi/fragment
+git clone --depth 1 --branch v0.6.1 https://github.com/hematenergi/fragment
 bash fragment/install.sh /path/to/your/repo
 cd /path/to/your/repo
 bash scripts/docs-check.sh
 ```
 
-The first check may fail while template values are still present. Fill in the project facts it names, then run it again. The installer preserves existing files; merge them deliberately. To upgrade a recognized, unmodified guard:
+The first check may fail while template values are still present. Fill in the project facts it names, then run it again. The installer preserves existing files; merge them deliberately. To upgrade a recognized, unmodified guard and pruning helper:
 
 ```bash
 bash fragment/install.sh --upgrade /path/to/your/repo
@@ -89,12 +89,13 @@ CLAUDE.md / AGENTS.md → docs/AGENT-PROTOCOL.md → docs/STATE.md
 
 Fragment's checks use Bash and Git, with no runtime database, daemon, account, or model API.
 
-## Pick up the right context (v0.6.0)
+## Pick up the right context (v0.6.1)
 
 - Find relevant prior decisions and lessons with `bash scripts/recall.sh "query"`.
   It uses deterministic keyword matching—no model call or network access.
-- Preview old STATE history for archival with
-  `bash scripts/state-prune.sh --keep 20`; add `--apply` to write the archive.
+- A successful local `docs-check.sh` automatically keeps STATE within 12,000
+  bytes by archiving the oldest dated session entries when needed. It preserves
+  the archive and links it from STATE; CI and inventory checks stay read-only.
 - Load STATE and relevant whole records within an explicit budget with
   `bash scripts/load-context.sh --budget 12000 "query"`.
 - Optional `tags: [topic, system]` frontmatter improves retrieval.

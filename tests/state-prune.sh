@@ -113,10 +113,62 @@ case "$out" in *"nothing to prune"*) ;; *) printf 'FAIL: empty session log was n
 [ "$(cat "$REPO/docs/STATE-empty.md")" = "$before_empty" ] || { printf 'FAIL: empty session log changed\n'; exit 1; }
 [ ! -e "$REPO/docs/_attic/empty.md" ] || { printf 'FAIL: empty session log created an archive\n'; exit 1; }
 printf '  ok    empty session log is a no-op\n'
+before_empty=$(cat "$REPO/docs/STATE-empty.md")
+if out=$(cd "$REPO" && STATE_FILE='docs/STATE-empty.md' STATE_ARCHIVE_FILE='docs/_attic/empty-over-budget.md' \
+  bash scripts/state-prune.sh --budget 20 --apply 2>&1); then
+  printf 'FAIL: over-budget fixed STATE without dated records was accepted\n%s\n' "$out"; exit 1
+else
+  code=$?
+  [ "$code" -eq 3 ] || { printf 'FAIL: fixed-content limit returned %s, expected 3\n' "$code"; exit 1; }
+fi
+[ "$(cat "$REPO/docs/STATE-empty.md")" = "$before_empty" ] \
+  && [ ! -e "$REPO/docs/_attic/empty-over-budget.md" ] \
+  || { printf 'FAIL: impossible budget changed STATE or created an archive\n'; exit 1; }
+printf '  ok    impossible STATE budget reports the limit without writing\n'
 
 printf 'body without a structural section\n' > "$REPO/docs/STATE-bare.md"
 if STATE_FILE='docs/STATE-bare.md' bash "$REPO/scripts/state-prune.sh" --keep 2 >/dev/null 2>&1; then
   printf '  FAIL  malformed STATE without a level-two section was accepted\n'; exit 1
 fi
 printf '  ok    malformed STATE is rejected without editing it\n'
+
+# Automatic pruning is budget-triggered and uses record dates, not file order.
+cat > "$REPO/docs/STATE-auto.md" <<'STATE'
+---
+id: state-auto
+title: Automatic history
+status: active
+owner: test
+last-verified: 2026-10-08
+---
+
+## Overview
+
+Fixed context stays hot.
+
+## Catatan
+STATE
+padding=$(printf '%0250d' 0 | tr '0' x)
+printf -- '- 2026-10-08 · agent · newest · %s\n' "$padding" >> "$REPO/docs/STATE-auto.md"
+printf -- '- 2026-10-01 · agent · older-in-the-middle · %s\n' "$padding" >> "$REPO/docs/STATE-auto.md"
+printf -- '- 2026-10-07 · agent · second-newest · %s\n' "$padding" >> "$REPO/docs/STATE-auto.md"
+printf -- '- 2026-09-30 · agent · oldest · %s\n' "$padding" >> "$REPO/docs/STATE-auto.md"
+before_auto=$(cat "$REPO/docs/STATE-auto.md")
+out=$(cd "$REPO" && STATE_FILE='docs/STATE-auto.md' STATE_ARCHIVE_FILE='docs/_attic/auto.md' \
+  bash scripts/state-prune.sh --budget 900)
+case "$out" in *"Would archive"*"no files changed"*) ;; *) printf 'FAIL: automatic dry run did not explain its decision\n%s\n' "$out"; exit 1 ;; esac
+[ "$(cat "$REPO/docs/STATE-auto.md")" = "$before_auto" ] || { printf 'FAIL: automatic dry run changed STATE\n'; exit 1; }
+out=$(cd "$REPO" && STATE_FILE='docs/STATE-auto.md' STATE_ARCHIVE_FILE='docs/_attic/auto.md' \
+  bash scripts/state-prune.sh --budget 900 --apply)
+case "$out" in *"Archived"*"within the"*) ;; *) printf 'FAIL: automatic apply did not report a budget result\n%s\n' "$out"; exit 1 ;; esac
+auto_size=$(wc -c < "$REPO/docs/STATE-auto.md" | tr -d '[:space:]')
+[ "$auto_size" -le 900 ] || { printf 'FAIL: automatic prune left STATE over its byte budget (%s)\n' "$auto_size"; exit 1; }
+grep -q '2026-10-08.*newest' "$REPO/docs/STATE-auto.md" || { printf 'FAIL: newest dated record was not kept hot\n'; exit 1; }
+grep -q '2026-10-07.*second-newest' "$REPO/docs/STATE-auto.md" || { printf 'FAIL: second-newest dated record was not kept hot\n'; exit 1; }
+! grep -q 'older-in-the-middle\|oldest' "$REPO/docs/STATE-auto.md" || { printf 'FAIL: an older date remained hot ahead of newer records\n'; exit 1; }
+grep -q 'older-in-the-middle' "$REPO/docs/_attic/auto.md" || { printf 'FAIL: out-of-order old record was not archived\n'; exit 1; }
+grep -q 'oldest' "$REPO/docs/_attic/auto.md" || { printf 'FAIL: oldest record was not archived\n'; exit 1; }
+grep -Fq 'Archived session history: [open archive](_attic/auto.md)' "$REPO/docs/STATE-auto.md" || { printf 'FAIL: automatic archive is not linked from hot STATE\n'; exit 1; }
+printf '  ok    automatic budget pruning archives oldest dates and keeps the archive linked\n'
+
 printf 'GREEN — state-prune tests passed\n'

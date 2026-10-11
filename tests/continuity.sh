@@ -221,6 +221,80 @@ verdict 0 'the 122 clues remain accessible on request' 'INVENTORY'
 clues=$(printf '%s\n' "$OUT" | grep -c -E 'last-verified says 2020-01-01|>150')
 [ "$clues" -eq 122 ] && ok '121 date discrepancies plus one size clue, not 122 bugs' || bad "expected 122 clues, got $clues"
 
+cfixture auto-prune
+padding=$(printf '%0500d' 0 | tr '0' x)
+for ((i=1; i<=30; i++)); do
+  printf -- '- 2000-01-01 · tester · old padded session record %s · %s\n' "$i" "$padding" >> "$d/docs/STATE.md"
+done
+before=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+session
+verdict 0 'a successful local close check runs automatic STATE pruning' 'handoff body updated'
+after=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+[ "$before" -gt 12000 ] && [ "$after" -le 12000 ] \
+  && ok '  ... and archives only enough dated history to fit the fixed context budget' \
+  || bad "  ... STATE did not fall under 12000 bytes ($before → $after)"
+[ -f "$d/docs/_attic/STATE-session-archive.md" ] \
+  && grep -q 'old padded session record' "$d/docs/_attic/STATE-session-archive.md" \
+  && grep -Fq '[open archive](_attic/STATE-session-archive.md)' "$d/docs/STATE.md" \
+  && ok '  ... and the complete cold history remains linked from STATE' \
+  || bad '  ... automatic pruning lost history or its Markdown link'
+grep -q 'old padded session record 1 ·' "$d/docs/STATE.md" \
+  && grep -q 'old padded session record 30 ·' "$d/docs/_attic/STATE-session-archive.md" \
+  && ok '  ... and same-day ties keep earlier hot rows while archiving later ones first' \
+  || bad '  ... same-day ordering did not keep the newest-first convention'
+
+cfixture auto-prune-failed-check
+for ((i=1; i<=30; i++)); do
+  printf -- '- 2000-01-01 · tester · old padded session record %s · %s\n' "$i" "$padding" >> "$d/docs/STATE.md"
+done
+printf '\n[broken](missing-file.md)\n' >> "$d/docs/STATE.md"
+before=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+session
+verdict 1 'a failed guard does not run automatic pruning' 'dangling link'
+after=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+[ "$before" = "$after" ] && [ ! -e "$d/docs/_attic/STATE-session-archive.md" ] \
+  && ok '  ... and the failed check leaves STATE untouched' \
+  || bad '  ... failed check still pruned adopter files'
+
+cfixture auto-prune-ci
+for ((i=1; i<=30; i++)); do
+  printf -- '- 2000-01-01 · tester · old padded session record %s · %s\n' "$i" "$padding" >> "$d/docs/STATE.md"
+done
+before=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+OUT=$(cd "$d" && BASE_REF=HEAD bash scripts/docs-check.sh 2>&1); CODE=$?
+verdict 0 'CI comparison remains read-only for oversized STATE' 'no changes in the checked range'
+after=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+[ "$before" = "$after" ] && [ ! -e "$d/docs/_attic/STATE-session-archive.md" ] \
+  && ok '  ... and CI created no archive or STATE diff' \
+  || bad '  ... CI mutated STATE during the comparison'
+
+cfixture auto-prune-inventory
+for ((i=1; i<=30; i++)); do
+  printf -- '- 2000-01-01 · tester · old padded session record %s · %s\n' "$i" "$padding" >> "$d/docs/STATE.md"
+done
+before=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+session --inventory
+after=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+[ "$before" = "$after" ] && [ ! -e "$d/docs/_attic/STATE-session-archive.md" ] \
+  && ok 'inventory is read-only even when STATE exceeds the automatic prune budget' \
+  || bad 'inventory run pruned STATE'
+
+cfixture auto-prune-custom-helper
+printf '\n# adopter customization\n' >> "$d/scripts/state-prune.sh"
+printf '\nHasil: helper khusus tetap utuh. Berikutnya: pantau batas STATE.\n' >> "$d/docs/STATE.md"
+session --handoff docs/STATE.md
+verdict 0 'an under-budget STATE does not require a customized pruning helper' 'handoff body updated'
+for ((i=1; i<=30; i++)); do
+  printf -- '- 2000-01-01 · tester · old padded session record %s · %s\n' "$i" "$padding" >> "$d/docs/STATE.md"
+done
+before=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+session
+verdict 1 'an oversized STATE with a customized helper reports the required merge' 'customized or from an unrecognized release'
+after=$(wc -c < "$d/docs/STATE.md" | tr -d '[:space:]')
+[ "$before" = "$after" ] && [ ! -e "$d/docs/_attic/STATE-session-archive.md" ] \
+  && ok '  ... and leaves the customized helper and adopter data untouched' \
+  || bad '  ... customized helper mismatch changed adopter data'
+
 cfixture upgrade-minimal
 rm "$d/docs/GLOSSARY.md" "$d/START-HERE.md"
 OUT=$(bash "$ROOT/install.sh" --upgrade "$d" 2>&1); CODE=$?

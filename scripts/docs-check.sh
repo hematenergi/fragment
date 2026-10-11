@@ -23,7 +23,7 @@ set -uo pipefail
 # Stamped so an installed copy can say where it came from. Without this a repo
 # that adopted Fragment has no way to answer "which version is this?", and
 # neither does anyone helping them.
-FRAGMENT_VERSION="0.6.0"
+FRAGMENT_VERSION="0.6.1"
 
 for arg in "$@"; do
   case "$arg" in
@@ -582,6 +582,37 @@ if [ -n "$MAX_WARNINGS" ] && [ "$warn" -gt "$MAX_WARNINGS" ]; then
   printf '%sFAILED%s — %s warning(s), budget is %s\n' "$RED" "$OFF" "$warn" "$MAX_WARNINGS"
   printf '%sClear some, or raise the budget deliberately.%s\n' "$DIM" "$OFF"
   exit 1
+fi
+
+# Keep hot context bounded as part of a successful local close. CI, inventory,
+# and failed checks stay read-only; the exact helper fingerprint protects
+# customized adopter scripts from being executed as an automatic write step.
+if [ "$INVENTORY" != 1 ] && [ "$HAVE_GIT" = 1 ] \
+  && [ -z "${BASE_REF:-}" ] && [ -z "${CI:-}" ] && [ -z "${GITHUB_ACTIONS:-}" ]; then
+  state_bytes=$(wc -c < "$STATE" | tr -d '[:space:]')
+  if [ "$state_bytes" -gt 12000 ]; then
+    if checkout_path scripts/state-prune.sh && [ -f scripts/state-prune.sh ] && [ ! -L scripts/state-prune.sh ]; then
+      read -r prune_sum prune_bytes _ < <(cksum scripts/state-prune.sh)
+      if [ "$prune_sum:$prune_bytes" = "4157441008:11277" ]; then
+        prune_output=$(DOCS_ROOT="$DOCS" STATE_FILE="$STATE" \
+          bash scripts/state-prune.sh --budget 12000 --apply 2>&1)
+        prune_status=$?
+        if [ "$prune_status" -eq 0 ]; then
+          case "$prune_output" in Archived*) note "$prune_output" ;; esac
+        else
+          err "automatic STATE pruning could not complete: $prune_output"
+        fi
+      else
+        err 'automatic STATE pruning skipped: scripts/state-prune.sh is customized or from an unrecognized release; merge the v0.6.1 helper deliberately'
+      fi
+    else
+      err 'automatic STATE pruning unavailable: scripts/state-prune.sh is missing or linked outside the checkout; run the Fragment installer upgrade'
+    fi
+  fi
+fi
+
+if [ "$fail" -gt 0 ]; then
+  printf '%sFAILED%s — %s problem(s), %s warning(s)\n' "$RED" "$OFF" "$fail" "$warn"; exit 1
 fi
 
 [ "$INVENTORY" != 1 ] || [ "$inventory_count" -ne 0 ] || printf 'INVENTORY — no documentation clues found.\n'

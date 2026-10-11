@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+## 0.6.1 — 2026-10-11
+
+### Fixed
+
+- STATE pruning now runs after a successful local `docs-check.sh` close. It
+  keeps STATE within 12,000 UTF-8 bytes by archiving the oldest dated session
+  records, preserves every record, and links the archive from hot STATE.
+- Date order, not file position, determines which dated records move to the
+  archive. CI comparisons, inventory runs and failed checks stay read-only.
+- `install.sh --upgrade` updates only a recognized, unmodified pruning helper
+  and adds it when missing; customized copies remain untouched.
+
+### Benchmark status
+
+The benchmark remains incomplete. There is no valid score or
+tokens-to-competent result, and this release makes no performance claim.
+
 ## 0.6.0 — 2026-10-10
 
 ### Added

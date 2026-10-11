@@ -49,6 +49,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/15-restore-skills-sh-fragment-slug.md`](plans/15-restore-skills-sh-fragment-slug.md) | `done` — restore the `fragment` skill slug and verify the direct install page |
 | [`plans/16-fragment-site-illustration.md`](plans/16-fragment-site-illustration.md) | `done` — add an original illustration to the homepage and canonical skill source |
 | [`plans/17-fragment-copy-audit.md`](plans/17-fragment-copy-audit.md) | `done` — make Fragment's value clearer and keep internal research notes local |
+| [`plans/18-automatic-state-pruning.md`](plans/18-automatic-state-pruning.md) | `in-progress` — make STATE pruning automatic and budget-driven |
 
 ## Decisions
 
@@ -61,6 +62,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`decisions/0005-release-v06-with-benchmark-pending.md`](decisions/0005-release-v06-with-benchmark-pending.md) | Publish v0.6.0 from shipped feature evidence; follow with benchmark results |
 | [`decisions/0006-keep-skills-platform-presence.md`](decisions/0006-keep-skills-platform-presence.md) | `superseded` — preserve the repository listing while the renamed skill was unavailable |
 | [`decisions/0007-restore-skills-sh-fragment-slug.md`](decisions/0007-restore-skills-sh-fragment-slug.md) | Restore the single `fragment` skill slug for a direct skills.sh install page |
+| [`decisions/0008-automatic-state-pruning.md`](decisions/0008-automatic-state-pruning.md) | Archive old STATE history automatically during successful local close checks |
 
 ## Lessons
 

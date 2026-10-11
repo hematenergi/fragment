@@ -4,17 +4,20 @@ set -uo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: bash scripts/state-prune.sh [--keep COUNT] [--apply]
+Usage: bash scripts/state-prune.sh [--keep COUNT | --budget BYTES] [--apply]
 
-By default this previews a prune. --apply archives older dated session records
-from the final level-two section of STATE_FILE, keeping the newest COUNT
-(default 20). The archive defaults to docs/_attic/STATE-session-archive.md.
-Set DOCS_ROOT, STATE_FILE or STATE_ARCHIVE_FILE to repo-relative alternatives
-if needed.
+By default this previews a prune. --keep archives all but the newest COUNT
+(default 20), ordered by the date on each record. --budget archives the oldest
+dated records only when STATE exceeds that UTF-8 byte limit. --apply writes the
+archive. The default archive is docs/_attic/STATE-session-archive.md.
+Set DOCS_ROOT, STATE_FILE or STATE_ARCHIVE_FILE to repo-relative alternatives.
 USAGE
 }
 
 keep=20
+keep_set=0
+budget=''
+auto=0
 apply=0
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -23,14 +26,25 @@ while [ "$#" -gt 0 ]; do
     --dry-run) apply=0; shift ;;
     -n|--keep)
       [ "$#" -ge 2 ] || { usage >&2; exit 2; }
-      keep="$2"; shift 2 ;;
+      keep="$2"; keep_set=1; shift 2 ;;
+    --budget)
+      [ "$#" -ge 2 ] || { usage >&2; exit 2; }
+      budget="$2"; auto=1; shift 2 ;;
     -*) printf 'unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
     *) printf 'unexpected argument: %s\n' "$1" >&2; usage >&2; exit 2 ;;
   esac
 done
 
-if ! [[ "$keep" =~ ^[1-9][0-9]*$ ]]; then
+if [ "$auto" -eq 1 ] && [ "$keep_set" -eq 1 ]; then
+  printf '%s\n' '--keep and --budget cannot be combined' >&2
+  exit 2
+fi
+if [ "$auto" -eq 0 ] && ! [[ "$keep" =~ ^[1-9][0-9]*$ ]]; then
   printf 'keep must be a positive integer: %s\n' "$keep" >&2
+  exit 2
+fi
+if [ "$auto" -eq 1 ] && ! [[ "$budget" =~ ^[1-9][0-9]*$ ]]; then
+  printf 'budget must be a positive byte limit: %s\n' "$budget" >&2
   exit 2
 fi
 
@@ -130,93 +144,166 @@ if [ "$last_heading" -lt 0 ]; then
   exit 2
 fi
 
-# A session entry is a Markdown bullet beginning with an ISO date, optionally
-# wrapped in backticks. The section heading text may be localized.
+# Session entries are structural dated bullets; the section heading may be
+# localized. Keep wrapped lines with their dated record.
 date_re='^[-*][[:space:]]+(`)?[0-9]{4}-[0-9]{2}-[0-9]{2}(`)?([[:space:]]|$)'
+date_value_re='^[-*][[:space:]]+`?([0-9]{4}-[0-9]{2}-[0-9]{2})`?([[:space:]]|$)'
 prefix=()
 records=()
+record_dates=()
 record=''
 found=0
+save_record() {
+  records+=("$record")
+  first_line=${record%%$'\n'*}
+  if [[ "$first_line" =~ $date_value_re ]]; then
+    record_dates+=("${BASH_REMATCH[1]}")
+  else
+    record_dates+=("9999-99-99")
+  fi
+}
 for ((i=last_heading+1; i<${#lines[@]}; i++)); do
   line=${lines[$i]}
   if [[ "$line" =~ $date_re ]]; then
-    if [ "$found" -eq 1 ]; then records+=("$record"); fi
+    if [ "$found" -eq 1 ]; then save_record; fi
     record=$line
     found=1
   elif [ "$found" -eq 1 ]; then
-    # Wrapped legacy entries stay attached to their dated record. Empty lines
-    # are formatting only and are dropped when the section is rewritten.
+    # Empty lines are formatting only and are dropped when the section rewrites.
     [ -n "$line" ] && record+=$'\n'"$line"
   else
     prefix+=("$line")
   fi
 done
-[ "$found" -eq 0 ] || records+=("$record")
+[ "$found" -eq 0 ] || save_record
 
-if [ "${#records[@]}" -le "$keep" ]; then
-  printf 'STATE has %s dated session record(s); keep=%s, nothing to prune.\n' "${#records[@]}" "$keep"
+state_size=$(wc -c < "$state_file" | tr -d '[:space:]')
+if [ "$auto" -eq 1 ] && [ "$state_size" -le "$budget" ]; then
+  printf 'STATE is %s/%s bytes; no pruning needed.\n' "$state_size" "$budget"
+  exit 0
+fi
+if [ "${#records[@]}" -eq 0 ]; then
+  if [ "$auto" -eq 1 ]; then
+    printf 'STATE is %s bytes, over the %s-byte budget, with no dated session records to archive; no files changed.\n' "$state_size" "$budget" >&2
+    exit 3
+  fi
+  printf 'STATE has no dated session records; nothing to prune.\n'
+  exit 0
+fi
+
+# Sort by ISO date, then reverse file position for equal dates. Newest-first
+# logs keep the first same-day entries hot while preserving their written order.
+date_order=()
+for ((i=0; i<${#records[@]}; i++)); do
+  inserted=0
+  next_order=()
+  if [ "${#date_order[@]}" -gt 0 ]; then
+    for old_index in "${date_order[@]}"; do
+      if [ "$inserted" -eq 0 ] \
+        && { [[ "${record_dates[$i]}" < "${record_dates[$old_index]}" ]] \
+          || { [ "${record_dates[$i]}" = "${record_dates[$old_index]}" ] && [ "$i" -gt "$old_index" ]; }; }; then
+        next_order+=("$i")
+        inserted=1
+      fi
+      next_order+=("$old_index")
+    done
+  fi
+  [ "$inserted" -eq 1 ] || next_order+=("$i")
+  date_order=("${next_order[@]}")
+done
+
+remove=()
+for ((i=0; i<${#records[@]}; i++)); do remove+=(0); done
+remove_count=0
+if [ "$auto" -eq 0 ]; then
+  if [ "${#records[@]}" -le "$keep" ]; then
+    printf 'STATE has %s dated session record(s); keep=%s, nothing to prune.\n' "${#records[@]}" "$keep"
+    exit 0
+  fi
+  remove_count=$((${#records[@]} - keep))
+  for ((i=0; i<remove_count; i++)); do remove[${date_order[$i]}]=1; done
+fi
+
+has_archive_ref=0
+for line in "${lines[@]}"; do
+  case "$line" in *"$archive_link"*) has_archive_ref=1 ;; esac
+done
+render_state() {
+  local destination="$1" j
+  {
+    for ((j=0; j<=last_heading; j++)); do printf '%s\n' "${lines[$j]}"; done
+    [ "$has_archive_ref" -eq 1 ] || printf '%s\n' "$archive_ref"
+    if [ "${#prefix[@]}" -gt 0 ]; then
+      for line in "${prefix[@]}"; do printf '%s\n' "$line"; done
+    fi
+    for ((j=0; j<${#records[@]}; j++)); do
+      [ "${remove[$j]}" -eq 1 ] || printf '%s\n' "${records[$j]}"
+    done
+  } > "$destination"
+}
+
+preview_file=$(mktemp "${TMPDIR:-/tmp}/fragment-prune.XXXXXX") || exit 2
+new_state=''
+new_archive=''
+trap 'rm -f "$preview_file" "$new_state" "$new_archive"' EXIT
+if [ "$auto" -eq 1 ]; then
+  fit=0
+  for oldest_index in "${date_order[@]}"; do
+    remove[$oldest_index]=1
+    remove_count=$((remove_count + 1))
+    render_state "$preview_file" || exit 2
+    candidate_size=$(wc -c < "$preview_file" | tr -d '[:space:]')
+    if [ "$candidate_size" -le "$budget" ]; then fit=1; break; fi
+  done
+  if [ "$fit" -eq 0 ]; then
+    printf 'STATE fixed content still exceeds the %s-byte budget after all %s dated record(s) are considered; no files changed.\n' "$budget" "${#records[@]}" >&2
+    exit 3
+  fi
+else
+  render_state "$preview_file" || exit 2
+  candidate_size=$(wc -c < "$preview_file" | tr -d '[:space:]')
+fi
+
+archive_existing=0
+[ -f "$archive_file" ] && archive_existing=1
+if [ "$apply" -eq 0 ]; then
+  if [ "$auto" -eq 1 ]; then
+    printf 'Would archive %s oldest dated session record(s) to %s; STATE would be %s/%s bytes; no files changed. Pass --apply to write.\n' \
+      "$remove_count" "$archive_rel" "$candidate_size" "$budget"
+  else
+    printf 'Would move %s older session record(s) to %s and keep %s in %s; no files changed. Pass --apply to write.\n' \
+      "$remove_count" "$archive_rel" "$(( ${#records[@]} - remove_count ))" "$state_rel"
+  fi
   exit 0
 fi
 
 archive_dir=$(dirname "$archive_file")
-archive_existing=0
-[ -f "$archive_file" ] && archive_existing=1
-already_archived=0
-to_archive=0
-for ((i=keep; i<${#records[@]}; i++)); do
-  key=$(printf '%s\n' "${records[$i]}" | cksum)
-  marker="<!-- session-record:$key -->"
-  if [ "$archive_existing" -eq 1 ] && grep -Fq -- "$marker" "$archive_file"; then
-    already_archived=$((already_archived + 1))
-  else
-    to_archive=$((to_archive + 1))
-  fi
-done
-
-remove_count=$((${#records[@]} - keep))
-if [ "$apply" -eq 0 ]; then
-  printf 'Would move %s older session record(s) to %s and keep %s in %s; no files changed. Pass --apply to write.\n' \
-    "$remove_count" "$archive_rel" "$keep" "$state_rel"
-  exit 0
-fi
-
 mkdir -p "$archive_dir" || exit 2
 state_dir=$(dirname "$state_file")
 new_state=$(mktemp "$state_dir/.state-prune.XXXXXX") || exit 2
-new_archive=$(mktemp "$archive_dir/.state-archive.XXXXXX") || { rm -f "$new_state"; exit 2; }
-trap 'rm -f "$new_state" "$new_archive"' EXIT
-
+new_archive=$(mktemp "$archive_dir/.state-archive.XXXXXX") || exit 2
 if [ "$archive_existing" -eq 1 ]; then
   cp -p "$archive_file" "$new_archive" || exit 2
 else
   printf '# Archived STATE session history\n\n' > "$new_archive" || exit 2
   chmod 644 "$new_archive" || exit 2
 fi
-for ((i=keep; i<${#records[@]}; i++)); do
+for ((i=0; i<${#records[@]}; i++)); do
+  [ "${remove[$i]}" -eq 1 ] || continue
   key=$(printf '%s\n' "${records[$i]}" | cksum)
   marker="<!-- session-record:$key -->"
   if ! grep -Fq -- "$marker" "$new_archive"; then
     printf '%s\n%s\n\n' "$marker" "${records[$i]}" >> "$new_archive" || exit 2
   fi
 done
-
 cp -p "$state_file" "$new_state" || exit 2
-has_archive_ref=0
-if [ "${#prefix[@]}" -gt 0 ]; then
-  for line in "${prefix[@]}"; do
-    case "$line" in *"$archive_link"*) has_archive_ref=1 ;; esac
-  done
-fi
-{
-  for ((i=0; i<=last_heading; i++)); do printf '%s\n' "${lines[$i]}"; done
-  [ "$has_archive_ref" -eq 1 ] || printf '%s\n' "$archive_ref"
-  if [ "${#prefix[@]}" -gt 0 ]; then
-    for line in "${prefix[@]}"; do printf '%s\n' "$line"; done
-  fi
-  for ((i=0; i<keep; i++)); do printf '%s\n' "${records[$i]}"; done
-} > "$new_state" || exit 2
-
+render_state "$new_state" || exit 2
 mv "$new_archive" "$archive_file" || exit 2
 mv "$new_state" "$state_file" || exit 2
-printf 'Archived %s older session record(s) to %s; kept %s in %s.\n' \
-  "$remove_count" "$archive_rel" "$keep" "$state_rel"
+if [ "$auto" -eq 1 ]; then
+  printf 'Archived %s oldest dated session record(s) to %s; STATE is now %s bytes within the %s-byte budget.\n' \
+    "$remove_count" "$archive_rel" "$candidate_size" "$budget"
+else
+  printf 'Archived %s older session record(s) to %s; kept %s in %s.\n' \
+    "$remove_count" "$archive_rel" "$(( ${#records[@]} - remove_count ))" "$state_rel"
+fi

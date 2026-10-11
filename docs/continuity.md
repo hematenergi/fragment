@@ -3,7 +3,7 @@ id: continuity
 title: Continuity — sources, evidence and inventory
 status: active
 owner: hematenergi
-last-verified: 2026-09-09
+last-verified: 2026-10-11
 ---
 
 # Continuity and source roles
@@ -83,6 +83,12 @@ Use `--worktree` with that base for a local session spanning commits.
 The guard inspects checkout files for structure; committed evidence comes from
 Git objects, so an unstaged handoff cannot satisfy CI.
 
+After a successful local close check, Fragment automatically keeps STATE within
+12,000 UTF-8 bytes. It archives the oldest dated session records, preserves the
+full text in `docs/_attic/`, and links that archive from hot STATE. This explicit
+Markdown edge keeps cold history discoverable in Obsidian Graph View and other
+link-based readers. CI, inventory and failed checks do not mutate adopter files.
+
 ```bash
 bash scripts/docs-check.sh
 bash scripts/docs-check.sh --inventory
@@ -120,11 +126,14 @@ available session evidence; it does not certify all documentation.
 
 ## Migrating an existing install
 
-Upgrade the guard with `install.sh --upgrade`. Existing protocol, daily and
+Upgrade the guard and recognized pruning helper with `install.sh --upgrade`.
+The helper is replaced only when its complete bytes match a released copy;
+customized copies are left for a deliberate merge. Existing protocol, daily and
 workflow files are user-owned and must be reviewed for these changes; they are
 not overwritten. Review the role map and replace unconditional STATE/log rituals
 with updates to the affected destinations. Keep your own invariants and status
-permissions. Never mass-stamp dates, park all tasks or archive history to pass.
+permissions. Never mass-stamp dates, park all tasks or manually archive history
+to silence a warning; automatic pruning preserves the full archive separately.
 
 The workflow must pass its actual comparison base. A branch's first push has no
 prior branch snapshot: report that limitation explicitly (or deliberately choose

@@ -388,18 +388,19 @@ printf '%s\n' "$out" | grep -q 'too old to carry a version' \
   || bad "  ... unversioned copy was not recognised"
 
 # Upgrade from a clean, recognised guard. Give a disposable copy of the
-# installer the next version number: the target remains a real 0.6.0 install,
+# installer the next version number: the target remains a real 0.6.1 install,
 # so this proves the same checksum gate an actual later release will use.
 upgrader="$TMP/upgrader"; mkdir -p "$upgrader"
 cp "$ROOT/install.sh" "$upgrader/install.sh"
 cp -R "$ROOT/template" "$upgrader/template"
-perl -pi -e 's/^FRAGMENT_VERSION="0\.6\.0"$/FRAGMENT_VERSION="0.7.0"/ or die "missing version stamp" if /^FRAGMENT_VERSION=/' \
+perl -pi -e 's/^FRAGMENT_VERSION="0\.6\.1"$/FRAGMENT_VERSION="0.7.0"/ or die "missing version stamp" if /^FRAGMENT_VERSION=/' \
   "$upgrader/template/scripts/docs-check.sh"
+printf '\n# simulated next pruning-helper release\n' >> "$upgrader/template/scripts/state-prune.sh"
 # This simulation recognises the source guard as its preceding version. Real
 # release fingerprints in install.sh remain immutable; never update a released
 # checksum merely because the development worktree changes.
 read -r test_sum test_bytes _ < <(cksum "$ROOT/template/scripts/docs-check.sh")
-perl -pi -e 's/0\.6\.0:[0-9]+:[0-9]+/0.6.0:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.6\.0:/' "$upgrader/install.sh"
+perl -pi -e 's/0\.6\.1:[0-9]+:[0-9]+/0.6.1:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.6\.1:/' "$upgrader/install.sh"
 
 d="$TMP/upgrade-dry"; mkdir -p "$d"; git -C "$d" init -q .
 bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
@@ -418,6 +419,9 @@ installed=$(sed -n 's/^FRAGMENT_VERSION="\(.*\)"$/\1/p' "$d/scripts/docs-check.s
   && cmp -s "$d/scripts/docs-check.sh" "$upgrader/template/scripts/docs-check.sh" \
   && ok "--upgrade replaces an unmodified known guard" \
   || bad "--upgrade did not replace the known guard"
+cmp -s "$d/scripts/state-prune.sh" "$upgrader/template/scripts/state-prune.sh" \
+  && ok "  ... and advances a recognized pruning helper with it" \
+  || bad "  ... recognized pruning helper did not advance"
 printf '%s\n' "$out" | grep -q 'keep    AGENTS.md' \
   && ok "  ... and reports each existing non-guard file it retains" \
   || bad "  ... retained files were not named"
@@ -430,10 +434,46 @@ printf '\n# team-specific guard rule\n' >> "$d/scripts/docs-check.sh"
 before=$(cksum "$d/scripts/docs-check.sh")
 out=$( bash "$upgrader/install.sh" --upgrade "$d" 2>&1 ); c=$?
 after=$(cksum "$d/scripts/docs-check.sh")
-[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.6.0' \
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.6.1' \
   && [ "$before" = "$after" ] \
   && ok "--upgrade never overwrites a customised guard" \
   || bad "--upgrade overwrote or failed to name a customised guard"
+
+# A released pruning helper is upgradeable by exact checksum; a hand-edited
+# copy remains user-owned. Older installs missing the helper get the required
+# auto-prune component without reinstalling their optional documentation.
+d="$TMP/upgrade-old-pruner"; mkdir -p "$d"; git -C "$d" init -q .
+bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
+cp "$ROOT/tests/fixtures/state-prune-0.6.0.sh" "$d/scripts/state-prune.sh"
+out=$(bash "$ROOT/install.sh" --upgrade "$d" 2>&1); c=$?
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'upgraded scripts/state-prune.sh' \
+  && cmp -s "$d/scripts/state-prune.sh" "$ROOT/template/scripts/state-prune.sh" \
+  && ok "--upgrade replaces the recognized v0.6.0 pruning helper" \
+  || bad "--upgrade did not update the recognized pruning helper"
+
+d="$TMP/upgrade-missing-pruner"; mkdir -p "$d"; git -C "$d" init -q .
+bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
+rm "$d/scripts/state-prune.sh"
+out=$(bash "$ROOT/install.sh" --dry-run --upgrade "$d" 2>&1); c=$?
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'would add scripts/state-prune.sh' \
+  && [ ! -e "$d/scripts/state-prune.sh" ] \
+  && ok "--dry-run --upgrade previews the required missing pruning helper" \
+  || bad "missing-helper dry run wrote files or omitted the helper"
+out=$(bash "$ROOT/install.sh" --upgrade "$d" 2>&1); c=$?
+[ "$c" -eq 0 ] && cmp -s "$d/scripts/state-prune.sh" "$ROOT/template/scripts/state-prune.sh" \
+  && ok "--upgrade adds the missing pruning helper" \
+  || bad "--upgrade did not add the missing pruning helper"
+
+d="$TMP/upgrade-custom-pruner"; mkdir -p "$d"; git -C "$d" init -q .
+bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
+printf '\n# adopter customization\n' >> "$d/scripts/state-prune.sh"
+before=$(cksum "$d/scripts/state-prune.sh")
+out=$(bash "$ROOT/install.sh" --upgrade "$d" 2>&1); c=$?
+after=$(cksum "$d/scripts/state-prune.sh")
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown helper' \
+  && [ "$before" = "$after" ] \
+  && ok "--upgrade preserves a customised pruning helper" \
+  || bad "--upgrade overwrote or failed to name a customised pruning helper"
 
 # ---------------------------------------------------------------------------
 echo; echo "release consistency"
