@@ -69,11 +69,51 @@ cd /path/to/your/repo
 bash scripts/docs-check.sh
 ```
 
-The first check may fail while template values are still present. Fill in the project facts it names, then run it again. The installer preserves existing files; merge them deliberately. To upgrade a recognized, unmodified guard and pruning helper:
+The first check may fail while template values are still present. Fill in the project facts it names, then run it again. The installer preserves existing files; merge them deliberately.
+
+### Upgrade an existing repo
+
+Before upgrading, commit and push the project changes you want to keep. The
+target repo should have a clean working tree and index, and its current branch
+should be synced with its upstream. Check from the target repo:
 
 ```bash
+git fetch
+git status --short
+git status -sb
+```
+
+`git status --short` should print nothing; `git status -sb` should show an
+upstream (for example, `## main...origin/main`) with no ahead/behind count. If
+there is local work, commit and push it through your normal review. If the
+branch is ahead, push it; if it is behind, pull or rebase it through your normal
+workflow and check again. If no upstream is configured, configure and push one
+before upgrading. Fragment will not commit or push project changes for you.
+This gives the upgrade a known Git baseline to compare or restore.
+
+Then, from the Fragment checkout at the release you want to install, preview and
+apply the upgrade:
+
+```bash
+bash fragment/install.sh --dry-run --upgrade /path/to/your/repo
 bash fragment/install.sh --upgrade /path/to/your/repo
 ```
+
+Run the target repo's local guard and its usual tests afterward:
+
+```bash
+cd /path/to/your/repo
+bash scripts/docs-check.sh
+```
+
+A successful local guard may archive dated STATE history automatically. Review
+`git status` and the archive afterward; your repo's ignore rules may leave the
+archive untracked. If the guard reports that fixed STATE content still exceeds
+the 12,000-byte budget, it leaves the files unchanged; review that report
+instead of forcing or manually pruning content.
+
+The installer itself does not commit or push the upgrade. Review and commit the
+result through the target repo's normal workflow.
 
 ## How it works
 
