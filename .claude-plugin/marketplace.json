@@ -8,7 +8,7 @@
       "name": "adopt-fragment",
       "source": "./plugins/adopt-fragment",
       "description": "Install or update the Fragment continuity harness in an existing repository.",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "author": {
         "name": "hematenergi"
       }

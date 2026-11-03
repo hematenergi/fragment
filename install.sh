@@ -5,6 +5,7 @@
 #   bash install.sh [target-repo]     (default: current directory)
 #   bash install.sh --dry-run [dir]   show what would be written, touch nothing
 #   bash install.sh --upgrade [dir]   update unmodified known guard/prune helper
+#   bash install.sh --local [dir]     private context without host tracked edits
 #   bash install.sh --version
 set -uo pipefail
 
@@ -13,13 +14,15 @@ FRAGMENT_VERSION=$(sed -n 's/^FRAGMENT_VERSION="\(.*\)"$/\1/p' \
   "$(dirname "$0")/template/scripts/docs-check.sh" 2>/dev/null | head -1)
 FRAGMENT_VERSION="${FRAGMENT_VERSION:-unknown}"
 
-DRY=0; UPGRADE=0
+DRY=0; UPGRADE=0; LOCAL=0
 args=()
 for a in "$@"; do
   case "$a" in
     --version) printf 'fragment %s\n' "$FRAGMENT_VERSION"; exit 0 ;;
     --dry-run|-n) DRY=1 ;;
     --upgrade) UPGRADE=1 ;;
+    --local) LOCAL=1 ;;
+    -*) printf 'unknown option: %s\n' "$a" >&2; exit 2 ;;
     *) args+=("$a") ;;
   esac
 done
@@ -33,6 +36,12 @@ TARGET="${1:-.}"
 DST="$(cd "$TARGET" && pwd)" || exit 1
 [ -n "$DST" ] || { echo "cannot resolve target directory"; exit 1; }
 [ "$SRC" = "$DST" ] && { echo "target is the template itself"; exit 1; }
+if [ "$LOCAL" = 1 ]; then
+  local_args=()
+  [ "$DRY" != 1 ] || local_args+=(--dry-run)
+  [ "$UPGRADE" != 1 ] || { echo '--local --upgrade is not supported; preserve and back up the local history before migrating'; exit 2; }
+  exec bash "${SRC%/template}/scripts/install-local.sh" "${local_args[@]+"${local_args[@]}"}" "$DST"
+fi
 if [ "$UPGRADE" = 1 ] && [ ! -f "$DST/scripts/docs-check.sh" ]; then
   echo "no installed scripts/docs-check.sh — run install.sh without --upgrade for a first install"
   exit 1
@@ -56,6 +65,7 @@ known_guard() {
     0.2.0:3601293120:18195|\
     0.3.0:3524956158:21571|\
     0.4.0:3777372876:21571|\
+    0.7.0:1888144303:28023|\
     0.6.2:3562654215:28023|\
     0.6.1:3699922095:28023|\
     0.6.0:1244829712:26463|\

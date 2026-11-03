@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+## 0.7.0 — 2026-11-03
+
+### Added
+
+- `install.sh --local` installs the ordinary harness in an ignored `.fragment/`
+  directory without editing host tracked files, front doors or CI. Ignore rules
+  live in Git's local `info/exclude`, including for linked host worktrees.
+- Local context has independent Git history without a remote. `local-mode.sh
+  check` validates host changes and handoff structure; `local-mode.sh close`
+  saves the next baseline only after the canonical guard succeeds.
+- Host changes include HEAD, staged and unstaged diffs, and untracked file
+  contents. An old handoff or a date-only edit cannot satisfy a later changed
+  snapshot. Application diffs are hashed rather than stored in the context.
+- Explicit agent-entry, backup, removal and worktree guidance. Existing local
+  installations are preserved; local upgrade is not supported in this release.
+
+### Limits
+
+Local checks do not provide shared CI enforcement or prove application
+correctness. Each clone/worktree needs its own context and backup. The benchmark
+remains incomplete; no time or token savings are claimed.
+
 ## 0.6.2 — 2026-10-11
 
 ### Fixed

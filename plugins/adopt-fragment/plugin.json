@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "adopt-fragment",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Install or update the Fragment continuity harness in an existing repository.",
   "author": {
     "name": "hematenergi",
