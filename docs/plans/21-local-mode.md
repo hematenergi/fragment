@@ -29,7 +29,7 @@ Decision 0005 already permits releases while the benchmark remains unscored.
 - [x] Add regression tests and observe failure before implementing the feature.
 - [x] Document adoption, backup, worktree limits, removal and release changes.
 - [ ] Pass local tests, ShellCheck, the docs guard, secret checks and all CI OSes.
-  Local validation passed: 168 suite checks and 23 focused local-mode cases,
+  Local validation passed: 168 suite checks and 24 focused local-mode cases,
   including a run with CI environment variables set; remote CI is pending.
 - [ ] Merge and publish v0.7.0, then verify release and website publication.
 
@@ -56,7 +56,7 @@ git diff --check
 Before implementation: local dry-run regression FAIL (unknown --local target).
 Inherited-index regression: FAIL before the Git environment rejection.
 tests/run.sh: GREEN — 168 tests passed.
-tests/local-mode.sh: GREEN — 23 cases, including CI environment simulation.
+tests/local-mode.sh: GREEN — 24 cases, including CI environment simulation.
 ShellCheck -S warning: PASS.
 docs-check.sh: GREEN.
 gitleaks dir --no-banner --redact .: no leaks found.
@@ -65,6 +65,7 @@ git diff --check: PASS.
 
 ## Session log
 
+- 2026-11-03 · GPT-6 / Codex · observed a configured-hook bypass regression, removed hook/signing overrides and retained the host author identity for local history · next: repeat validation and rerun the release PR checks.
 - 2026-11-03 · GPT-6 / Codex · local suite, 23 focused cases, CI-environment simulation, ShellCheck, docs guard and secret scan pass · next: open the release PR, wait for OS checks and publish.
 - 2026-11-03 · GPT-6 / Codex · implemented local install, canonical guard reuse and private close history; initial suite passed 168 checks and 22 local cases; observed and fixed inherited-index isolation failure · next: final checks, cross-platform CI and publication.
 - 2026-11-03 · GPT-6 / Codex · opened the owner-authorized local-mode release from current remote state · next: regressions, implementation and publication.

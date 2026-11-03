@@ -114,6 +114,8 @@ The private history has no remote and never pushes. Inspect it with
 Host submodules or nested repositories need their own local context to detect
 changes within an already-dirty nested repo. Local mode has no shared CI gate
 and does not prove that code works or that recorded claims are true.
+Existing Git commit hooks and signing settings still apply to private history;
+resolve any policy rejection through the project's normal rules before closing.
 
 ### Backup, upgrades and removal
 

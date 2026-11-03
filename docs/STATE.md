@@ -117,7 +117,7 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 ## Session log
 Archived session history: [open archive](_attic/STATE-session-archive.md)
 
-- 2026-11-03 · GPT-6 / Codex · 21 · implemented local mode and passed 168 suite checks, 23 focused cases, ShellCheck, docs guard and Gitleaks; original checkout preserved · next: open PR, verify all CI OSes and publish v0.7.0; benchmark remains unscored.
+- 2026-11-03 · GPT-6 / Codex · 21 · implemented local mode and passed 168 suite checks, 24 focused cases, configured-hook enforcement, ShellCheck, docs guard and Gitleaks; original checkout preserved · next: open PR, verify all CI OSes and publish v0.7.0; benchmark remains unscored.
 
 - 2026-10-11 · GPT-6 / Codex · 20 · documented clean, pushed-repo upgrade prerequisites, preview/check steps, and the fixed-content budget stop in README · next: pass checks and merge the guidance.
 - 2026-10-11 · GPT-6 / Codex · 19 · merged PR #21 as `62b7402`, published v0.6.2, and passed all five required checks (Windows 18m35s); disposable Medulla STATE reached 11,930 bytes from 52,780 without editing Medulla · next: benchmark remains unscored.

@@ -68,17 +68,17 @@ Ignored files are not encryption or a backup; git clean -ffdx can delete them.
 Each host clone/worktree has separate context. To remove Fragment, first back up
 this folder, then remove it and the Fragment block in the host Git info/exclude.
 Local context may be read by your coding agent under its normal data policy.
+Existing Git commit hooks and signing settings also apply to private history.
 DOC
-git -C "$local_root" -c init.templateDir= init -q
+git -C "$local_root" init -q
 # Keep temporary lock/snapshot files out of the private history too.
 mkdir -p "$local_root/.git/info"
 printf '/.close-lock/\n/.project-snapshot.*\n' >> "$local_root/.git/info/exclude"
-git -C "$local_root" config user.name Fragment
-git -C "$local_root" config user.email fragment@localhost
-git -C "$local_root" config commit.gpgSign false
+git -C "$local_root" config user.name "$(git -C "$host" config user.name || printf Fragment)"
+git -C "$local_root" config user.email "$(git -C "$host" config user.email || printf fragment@localhost)"
 git -C "$local_root" config core.autocrlf false
 git -C "$local_root" add -A
-git -C "$local_root" -c core.hooksPath=/dev/null commit -qm 'Initialize local Fragment context'
+git -C "$local_root" commit -qm 'Initialize local Fragment context'
 printf '\nLocal mode installed. Keep the host repository instructions in force.\n'
 printf 'Tell your agent: Read the project instructions, then .fragment/AGENTS.md and .fragment/LOCAL.md.\n'
 printf 'Fill the local template, update .fragment/docs/STATE.md, then run:\n  bash .fragment/scripts/local-mode.sh close\n'

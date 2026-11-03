@@ -17,6 +17,8 @@
   snapshot. Application diffs are hashed rather than stored in the context.
 - Explicit agent-entry, backup, removal and worktree guidance. Existing local
   installations are preserved; local upgrade is not supported in this release.
+- Private commits honor configured Git hooks and signing settings and start
+  with the host's author identity when one is configured.
 
 ### Limits
 

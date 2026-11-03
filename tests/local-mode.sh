@@ -43,6 +43,7 @@ run bash "$ROOT/install.sh" --local "$D"
 grep -qx 'office instructions' "$D/AGENTS.md" || fail 'office instructions overwritten'
 git -C "$D" check-ignore -q .fragment/docs/STATE.md || fail 'context is not ignored'
 [ -z "$(git -C "$D/.fragment" remote)" ] || fail 'local context must have no remote'
+[ "$(git -C "$D/.fragment" config user.email)" = tester@example.com ] || fail 'local install did not preserve the host Git identity'
 ok 'installation preserves host tracked files, status and instructions'
 run local_cmd check
 [ "$CODE" != 0 ] || fail 'unfilled local template incorrectly passed'
@@ -123,6 +124,20 @@ host_index=$(cksum "$D/.git/index")
 run env GIT_INDEX_FILE="$D/.git/index" bash "$D/.fragment/scripts/local-mode.sh" close
 [ "$CODE" = 2 ] && [ "$(cksum "$D/.git/index")" = "$host_index" ] || fail 'inherited host index was not rejected safely'
 ok 'an inherited Git index cannot redirect private commits into the host index'
+
+baseline=$(git -C "$D/.fragment" rev-parse HEAD)
+mkdir "$TMP/policy-hooks"
+printf '#!/bin/sh\nprintf "Local policy hook refused this commit\\n" >&2\nexit 1\n' > "$TMP/policy-hooks/pre-commit"
+chmod +x "$TMP/policy-hooks/pre-commit"
+git -C "$D/.fragment" config core.hooksPath "$TMP/policy-hooks"
+handoff 'policy hook'
+run local_cmd close
+[ "$CODE" != 0 ] && [[ "$OUT" == *'Local policy hook'* ]] \
+  && [ "$(git -C "$D/.fragment" rev-parse HEAD)" = "$baseline" ] || fail 'local close bypassed a configured Git policy hook'
+git -C "$D/.fragment" config --unset core.hooksPath
+run local_cmd close
+[ "$CODE" = 0 ] || fail 'could not close after resolving local hook policy'
+ok 'configured Git policy hooks can refuse a local commit without advancing its baseline'
 
 saved=$(git -C "$D/.fragment" rev-parse HEAD)
 run bash "$ROOT/install.sh" --local "$D"

@@ -59,9 +59,7 @@ bash scripts/docs-check.sh
 if [ "$action" = close ]; then
   git add -A
   if ! git diff --cached --quiet; then
-    git -c core.hooksPath=/dev/null -c commit.gpgSign=false \
-      -c user.name=Fragment -c user.email=fragment@localhost \
-      commit -qm 'Record verified local handoff'
+    git commit -qm 'Record verified local handoff'
     printf 'Local handoff saved; next host changes require fresh evidence.\n'
   else
     printf 'Local handoff unchanged; baseline retained.\n'

@@ -29,6 +29,11 @@ local commit. Only a successful explicit close commits a new context baseline;
 an unsuccessful close and a check never advance it. The wrapper must preserve
 the existing guard's structural and automatic STATE-budget behavior.
 
+Private commits honor the user's configured Git hooks and signing settings.
+Installation and close must not disable those policies to make a check green.
+The host's configured author identity is the initial private identity, with a
+Fragment-only fallback if the host has none; later private changes are honored.
+
 ## Why
 
 Git already supplies portable history and comparison using the existing runtime
