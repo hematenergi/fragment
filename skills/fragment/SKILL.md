@@ -50,6 +50,8 @@ team needs them.
 
 ### 2. Preserve the repo's existing rules
 
+- If the user requests local/untracked adoption, follow **Local adoption** below
+  instead of merging files or wiring host CI. Otherwise use the shared install.
 - Never overwrite or delete existing files. Add the Fragment protocol pointer to
   an existing front door; keep existing decisions where they are.
 - Copy the Core from `template/`, merging it into the repo rather than replacing
@@ -88,6 +90,32 @@ missing documentation structure and handoffs, not code defects or false facts.
 Follow the newly installed protocol on this work: update affected records and
 `STATE.md`, preserve other sessions' changes, and confirm any external writes
 separately. Report the files installed, guard results, and unresolved blockers.
+
+## Local adoption
+
+Use `bash install.sh --local --dry-run /path/to/repo`, then `--local` from a
+Fragment release checkout. It installs under `.fragment/`, preserves host
+tracked files and excludes context through Git's local `info/exclude`.
+
+Read the host instructions first, then `.fragment/AGENTS.md` (or `CLAUDE.md`),
+`.fragment/LOCAL.md`, the local protocol and STATE. The host rules retain
+authority. Keep application edits/tests at the host root and continuity in the
+local folder. Fill template placeholders from evidence as in shared adoption;
+add only optional documents the project needs. Do not alter host front doors,
+tracked `.gitignore`, hooks or CI for this mode.
+
+Run `bash .fragment/scripts/local-mode.sh check` from the host root. Demonstrate
+failure and recovery using an unlisted note in `.fragment/docs/`, removing only
+that temporary note afterward. Update `.fragment/docs/STATE.md`, then run
+`bash .fragment/scripts/local-mode.sh close`. The wrapper includes host work
+and saves a private Git baseline only after the ordinary guard passes. Running
+the canonical guard alone does not check host changes.
+
+Tell the user the exact local entry prompt for future sessions: read the host
+instructions, then `.fragment/AGENTS.md` and `.fragment/LOCAL.md`. Explain that
+context stays per-worktree, has no remote/CI enforcement and needs a backup of
+the whole directory including `.git`. Local reinstall/upgrade is deliberately
+refused in this release. See the repository's INSTALL.md for removal and limits.
 
 ## Common misses
 

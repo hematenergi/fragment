@@ -3,7 +3,7 @@ id: state
 title: STATE — where the work stands
 status: active
 owner: hematenergi
-last-verified: 2026-10-11
+last-verified: 2026-11-03
 ---
 
 # STATE
@@ -22,7 +22,10 @@ working documents remain local and excluded from the public repo.
 
 ## Active fragment
 
-**No fragment is active. Fragment 19 is complete:** PR #21 merged as
+**Fragment 21 is active:** implement and release opt-in local mode as v0.7.0.
+The owner authorized implementation through publication. Work uses an isolated
+checkout of current origin/main; the original divergent checkout is preserved.
+See [plan 21](plans/21-local-mode.md). Fragment 19 is complete: PR #21 merged as
 `62b7402729a17d2f00cab58762afa67bd7dbe86a`; v0.6.2 is published. The
 adopter-shaped regression and disposable Medulla copy pass without modifying
 Medulla; Ubuntu, macOS, Windows, docs-check, and secrets CI checks all passed.
@@ -79,6 +82,7 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 | 17 | [clarify Fragment's value across the docs](plans/17-fragment-copy-audit.md) | `done` | — |
 | 18 | [make STATE pruning automatic and budget-driven](plans/18-automatic-state-pruning.md) | `done` | — |
 | 19 | [make automatic STATE pruning work for adopters](plans/19-adopter-safe-state-pruning.md) | `done` | 18 |
+| 21 | [use Fragment without changing the shared repo](plans/21-local-mode.md) | `in-progress` | — |
 
 ## Blocked / waiting on a human
 
@@ -113,6 +117,8 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 ## Session log
 Archived session history: [open archive](_attic/STATE-session-archive.md)
 
+- 2026-11-03 · GPT-6 / Codex · 21 · implemented local mode and passed 168 suite checks, 24 focused cases, configured-hook enforcement, ShellCheck, docs guard and Gitleaks; original checkout preserved · next: open PR, verify all CI OSes and publish v0.7.0; benchmark remains unscored.
+
 - 2026-10-11 · GPT-6 / Codex · 20 · documented clean, pushed-repo upgrade prerequisites, preview/check steps, and the fixed-content budget stop in README · next: pass checks and merge the guidance.
 - 2026-10-11 · GPT-6 / Codex · 19 · merged PR #21 as `62b7402`, published v0.6.2, and passed all five required checks (Windows 18m35s); disposable Medulla STATE reached 11,930 bytes from 52,780 without editing Medulla · next: benchmark remains unscored.
 
@@ -133,5 +139,3 @@ One line per session, newest first. Format:
 - 2026-10-10 · GPT-6 / Codex · 13 · replaced README, INSTALL.md, and homepage links with the GitHub skill source; corrected the prior HTTP-only verification; local suite passed 150 tests and docs-check passed · next: publish and verify the deployed links.
 - 2026-10-10 · GPT-6 / Codex · 13 · found the skills.sh detail URL returned HTTP 200 with an application-level 404 and that search/catalog pages still show stale data; correcting public links to point to the canonical GitHub skill source · next: verify local docs and site, then publish the link correction.
 - 2026-10-10 · GPT-6 / Codex · 12 · merged PR #8 (`95033e6`); all five CI checks passed, the single canonical skill and direct install page verified, and public metadata updated; recorded that skills.sh still serves the removed legacy slug and does not document a repo-side cleanup control · next: resume parked benchmark plan 07 when Free Tier quota is available.
-- 2026-10-10 · GPT-6 / Codex · 12 · closed superseded draft PR #4 after v0.6.0 shipped separately in PR #5; confirmed its Gemini benchmark work remains unscored and its branch is preserved; identified the duplicated `/fragment/fragment` skills.sh path · next: publish the distinct `adopt-fragment` skill and complete verified agent install surfaces.
-- 2026-10-10 · GPT-6 / Codex · 11 · merged PR #6 as `7ec46f0`; all five checks passed, Pages deploy run `38058193388` succeeded, the live homepage returned HTTP 200, and the README on `main` is 93 lines · next: resume benchmark plan 07 when Free Tier quota is available; plan 04 awaits the owner.

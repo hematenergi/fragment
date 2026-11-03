@@ -25,7 +25,8 @@
 
 Your next coding session should not have to reconstruct decisions or ask where
 the work stopped. Fragment keeps project decisions, lessons, current state, and
-the next action in files committed with the repo. The next agent can read them;
+the next action in files committed with the repo, or in an optional local
+workspace. The next agent can read them;
 a Bash guard checks the handoff locally and in CI.
 
 Fragment works with the coding agent you already use and runs on Bash and Git.
@@ -55,7 +56,7 @@ commands after it.
 Ask your coding agent:
 
 ```text
-Install Fragment v0.6.2 from https://github.com/hematenergi/fragment into this repository.
+Install Fragment v0.7.0 from https://github.com/hematenergi/fragment into this repository.
 Preserve existing files. Use only decisions supported by this repository and our conversation.
 Run bash scripts/docs-check.sh and leave unknowns as blockers instead of guessing.
 ```
@@ -63,13 +64,41 @@ Run bash scripts/docs-check.sh and leave unknowns as blockers instead of guessin
 Or install from Bash:
 
 ```bash
-git clone --depth 1 --branch v0.6.2 https://github.com/hematenergi/fragment
+git clone --depth 1 --branch v0.7.0 https://github.com/hematenergi/fragment
 bash fragment/install.sh /path/to/your/repo
 cd /path/to/your/repo
 bash scripts/docs-check.sh
 ```
 
 The first check may fail while template values are still present. Fill in the project facts it names, then run it again. The installer preserves existing files; merge them deliberately.
+
+### Keep Fragment local
+
+If the team permits your agent workflow but does not want extra files committed,
+install from the same Fragment release using:
+
+```bash
+bash fragment/install.sh --local --dry-run /path/to/your/repo
+bash fragment/install.sh --local /path/to/your/repo
+```
+
+This creates `.fragment/` and excludes it through Git's local `info/exclude`.
+It preserves host tracked files, agent instructions, `.gitignore`, hooks and CI.
+Tell your agent: **Read the project instructions, then `.fragment/AGENTS.md`
+and `.fragment/LOCAL.md`.** Fill the local template from verified project facts.
+
+At the end of work, update `.fragment/docs/STATE.md` and run from the host root:
+
+```bash
+bash .fragment/scripts/local-mode.sh check
+bash .fragment/scripts/local-mode.sh close
+```
+
+`check` runs the canonical guard, including its local STATE budget, without
+advancing the handoff baseline. `close` saves private context history only after
+the check passes. Host changes require a fresh handoff; old notes cannot be
+reused after the previous successful close. Local mode does not install shared
+CI enforcement. See [local setup, backup and removal](INSTALL.md#local-mode).
 
 ### Upgrade an existing repo
 
@@ -129,7 +158,7 @@ CLAUDE.md / AGENTS.md → docs/AGENT-PROTOCOL.md → docs/STATE.md
 
 Fragment's checks use Bash and Git, with no runtime database, daemon, account, or model API.
 
-## Pick up the right context (v0.6.2)
+## Pick up the right context (v0.7.0)
 
 - Find relevant prior decisions and lessons with `bash scripts/recall.sh "query"`.
   It uses deterministic keyword matching—no model call or network access.

@@ -51,6 +51,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/17-fragment-copy-audit.md`](plans/17-fragment-copy-audit.md) | `done` — make Fragment's value clearer and keep internal research notes local |
 | [`plans/18-automatic-state-pruning.md`](plans/18-automatic-state-pruning.md) | `done` — make STATE pruning automatic and budget-driven |
 | [`plans/19-adopter-safe-state-pruning.md`](plans/19-adopter-safe-state-pruning.md) | `done` — make automatic STATE pruning work for adopters |
+| [`plans/21-local-mode.md`](plans/21-local-mode.md) | `in-progress` — isolated local installation and verified handoffs |
 
 ## Decisions
 
@@ -65,6 +66,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`decisions/0007-restore-skills-sh-fragment-slug.md`](decisions/0007-restore-skills-sh-fragment-slug.md) | Restore the single `fragment` skill slug for a direct skills.sh install page |
 | [`decisions/0008-automatic-state-pruning.md`](decisions/0008-automatic-state-pruning.md) | `superseded` — original automatic STATE pruning behavior |
 | [`decisions/0009-prune-state-across-sections.md`](decisions/0009-prune-state-across-sections.md) | Apply the STATE budget across sections and explicit terminal plan rows |
+| [`decisions/0010-local-context-history.md`](decisions/0010-local-context-history.md) | Keep opt-in local context and its evidence history separate from the host repo |
 
 ## Lessons
 
@@ -76,4 +78,5 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`lessons/measuring-touch-instead-of-review.md`](lessons/measuring-touch-instead-of-review.md) | Name the question a proxy actually answers |
 | [`lessons/the-secret-scanner-flagged-the-tests.md`](lessons/the-secret-scanner-flagged-the-tests.md) | A repo that tests a detector needs an allowlist for its fixtures |
 | [`lessons/history-is-not-session-evidence.md`](lessons/history-is-not-session-evidence.md) | A documentation clue is not a verified error or unfinished handoff |
+| [`lessons/git-location-environment-overrides.md`](lessons/git-location-environment-overrides.md) | Reject inherited Git location overrides before changing private context |
 | [`lessons/a-section-heading-is-not-a-history-boundary.md`](lessons/a-section-heading-is-not-a-history-boundary.md) | Search history across sections and corroborate terminal rows |

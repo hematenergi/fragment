@@ -133,11 +133,14 @@ if command -v shellcheck >/dev/null 2>&1; then
        "$ROOT/scripts/recall.sh" \
        "$ROOT/scripts/state-prune.sh" \
        "$ROOT/scripts/load-context.sh" \
+       "$ROOT/scripts/install-local.sh" \
+       "$ROOT/scripts/local-mode.sh" \
        "$ROOT/tests/run.sh" \
        "$ROOT/tests/recall.sh" \
        "$ROOT/tests/state-prune.sh" \
        "$ROOT/tests/load-context.sh" \
-       "$ROOT/tests/link-fixtures.sh" > "$TMP/shellcheck.out" 2>&1; then
+       "$ROOT/tests/link-fixtures.sh" \
+       "$ROOT/tests/local-mode.sh" > "$TMP/shellcheck.out" 2>&1; then
     ok "shellcheck is clean at -S warning (the invocation CI uses)"
   else
     bad "shellcheck reports what CI will fail on"
@@ -388,19 +391,19 @@ printf '%s\n' "$out" | grep -q 'too old to carry a version' \
   || bad "  ... unversioned copy was not recognised"
 
 # Upgrade from a clean, recognised guard. Give a disposable copy of the
-# installer the next version number: the target remains a real 0.6.2 install,
+# installer the next version number: the target remains a real 0.7.0 install,
 # so this proves the same checksum gate an actual later release will use.
 upgrader="$TMP/upgrader"; mkdir -p "$upgrader"
 cp "$ROOT/install.sh" "$upgrader/install.sh"
 cp -R "$ROOT/template" "$upgrader/template"
-perl -pi -e 's/^FRAGMENT_VERSION="0\.6\.2"$/FRAGMENT_VERSION="0.7.0"/ or die "missing version stamp" if /^FRAGMENT_VERSION=/' \
+perl -pi -e 's/^FRAGMENT_VERSION="0\.7\.0"$/FRAGMENT_VERSION="0.8.0"/ or die "missing version stamp" if /^FRAGMENT_VERSION=/' \
   "$upgrader/template/scripts/docs-check.sh"
 printf '\n# simulated next pruning-helper release\n' >> "$upgrader/template/scripts/state-prune.sh"
 # This simulation recognises the source guard as its preceding version. Real
 # release fingerprints in install.sh remain immutable; never update a released
 # checksum merely because the development worktree changes.
 read -r test_sum test_bytes _ < <(cksum "$ROOT/template/scripts/docs-check.sh")
-perl -pi -e 's/0\.6\.2:[0-9]+:[0-9]+/0.6.2:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.6\.2:/' "$upgrader/install.sh"
+perl -pi -e 's/0\.7\.0:[0-9]+:[0-9]+/0.7.0:'"$test_sum:$test_bytes"'/ or die "missing release fingerprint" if /0\.7\.0:/' "$upgrader/install.sh"
 
 d="$TMP/upgrade-dry"; mkdir -p "$d"; git -C "$d" init -q .
 bash "$ROOT/install.sh" "$d" >/dev/null 2>&1
@@ -415,7 +418,7 @@ after=$(cksum "$d/scripts/docs-check.sh")
 out=$( bash "$upgrader/install.sh" --upgrade "$d" 2>&1 ); c=$?
 installed=$(sed -n 's/^FRAGMENT_VERSION="\(.*\)"$/\1/p' "$d/scripts/docs-check.sh" | head -1)
 [ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'upgraded scripts/docs-check.sh' \
-  && [ "$installed" = "0.7.0" ] \
+  && [ "$installed" = "0.8.0" ] \
   && cmp -s "$d/scripts/docs-check.sh" "$upgrader/template/scripts/docs-check.sh" \
   && ok "--upgrade replaces an unmodified known guard" \
   || bad "--upgrade did not replace the known guard"
@@ -434,7 +437,7 @@ printf '\n# team-specific guard rule\n' >> "$d/scripts/docs-check.sh"
 before=$(cksum "$d/scripts/docs-check.sh")
 out=$( bash "$upgrader/install.sh" --upgrade "$d" 2>&1 ); c=$?
 after=$(cksum "$d/scripts/docs-check.sh")
-[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.6.2' \
+[ "$c" -eq 0 ] && printf '%s\n' "$out" | grep -q 'customised or unknown Fragment 0.7.0' \
   && [ "$before" = "$after" ] \
   && ok "--upgrade never overwrites a customised guard" \
   || bad "--upgrade overwrote or failed to name a customised guard"
@@ -704,5 +707,10 @@ fi
 echo
 # shellcheck source=tests/continuity.sh
 . "$ROOT/tests/continuity.sh"
+if bash "$ROOT/tests/local-mode.sh"; then
+  ok "local install and handoff evidence behavior is covered"
+else
+  bad "local-mode tests failed"
+fi
 if [ "$failed" -gt 0 ]; then printf 'FAILED — %s passed, %s failed\n' "$pass" "$failed"; exit 1; fi
 printf 'GREEN — %s tests passed\n' "$pass"
