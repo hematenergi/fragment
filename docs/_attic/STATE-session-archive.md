@@ -111,3 +111,6 @@
 <!-- session-record:170153933 301 -->
 - 2026-10-10 · GPT-6 / Codex · 11 · merged PR #6 as `7ec46f0`; all five checks passed, Pages deploy run `38058193388` succeeded, the live homepage returned HTTP 200, and the README on `main` is 93 lines · next: resume benchmark plan 07 when Free Tier quota is available; plan 04 awaits the owner.
 
+<!-- session-record:1354548962 369 -->
+- 2026-10-10 · GPT-6 / Codex · 12 · merged PR #8 (`95033e6`); all five CI checks passed, the single canonical skill and direct install page verified, and public metadata updated; recorded that skills.sh still serves the removed legacy slug and does not document a repo-side cleanup control · next: resume parked benchmark plan 07 when Free Tier quota is available.
+

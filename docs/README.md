@@ -51,7 +51,7 @@ The one exception is `docs/_attic/`, which the guard ignores entirely.
 | [`plans/17-fragment-copy-audit.md`](plans/17-fragment-copy-audit.md) | `done` — make Fragment's value clearer and keep internal research notes local |
 | [`plans/18-automatic-state-pruning.md`](plans/18-automatic-state-pruning.md) | `done` — make STATE pruning automatic and budget-driven |
 | [`plans/19-adopter-safe-state-pruning.md`](plans/19-adopter-safe-state-pruning.md) | `done` — make automatic STATE pruning work for adopters |
-| [`plans/21-local-mode.md`](plans/21-local-mode.md) | `in-progress` — isolated local installation and verified handoffs |
+| [`plans/21-local-mode.md`](plans/21-local-mode.md) | `done` — v0.7.0 local installation and verified handoffs published |
 
 ## Decisions
 

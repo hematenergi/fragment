@@ -14,18 +14,19 @@ last-verified: 2026-11-03
 
 ## Phase
 
-**v0.6.2 is the latest published release** (`62b7402729a17d2f00cab58762afa67bd7dbe86a`).
-It fixes adopter STATE pruning across sections and corroborated terminal plan
-rows while retaining the 12,000-byte budget and linked history. Fragment 19 is
-complete. The benchmark is still unscored; internal strategy and benchmark
-working documents remain local and excluded from the public repo.
+**v0.7.0 is the latest published release** (`e74f107644ae7327bf60b338e50725a3b8bd8ca0`).
+It adds opt-in local installation, independent context history and host-change
+handoff checks while preserving the shared install and canonical guard.
+Fragment 21 is complete. The benchmark is still unscored; internal strategy and
+benchmark working documents remain local and excluded from the public repo.
 
 ## Active fragment
 
-**Fragment 21 is active:** implement and release opt-in local mode as v0.7.0.
-The owner authorized implementation through publication. Work uses an isolated
-checkout of current origin/main; the original divergent checkout is preserved.
-See [plan 21](plans/21-local-mode.md). Fragment 19 is complete: PR #21 merged as
+**No fragment is active. Fragment 21 is complete:** PR #24 merged as e74f107,
+v0.7.0 is published and Pages run 41603377364 succeeded. All five pre-merge CI
+checks passed, including Windows; the release tree matches the tested tree.
+The original divergent checkout was preserved. See [plan 21](plans/21-local-mode.md).
+Fragment 19 is complete: PR #21 merged as
 `62b7402729a17d2f00cab58762afa67bd7dbe86a`; v0.6.2 is published. The
 adopter-shaped regression and disposable Medulla copy pass without modifying
 Medulla; Ubuntu, macOS, Windows, docs-check, and secrets CI checks all passed.
@@ -82,7 +83,7 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 | 17 | [clarify Fragment's value across the docs](plans/17-fragment-copy-audit.md) | `done` | — |
 | 18 | [make STATE pruning automatic and budget-driven](plans/18-automatic-state-pruning.md) | `done` | — |
 | 19 | [make automatic STATE pruning work for adopters](plans/19-adopter-safe-state-pruning.md) | `done` | 18 |
-| 21 | [use Fragment without changing the shared repo](plans/21-local-mode.md) | `in-progress` | — |
+| 21 | [use Fragment without changing the shared repo](plans/21-local-mode.md) | `done` | — |
 
 ## Blocked / waiting on a human
 
@@ -117,6 +118,8 @@ benchmark follow-up remains unscored; plan 04 awaits the owner's decision.
 ## Session log
 Archived session history: [open archive](_attic/STATE-session-archive.md)
 
+- 2026-11-03 · GPT-6 / Codex · 21 · merged PR #24 as e74f107, published v0.7.0 after all five checks passed, and verified release files plus the live website · next: benchmark remains unscored; adopter upgrades are outside this release.
+
 - 2026-11-03 · GPT-6 / Codex · 21 · implemented local mode and passed 168 suite checks, 24 focused cases, configured-hook enforcement, ShellCheck, docs guard and Gitleaks; original checkout preserved · next: open PR, verify all CI OSes and publish v0.7.0; benchmark remains unscored.
 
 - 2026-10-11 · GPT-6 / Codex · 20 · documented clean, pushed-repo upgrade prerequisites, preview/check steps, and the fixed-content budget stop in README · next: pass checks and merge the guidance.
@@ -138,4 +141,3 @@ One line per session, newest first. Format:
 - 2026-10-10 · GPT-6 / Codex · 13 · merged PR #10 (`b8e6f38`), Pages deploy `38063624357` succeeded, live homepage HTTP 200 contains the raw GitHub skill link and no stale skills.sh link, and the source file returns HTTP 200; local suite (150 tests) and docs guard passed · next: resume parked benchmark plan 07 when Free Tier quota is available.
 - 2026-10-10 · GPT-6 / Codex · 13 · replaced README, INSTALL.md, and homepage links with the GitHub skill source; corrected the prior HTTP-only verification; local suite passed 150 tests and docs-check passed · next: publish and verify the deployed links.
 - 2026-10-10 · GPT-6 / Codex · 13 · found the skills.sh detail URL returned HTTP 200 with an application-level 404 and that search/catalog pages still show stale data; correcting public links to point to the canonical GitHub skill source · next: verify local docs and site, then publish the link correction.
-- 2026-10-10 · GPT-6 / Codex · 12 · merged PR #8 (`95033e6`); all five CI checks passed, the single canonical skill and direct install page verified, and public metadata updated; recorded that skills.sh still serves the removed legacy slug and does not document a repo-side cleanup control · next: resume parked benchmark plan 07 when Free Tier quota is available.
