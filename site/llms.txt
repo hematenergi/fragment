@@ -1,0 +1,10 @@
+# Fragment
+
+Fragment is a project memory tool for AI coding agents, by Dany Arkham.
+It keeps project context deterministic and portable across coding agent sessions.
+
+## Links
+
+- [Fragment site](https://fragment.utopy.net/)
+- [GitHub repository](https://github.com/hematenergi/fragment)
+- [Dany Arkham](https://danyarkham.is-a.dev/)
