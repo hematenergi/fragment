@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hematenergi.github.io/fragment/sitemap.xml
+Sitemap: https://fragment.utopy.net/sitemap.xml
